@@ -1567,10 +1567,16 @@ a {
 @media (max-width: 768px) {
   :root { --nav-h: 56px; }
 
+  /* Hero section — padding symétrique + réduire hauteur min pour rapprocher le tagline */
+  .hero {
+    padding-left: var(--pad-x);
+    min-height: 78dvh;
+  }
+
   .hero__inner {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .hero__right {
@@ -1589,11 +1595,6 @@ a {
 
   .hero__logo {
     width: clamp(220px, 80vw, 420px);
-  }
-
-  .hero__inner {
-    flex-direction: column;
-    gap: 2rem;
   }
 
   .info-strip {
@@ -1761,8 +1762,9 @@ a {
     padding: 6px 10px;
   }
 
+  /* Search + euro sur la même ligne */
   .toolbar__search-wrapper {
-    flex-basis: 100%;
+    flex: 1;
     margin-top: 2px;
   }
 
@@ -1778,11 +1780,11 @@ a {
   }
 
   .toolbar__sort {
-    flex-basis: 100%;
-    justify-content: flex-start;
+    flex-basis: auto;
+    justify-content: center;
     margin-top: 2px;
     font-size: 10px;
-    padding: 6px 8px;
+    padding: 6px 10px;
   }
 
   .collection__grid {
