@@ -1567,30 +1567,48 @@ a {
 @media (max-width: 768px) {
   :root { --nav-h: 56px; }
 
-  /* Hero section — padding symétrique + réduire hauteur min pour rapprocher le tagline */
+  /* Hero section — plein écran pour cacher la toolbar au chargement */
   .hero {
     padding-left: var(--pad-x);
-    min-height: 78dvh;
+    padding-bottom: 4.5rem;
+    min-height: 100dvh;
   }
 
   .hero__inner {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.75rem;
   }
 
+  /* Boutons à droite */
   .hero__right {
-    width: 100%;
+    align-self: flex-end;
+    width: min(85vw, 360px);
     align-items: center;
   }
 
   .cta-strip {
     gap: 1.5rem;
     align-items: center;
+    width: 100%;
   }
 
   .cta-btn--discord {
     margin-top: 0;
+  }
+
+  /* Sous-texte lovegobuy : permettre le retour à la ligne */
+  .cta-btn__hint {
+    white-space: normal;
+    line-height: 1.4;
+  }
+
+  /* Mini text : remonté dans le hero via margin négatif */
+  .hero__tagline {
+    margin-top: -4rem;
+    padding: 0 var(--pad-x) 1rem;
+    position: relative;
+    z-index: 2;
   }
 
   .hero__logo {
@@ -1707,27 +1725,6 @@ a {
     justify-content: center;
     padding: 8px 10px;
     font-size: 11px;
-  }
-
-  /* Scroll indicator — centré en bas sur mobile */
-  .hero__scroll {
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 1.25rem;
-    flex-direction: row;
-    gap: 8px;
-  }
-
-  .hero__scroll-arrow {
-    animation: none;
-    font-size: 1rem;
-  }
-
-  /* Tagline — remonter pour ne pas couvrir le scroll indicator */
-  .hero__tagline {
-    margin-top: 0;
-    padding: 0.75rem var(--pad-x) 3.5rem;
   }
 
   /* Anti-zoom iOS sur l'input de recherche */
