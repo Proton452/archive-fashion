@@ -1575,6 +1575,16 @@ a {
 
   .hero__right {
     width: 100%;
+    align-items: center;
+  }
+
+  .cta-strip {
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .cta-btn--discord {
+    margin-top: 0;
   }
 
   .hero__logo {
@@ -1616,13 +1626,35 @@ a {
     font-size: clamp(1.8rem, 8vw, 5rem);
   }
 
+  .nav {
+    padding: 0 0.75rem;
+    gap: 0.3rem;
+  }
+
   .nav__actions {
-    gap: 0.5rem;
+    gap: 0.2rem;
   }
 
   .nav__link {
-    font-size: 9px;
-    padding: 4px 8px;
+    font-size: 8px;
+    padding: 4px 6px;
+    letter-spacing: 0;
+    gap: 3px;
+  }
+
+  .nav__lovego-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Discord : icône seule sur mobile */
+  .nav__link--discord span {
+    display: none;
+  }
+
+  .nav__discord-icon {
+    width: 16px;
+    height: 13px;
   }
 
   .toolbar {
@@ -1676,6 +1708,32 @@ a {
     font-size: 11px;
   }
 
+  /* Scroll indicator — centré en bas sur mobile */
+  .hero__scroll {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 1.25rem;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .hero__scroll-arrow {
+    animation: none;
+    font-size: 1rem;
+  }
+
+  /* Tagline — remonter pour ne pas couvrir le scroll indicator */
+  .hero__tagline {
+    margin-top: 0;
+    padding: 0.75rem var(--pad-x) 3.5rem;
+  }
+
+  /* Anti-zoom iOS sur l'input de recherche */
+  .toolbar__search {
+    font-size: 16px;
+  }
+
   .collection {
     padding: 3rem var(--pad-x) 7rem;
   }
@@ -1709,7 +1767,7 @@ a {
   }
 
   .toolbar__search {
-    font-size: 11px;
+    font-size: 16px; /* anti-zoom iOS */
     padding: 6px 12px 6px 32px;
   }
 
