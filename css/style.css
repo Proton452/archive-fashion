@@ -1635,7 +1635,9 @@ a {
     padding: 0;
     z-index: 2;
     transform: translateY(-9.5rem);
-    text-align: center;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
   }
 
   /* Scroll indicator : un peu plus bas sur mobile */
