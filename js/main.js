@@ -56,11 +56,15 @@ const sortBtn        = document.getElementById('sortBtn');
 
 // ─── Navbar + scroll indicator + back to top ────────────
 const scrollIndicator = document.querySelector('.hero__scroll');
+const heroTagline     = document.querySelector('.hero__tagline');
 const backToTop       = document.getElementById('backToTop');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('is-scrolled', window.scrollY > 20);
   if (scrollIndicator) {
     scrollIndicator.classList.toggle('is-hidden', window.scrollY > 80);
+  }
+  if (heroTagline) {
+    heroTagline.classList.toggle('is-hidden', window.scrollY > 160);
   }
   if (backToTop) {
     backToTop.classList.toggle('is-visible', window.scrollY > 600);
