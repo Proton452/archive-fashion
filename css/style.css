@@ -1572,6 +1572,7 @@ a {
     padding-left: var(--pad-x);
     padding-bottom: 4.5rem;
     min-height: 100dvh;
+    background: linear-gradient(to bottom, rgba(26, 92, 71, 0.22) 0%, transparent 28%);
   }
 
   .hero__inner {
@@ -1580,11 +1581,12 @@ a {
     gap: 0.75rem;
   }
 
-  /* Boutons à droite */
+  /* Boutons centrés */
   .hero__right {
-    align-self: flex-end;
+    align-self: center;
     width: min(85vw, 360px);
     align-items: center;
+    animation: fadeInUp 0.8s var(--ease-out) 0.4s both;
   }
 
   .cta-strip {
@@ -1597,18 +1599,47 @@ a {
     margin-top: 0;
   }
 
-  /* Sous-texte lovegobuy : permettre le retour à la ligne */
+  /* Sous-texte lovegobuy : tenir sur une seule ligne */
   .cta-btn__hint {
-    white-space: normal;
-    line-height: 1.4;
+    font-size: 9px;
+    white-space: nowrap;
+    line-height: 1;
   }
 
-  /* Mini text : remonté dans le hero via margin négatif */
+  /* Boutons légèrement réduits pour cohérence */
+  .cta-btn--signup {
+    padding: 16px 18px;
+  }
+
+  .cta-btn--discord {
+    padding: 12px 18px;
+  }
+
+  .cta-btn__img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cta-btn--discord .cta-btn__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Mini text : positionné au-dessus de l'indicateur scroll */
   .hero__tagline {
-    margin-top: -4rem;
-    padding: 0 var(--pad-x) 1rem;
-    position: relative;
-    z-index: 2;
+    position: fixed;
+    bottom: 5.5rem;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    margin-top: 0;
+    padding: 0;
+    z-index: 10;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+  }
+
+  .hero__tagline.is-hidden {
+    opacity: 0;
+    visibility: hidden;
   }
 
   .hero__logo {
