@@ -569,6 +569,10 @@ function appendNextBatch() {
       card.rel = 'noopener noreferrer';
     }
 
+    card.addEventListener('click', () => {
+      gaEvent('click_product', { item_name: name, price: price, item_type: article });
+    });
+
     card.innerHTML = `
       <div class="product-card__image">
         ${image
@@ -624,6 +628,33 @@ function escapeHTML(str) {
 function escapeAttr(str) {
   return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
+
+// ─── Analytics (GA4) ────────────────────────────────────
+function gaEvent(name, params) {
+  if (typeof gtag === 'function') gtag('event', name, params || {});
+}
+
+// Sign Up 500€ — nav + hero CTA
+document.querySelectorAll('.nav__link--signup, .cta-btn--signup').forEach(el => {
+  el.addEventListener('click', () => gaEvent('click_signup'));
+});
+
+// Discord — nav + hero CTA
+document.querySelectorAll('.nav__link--discord, .cta-btn--discord').forEach(el => {
+  el.addEventListener('click', () => gaEvent('click_discord'));
+});
+
+// How to Order
+document.querySelectorAll('a[href="how-to-order.html"]').forEach(el => {
+  el.addEventListener('click', () => gaEvent('click_how_to_order'));
+});
+
+// Filtre Men / Women (Mixt ignoré — pas un filtre de genre)
+document.querySelectorAll('.toolbar__collection-item[data-collection="men"], .toolbar__collection-item[data-collection="women"]').forEach(item => {
+  item.addEventListener('click', () => {
+    gaEvent('click_filter', { gender: item.dataset.collection });
+  });
+});
 
 // ─── Init ────────────────────────────────────────────────
 // Délai pour laisser les animations hero se terminer avant de charger les données
