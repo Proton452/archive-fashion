@@ -631,7 +631,7 @@ function escapeAttr(str) {
 
 // ─── Analytics (GA4) ────────────────────────────────────
 function gaEvent(name, params) {
-  if (typeof gtag === 'function') gtag('event', name, params || {});
+  if (typeof gtag === 'function') gtag('event', name, { transport_type: 'beacon', ...(params || {}) });
 }
 
 // Sign Up 500€ — nav + hero CTA
