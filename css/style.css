@@ -1641,7 +1641,7 @@ a {
   }
 
   .hero__tagline .hero__subtitle {
-    text-align: center;
+    text-align: left;
     max-width: 85vw;
   }
 
