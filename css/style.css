@@ -1570,7 +1570,7 @@ a {
   /* Hero section — plein écran pour cacher la toolbar au chargement */
   .hero {
     padding-left: var(--pad-x);
-    padding-bottom: 4.5rem;
+    padding-bottom: 8rem;
     min-height: 100dvh;
     background: linear-gradient(to bottom, rgba(26, 92, 71, 0.22) 0%, transparent 28%);
   }
@@ -1625,21 +1625,17 @@ a {
     height: 28px;
   }
 
-  /* Mini text : positionné au-dessus de l'indicateur scroll */
+  /* Mini text : dans le flux, tiré vers le haut pour apparaître au-dessus du scroll */
   .hero__tagline {
-    position: fixed;
-    bottom: 5.5rem;
-    left: var(--pad-x);
-    right: var(--pad-x);
-    margin-top: 0;
-    padding: 0;
-    z-index: 10;
-    transition: opacity 0.15s ease, visibility 0.15s ease;
+    margin-top: -6.5rem;
+    padding: 0 var(--pad-x) 1rem;
+    position: relative;
+    z-index: 2;
   }
 
-  .hero__tagline.is-hidden {
-    opacity: 0;
-    visibility: hidden;
+  /* Scroll indicator : un peu plus bas sur mobile */
+  .hero__scroll {
+    bottom: 1rem;
   }
 
   .hero__logo {
