@@ -1635,9 +1635,14 @@ a {
     padding: 0;
     z-index: 2;
     transform: translateY(-9.5rem);
-    width: 100vw;
+    width: 100%;
     display: flex;
     justify-content: center;
+  }
+
+  .hero__tagline .hero__subtitle {
+    text-align: center;
+    max-width: 85vw;
   }
 
   /* Scroll indicator : un peu plus bas sur mobile */
