@@ -315,7 +315,7 @@ function fisherYates(arr, rng) {
 }
 
 // ─── Règles de push en fin de liste ──────────────────────
-const PUSH_RATES = { running: 0.8, gym: 0.8, decoration: 0.8, puffer: 0.5 };
+const PUSH_RATES = { running: 0.8, gym: 0.8, decoration: 0.8, puffer: 0.5, jersey: 0.95 };
 const SHUFFLE_SEED = 0xAF2025;
 
 // ─── Shuffle déterministe post-fetch ─────────────────────
