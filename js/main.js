@@ -227,6 +227,7 @@ function parseSheetData(data, category) {
 
   const idx = {
     name:          find('nom', 'name', 'titre', 'title', 'article'),
+    brand:         find('brand', 'marque'),
     article:       find('type', 'catégor', 'categor'),
     price:         find('prix', 'price'),
     imageDetoured: find('détouré', 'detouré', 'detour', 'cloudinary'),
@@ -253,6 +254,7 @@ function parseSheetData(data, category) {
       };
       return {
         name:          cell(idx.name),
+        brand:         idx.brand >= 0 ? cell(idx.brand) : '',
         article:       cell(idx.article),
         price:         cell(idx.price),
         image:         cell(idx.image),
@@ -494,6 +496,7 @@ function applyFilters() {
   if (searchQuery) {
     filtered = filtered.filter(p =>
       (p.name    || '').toLowerCase().includes(searchQuery) ||
+      (p.brand   || '').toLowerCase().includes(searchQuery) ||
       (p.article || '').toLowerCase().includes(searchQuery)
     );
   }
