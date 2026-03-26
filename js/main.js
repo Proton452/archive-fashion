@@ -324,10 +324,10 @@ const SHUFFLE_SEED = 0xAF2025;
 // • Le reste (mainPool) est mélangé entre lui
 // • Le endPool est mélangé entre lui (pas groupé par cat)
 function deterministicShuffle(products) {
-  if (products.length <= 20) return products;
+  if (products.length <= 40) return products;
 
-  const fixed = products.slice(0, 20);
-  const rest  = products.slice(20);
+  const fixed = products.slice(0, 40);
+  const rest  = products.slice(40);
   const rng   = mulberry32(SHUFFLE_SEED);
 
   const mainPool = [];
