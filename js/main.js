@@ -316,6 +316,152 @@ function fisherYates(arr, rng) {
   return arr;
 }
 
+// ─── Dictionnaire de synonymes multilingue ───────────────
+// Chaque tableau = groupe de termes équivalents (FR/EN/ES/DE/IT/PT/JP romaji/AR translittéré)
+const SYNONYM_GROUPS = [
+  // Hauts
+  ['pull', 'pullover', 'sweater', 'sweatshirt', 'hoodie', 'knit', 'knitwear', 'jumper',
+   'sudadera', 'jersey', 'chandail', 'sweat', 'maglione', 'felpa', 'moletom', 'suéter',
+   'puloveru', 'sētā'],
+  ['tshirt', 't-shirt', 'tee', 'top', 'camiseta', 'maglia', 'camisa', 'maglietta',
+   'tii shatsu', 'футболка'],
+  ['chemise', 'shirt', 'blouse', 'camisa', 'hemd', 'camicia', 'blusa', 'shatsu'],
+  ['polo', 'polo shirt', 'polo neck'],
+  ['débardeur', 'tank top', 'vest', 'camisole', 'canotta', 'musculosa', 'débardeur'],
+  ['crop top', 'crop', 'brassière', 'bralette'],
+
+  // Vestes & manteaux
+  ['veste', 'jacket', 'chaqueta', 'jacke', 'giacca', 'jaqueta', 'blouson', 'blazer',
+   'jakku', 'jaket'],
+  ['manteau', 'coat', 'abrigo', 'mantel', 'cappotto', 'casaco', 'overcoat', 'palton',
+   'kōto'],
+  ['puffer', 'doudoune', 'down jacket', 'acolchado', 'steppjacke', 'piumino', 'blusão',
+   'padded jacket', 'duvet'],
+  ['trench', 'trench coat', 'imperméable', 'gabardine', 'trincea'],
+  ['bomber', 'varsity', 'teddy jacket', 'college jacket'],
+  ['cardigan', 'gilet', 'vest', 'chaleco', 'weste', 'gilè', 'colete'],
+  ['kimono', 'kimono jacket', 'robe kimono'],
+  ['windbreaker', 'coupe-vent', 'cortavientos', 'windjacke', 'k-way'],
+
+  // Bas
+  ['pantalon', 'pants', 'trousers', 'pantalón', 'hose', 'pantaloni', 'calça', 'bottoms',
+   'zubon'],
+  ['jean', 'jeans', 'denim', 'vaqueros', 'jeanshose', 'джинсы', 'jinzu'],
+  ['jogging', 'jogger', 'sweatpants', 'trackpants', 'pantalón deportivo', 'sporthose',
+   'tuta', 'calça moletom', 'track pants', 'training pants'],
+  ['short', 'shorts', 'bermuda', 'pantaloncini', 'bermudas', 'kurze hose'],
+  ['legging', 'leggings', 'collant', 'mallas', 'strumpfhose'],
+  ['cargo', 'cargo pants', 'pantalon cargo', 'cargohose', 'pantaloni cargo'],
+
+  // Robes & jupes
+  ['robe', 'dress', 'vestido', 'kleid', 'abito', 'vestido', 'wanpiisu'],
+  ['jupe', 'skirt', 'falda', 'rock', 'gonna', 'saia'],
+  ['combinaison', 'jumpsuit', 'romper', 'mono', 'overall', 'tuta', 'macacão'],
+
+  // Ensembles
+  ['ensemble', 'set', 'conjunto', 'anzug', 'completo', 'coordinato', 'conjunto',
+   'matching set', 'co-ord'],
+  ['survêtement', 'tracksuit', 'jogging set', 'chandal', 'trainingsanzug', 'tuta',
+   'agasalho', 'track suit'],
+
+  // Chaussures
+  ['chaussures', 'shoes', 'zapatos', 'schuhe', 'scarpe', 'sapatos', 'kutsu'],
+  ['sneakers', 'baskets', 'trainers', 'tennis', 'zapatillas', 'turnschuhe', 'scarpe da ginnastica',
+   'tênis', 'suneekaa'],
+  ['boots', 'bottes', 'botines', 'stiefel', 'stivali', 'botas', 'būtsu'],
+  ['sandales', 'sandals', 'sandalias', 'sandalen', 'sandali'],
+  ['mocassins', 'loafers', 'mocasines', 'mokassins', 'mocassini'],
+  ['talons', 'heels', 'high heels', 'tacones', 'absätze', 'tacchi'],
+  ['slip on', 'slip-on', 'mules'],
+
+  // Accessoires tête
+  ['casquette', 'cap', 'hat', 'gorra', 'mütze', 'cappello', 'boné', 'キャップ', 'kepurė'],
+  ['bonnet', 'beanie', 'gorro', 'bommelmütze', 'berretto', 'gorro', 'nit'],
+  ['chapeau', 'hat', 'sombrero', 'hut', 'cappello', 'chapéu'],
+  ['beret', 'béret', 'boina'],
+  ['bucket hat', 'bob', 'pescador'],
+
+  // Accessoires cou & épaules
+  ['écharpe', 'scarf', 'bufanda', 'schal', 'sciarpa', 'cachecol', 'muffler', 'sukāfu'],
+  ['foulard', 'bandana', 'kerchief', 'pañuelo', 'tuch', 'fazzoletto', 'lenço'],
+
+  // Sacs
+  ['sac', 'bag', 'satchel', 'bolso', 'tasche', 'borsa', 'bolsa', 'baggu', 'kaban'],
+  ['sac à dos', 'backpack', 'mochila', 'rucksack', 'zaino', 'ryugkusak'],
+  ['tote', 'tote bag', 'cabas', 'shopper'],
+  ['pochette', 'clutch', 'clutch bag', 'sobre', 'unterarmtasche', 'borsetta'],
+  ['ceinture banane', 'fanny pack', 'belt bag', 'riñonera', 'gürteltasche', 'marsupio'],
+
+  // Ceintures & bijoux
+  ['ceinture', 'belt', 'cinturón', 'gürtel', 'cintura', 'cinto', 'beruto'],
+  ['collier', 'necklace', 'collar', 'halskette', 'collana', 'colar'],
+  ['bracelet', 'bangle', 'pulsera', 'armband', 'bracciale', 'pulseira'],
+  ['bague', 'ring', 'anillo', 'ring', 'anello', 'anel'],
+  ['boucles', 'earrings', 'pendientes', 'ohrringe', 'orecchini', 'brincos'],
+  ['montre', 'watch', 'reloj', 'uhr', 'orologio', 'relógio', 'tokei'],
+
+  // Lunettes
+  ['lunettes', 'glasses', 'sunglasses', 'gafas', 'brille', 'occhiali', 'óculos',
+   'めがね', 'megane'],
+  ['lunettes de soleil', 'sunglasses', 'sunnies', 'gafas de sol', 'sonnenbrille',
+   'occhiali da sole', 'óculos de sol'],
+
+  // Sous-vêtements & chaussettes
+  ['chaussettes', 'socks', 'calcetines', 'socken', 'calzini', 'meias', '靴下', 'kutsushita'],
+  ['sous-vêtements', 'underwear', 'ropa interior', 'unterwäsche', 'intimo', 'roupa íntima'],
+  ['boxer', 'boxers', 'bóxer', 'boxershorts', 'boxer shorts'],
+
+  // Maillots & sport
+  ['maillot', 'jersey', 'camiseta', 'trikot', 'maglia', 'camisa', 'shirt'],
+  ['maillot de bain', 'swimwear', 'swimsuit', 'bañador', 'badeanzug', 'costume da bagno',
+   'maiô', 'mizugi'],
+
+  // Tech / divers
+  ['coque', 'phone case', 'case', 'funda', 'hülle', 'custodia', 'capa', 'cover'],
+  ['portefeuille', 'wallet', 'billetera', 'geldbörse', 'portafoglio', 'carteira'],
+  ['gants', 'gloves', 'guantes', 'handschuhe', 'guanti', 'luvas'],
+  ['ceinture', 'belt', 'cinturón', 'gürtel', 'cintura', 'cinto'],
+
+  // Matières courantes
+  ['cuir', 'leather', 'cuero', 'leder', 'pelle', 'couro', 'kawa'],
+  ['velours', 'velvet', 'terciopelo', 'samt', 'velluto', 'veludo'],
+  ['denim', 'jean', 'jeans', 'джинса'],
+  ['laine', 'wool', 'lana', 'wolle', 'lana', 'lã'],
+  ['soie', 'silk', 'seda', 'seide', 'seta', 'seda', 'kinu'],
+  ['lin', 'linen', 'lino', 'leinen', 'lino', 'linho'],
+  ['nylon', 'polyester', 'synthétique', 'synthetic'],
+  ['coton', 'cotton', 'algodón', 'baumwolle', 'cotone', 'algodão', 'コットン'],
+
+  // Styles
+  ['vintage', 'retro', 'rétro', 'used', 'old school'],
+  ['streetwear', 'street', 'urban', 'urbain', 'urbano'],
+  ['sport', 'sportswear', 'athletic', 'athletique', 'deportivo', 'sportlich'],
+  ['luxe', 'luxury', 'lujo', 'luxus', 'lusso', 'luxo'],
+  ['casual', 'décontracté', 'informal', 'lässig'],
+];
+
+// Pré-calcul : map terme → tous les synonymes du groupe
+const SYNONYM_MAP = new Map();
+SYNONYM_GROUPS.forEach(group => {
+  group.forEach(term => {
+    SYNONYM_MAP.set(term.toLowerCase(), group.map(t => t.toLowerCase()));
+  });
+});
+
+/**
+ * Retourne tous les termes de recherche étendus avec leurs synonymes.
+ * Ex: "pull" → ["pull","pullover","sweater","hoodie",...]
+ */
+function expandSearchTerms(query) {
+  const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  const expanded = new Set(words);
+  words.forEach(word => {
+    const synonyms = SYNONYM_MAP.get(word);
+    if (synonyms) synonyms.forEach(s => expanded.add(s));
+  });
+  return [...expanded];
+}
+
 // ─── Règles de push en fin de liste ──────────────────────
 const PUSH_RATES = { running: 0.8, gym: 0.8, decoration: 0.8, puffer: 0.5, jersey: 0.95 };
 const SHUFFLE_SEED = 0xAF2025;
@@ -494,11 +640,13 @@ function applyFilters() {
 
   // 3. Search
   if (searchQuery) {
-    filtered = filtered.filter(p =>
-      (p.name    || '').toLowerCase().includes(searchQuery) ||
-      (p.brand   || '').toLowerCase().includes(searchQuery) ||
-      (p.article || '').toLowerCase().includes(searchQuery)
-    );
+    const terms = expandSearchTerms(searchQuery);
+    filtered = filtered.filter(p => {
+      const name    = (p.name    || '').toLowerCase();
+      const brand   = (p.brand   || '').toLowerCase();
+      const article = (p.article || '').toLowerCase();
+      return terms.some(t => name.includes(t) || brand.includes(t) || article.includes(t));
+    });
   }
 
   // 4. Sort by price — items without valid price go to the end
