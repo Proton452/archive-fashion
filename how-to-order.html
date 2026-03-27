@@ -407,12 +407,12 @@
       filter: brightness(1.35) saturate(1.1);
     }
 
-    /* Size color zones — scoped to table for proper specificity */
-    .guide__size-table td.sz-m   { color: #34d399; background: rgba( 52, 211, 153, 0.09); }
-    .guide__size-table td.sz-l   { color: #38bdf8; background: rgba( 56, 189, 248, 0.09); }
-    .guide__size-table td.sz-xl  { color: #fbbf24; background: rgba(251, 191,  36, 0.09); }
-    .guide__size-table td.sz-xxl { color: #f87171; background: rgba(248, 113, 113, 0.09); }
-    .guide__size-table td.sz-3xl { color: #e879f9; background: rgba(232, 121, 249, 0.09); }
+    /* Size color zones — single green hue, progressive intensity M → XXXL+ */
+    .guide__size-table td.sz-m   { color: #4a8f6e; background: rgba( 74, 143, 110, 0.07); }
+    .guide__size-table td.sz-l   { color: #29b07f; background: rgba( 41, 176, 127, 0.09); }
+    .guide__size-table td.sz-xl  { color: #0dcc91; background: rgba( 13, 204, 145, 0.10); }
+    .guide__size-table td.sz-xxl { color: #00e2a2; background: rgba(  0, 226, 162, 0.12); }
+    .guide__size-table td.sz-3xl { color: #00f5b0; background: rgba(  0, 245, 176, 0.14); }
 
     .guide__size-legend {
       display: flex;
@@ -600,11 +600,11 @@
 
         <!-- Legend -->
         <div class="guide__size-legend">
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#34d399"></span>M</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#38bdf8"></span>L</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#fbbf24"></span>XL</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#f87171"></span>XXL</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#e879f9"></span>XXXL +</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#4a8f6e"></span>M</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#29b07f"></span>L</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#0dcc91"></span>XL</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00e2a2"></span>XXL</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00f5b0"></span>XXXL +</span>
         </div>
 
         <!-- Table -->
