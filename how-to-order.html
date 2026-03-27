@@ -319,11 +319,27 @@
       margin-top: 1px;
     }
 
+    /* Table axes labels */
+    .guide__table-axes {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 0.5rem;
+    }
+    .guide__table-axis {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #333;
+    }
+
     /* Table */
     .guide__table-wrap {
       overflow-x: auto;
-      margin: 2.5rem 0 2rem;
-      border: 1px solid #1a1a1a;
+      margin: 0 0 2rem;
+      border: 1px solid #1e1e1e;
+      border-radius: 2px;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -331,61 +347,75 @@
       width: 100%;
       border-collapse: collapse;
       font-family: var(--mono);
-      font-size: 0.62rem;
+      font-size: 0.63rem;
       letter-spacing: 0.04em;
-      min-width: 600px;
+      min-width: 620px;
     }
 
+    /* Header */
     .guide__size-table thead tr {
-      border-bottom: 1px solid #222;
+      background: #0d0d0d;
+      border-bottom: 1px solid #252525;
     }
 
     .guide__size-table th {
-      padding: 10px 8px;
+      padding: 11px 10px;
       text-align: center;
-      color: #555;
+      color: #444;
       font-weight: 400;
       white-space: nowrap;
-      background: #0d0d0d;
     }
 
     .guide__size-table th:first-child {
       text-align: left;
-      padding-left: 14px;
-      color: #444;
+      padding-left: 16px;
+      min-width: 46px;
+      border-right: 1px solid #1e1e1e;
+    }
+
+    /* Body rows */
+    .guide__size-table tbody tr {
+      border-bottom: 1px solid #161616;
+    }
+
+    .guide__size-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .guide__size-table tbody tr:nth-child(odd) td:not(:first-child) {
+      background: rgba(255,255,255,0.012);
+    }
+
+    .guide__size-table tbody tr:hover td {
+      background: rgba(255,255,255,0.03) !important;
     }
 
     .guide__size-table td {
-      padding: 9px 8px;
+      padding: 10px 10px;
       text-align: center;
-      border-bottom: 1px solid #161616;
-      font-size: 0.65rem;
-      font-weight: 400;
-      letter-spacing: 0.06em;
+      font-size: 0.63rem;
+      font-weight: 500;
+      letter-spacing: 0.07em;
       white-space: nowrap;
+      transition: background 0.15s;
     }
 
     .guide__size-table td:first-child {
       text-align: left;
-      padding-left: 14px;
-      color: #555;
+      padding-left: 16px;
+      color: #4a4a4a;
       font-size: 0.6rem;
+      font-weight: 400;
+      border-right: 1px solid #1e1e1e;
+      background: #0d0d0d !important;
     }
 
-    .guide__size-table tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    .guide__size-table tbody tr:hover td {
-      background: rgba(255,255,255,0.015);
-    }
-
-    /* Size color coding */
-    .sz-m    { color: #4ade80; }
-    .sz-l    { color: #94a3b8; }
-    .sz-xl   { color: #fb923c; }
-    .sz-xxl  { color: #f87171; }
-    .sz-3xl  { color: #c084fc; }
+    /* Size color zones */
+    .sz-m   { color: #4ade80; background: rgba(74,222,128,0.07); }
+    .sz-l   { color: #94a3b8; background: rgba(148,163,184,0.06); }
+    .sz-xl  { color: #fb923c; background: rgba(251,146,60,0.07); }
+    .sz-xxl { color: #f87171; background: rgba(248,113,113,0.07); }
+    .sz-3xl { color: #c084fc; background: rgba(192,132,252,0.07); }
 
     .guide__size-legend {
       display: flex;
@@ -549,7 +579,7 @@
 
         <div class="guide__size-intro">
           <p class="guide__size-block-text">
-            This chart applies to <strong>Asian-sized items</strong> only — listings where the size range goes up to 3XL, 4XL, or 5XL.
+            This chart applies to <strong>Asian-sized items</strong> only (listings where the size range goes up to 3XL, 4XL, or 5XL).
             Asian sizing runs smaller than European standards: an Asian <strong>M</strong> typically fits like a European <strong>S</strong>.
           </p>
         </div>
@@ -581,6 +611,10 @@
         </div>
 
         <!-- Table -->
+        <div class="guide__table-axes">
+          <span class="guide__table-axis">Height ↓</span>
+          <span class="guide__table-axis">Weight →</span>
+        </div>
         <div class="guide__table-wrap">
           <table class="guide__size-table">
             <thead>
