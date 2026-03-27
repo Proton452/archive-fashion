@@ -407,12 +407,14 @@
       filter: brightness(1.4) saturate(1.1);
     }
 
-    /* Size color zones — single green hue, progressive intensity M → XXXL+ */
+    /* Size color zones — single green→aqua hue, 7-step progressive intensity */
     .guide__size-table td.sz-m   { color: #4a8f6e; background: rgba( 74, 143, 110, 0.07); }
     .guide__size-table td.sz-l   { color: #29b07f; background: rgba( 41, 176, 127, 0.09); }
     .guide__size-table td.sz-xl  { color: #0dcc91; background: rgba( 13, 204, 145, 0.10); }
     .guide__size-table td.sz-xxl { color: #00e2a2; background: rgba(  0, 226, 162, 0.12); }
-    .guide__size-table td.sz-3xl { color: #00f5b0; background: rgba(  0, 245, 176, 0.14); }
+    .guide__size-table td.sz-3xl { color: #00eebb; background: rgba(  0, 238, 187, 0.13); }
+    .guide__size-table td.sz-4xl { color: #00f5cc; background: rgba(  0, 245, 204, 0.14); }
+    .guide__size-table td.sz-5xl { color: #33fce8; background: rgba( 51, 252, 232, 0.16); }
 
     .guide__size-legend {
       display: flex;
@@ -604,7 +606,9 @@
           <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#29b07f"></span>L</span>
           <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#0dcc91"></span>XL</span>
           <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00e2a2"></span>XXL</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00f5b0"></span>XXXL +</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00eebb"></span>XXXL</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00f5cc"></span>4XL</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#33fce8"></span>5XL</span>
         </div>
 
         <!-- Table -->
@@ -636,7 +640,7 @@
                 <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
                 <td class="sz-l">L</td><td class="sz-l">L</td>
                 <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td>
               </tr>
               <tr>
                 <td>1m60</td>
@@ -671,25 +675,25 @@
                 <td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td>
                 <td class="sz-l">L</td><td class="sz-l">L</td>
                 <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td>
               </tr>
               <tr>
                 <td>1m85</td>
                 <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
                 <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td><td class="sz-3xl">5XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td><td class="sz-5xl">5XL</td>
               </tr>
               <tr>
                 <td>1m90</td>
                 <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
                 <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
-                <td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td><td class="sz-3xl">5XL</td><td class="sz-3xl">5XL</td>
+                <td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td><td class="sz-5xl">5XL</td><td class="sz-5xl">5XL</td>
               </tr>
               <tr>
                 <td>1m95</td>
                 <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
                 <td class="sz-3xl">XXXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">XXXL</td>
-                <td class="sz-3xl">4XL</td><td class="sz-3xl">5XL</td><td class="sz-3xl">5XL</td><td class="sz-3xl">5XL</td>
+                <td class="sz-4xl">4XL</td><td class="sz-5xl">5XL</td><td class="sz-5xl">5XL</td><td class="sz-5xl">5XL</td>
               </tr>
             </tbody>
           </table>
