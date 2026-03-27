@@ -339,7 +339,6 @@
       overflow-x: auto;
       margin: 0 0 2rem;
       border: 1px solid #1e1e1e;
-      border-radius: 2px;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -361,7 +360,7 @@
     .guide__size-table th {
       padding: 11px 10px;
       text-align: center;
-      color: #444;
+      color: #404040;
       font-weight: 400;
       white-space: nowrap;
     }
@@ -376,18 +375,11 @@
     /* Body rows */
     .guide__size-table tbody tr {
       border-bottom: 1px solid #161616;
+      transition: background 0.12s;
     }
 
     .guide__size-table tbody tr:last-child {
       border-bottom: none;
-    }
-
-    .guide__size-table tbody tr:nth-child(odd) td:not(:first-child) {
-      background: rgba(255,255,255,0.012);
-    }
-
-    .guide__size-table tbody tr:hover td {
-      background: rgba(255,255,255,0.03) !important;
     }
 
     .guide__size-table td {
@@ -397,25 +389,30 @@
       font-weight: 500;
       letter-spacing: 0.07em;
       white-space: nowrap;
-      transition: background 0.15s;
     }
 
+    /* Row header column — always pinned, never affected by hover */
     .guide__size-table td:first-child {
       text-align: left;
       padding-left: 16px;
-      color: #4a4a4a;
+      color: #444;
       font-size: 0.6rem;
       font-weight: 400;
       border-right: 1px solid #1e1e1e;
-      background: #0d0d0d !important;
+      background: #0d0d0d;
     }
 
-    /* Size color zones */
-    .sz-m   { color: #4ade80; background: rgba(74,222,128,0.07); }
-    .sz-l   { color: #94a3b8; background: rgba(148,163,184,0.06); }
-    .sz-xl  { color: #fb923c; background: rgba(251,146,60,0.07); }
-    .sz-xxl { color: #f87171; background: rgba(248,113,113,0.07); }
-    .sz-3xl { color: #c084fc; background: rgba(192,132,252,0.07); }
+    /* Hover highlight — row-level, data cells only */
+    .guide__size-table tbody tr:hover td:not(:first-child) {
+      filter: brightness(1.35) saturate(1.1);
+    }
+
+    /* Size color zones — scoped to table for proper specificity */
+    .guide__size-table td.sz-m   { color: #4ade80; background: rgba(74,  222, 128, 0.09); }
+    .guide__size-table td.sz-l   { color: #94a3b8; background: rgba(148, 163, 184, 0.07); }
+    .guide__size-table td.sz-xl  { color: #fb923c; background: rgba(251, 146,  60, 0.09); }
+    .guide__size-table td.sz-xxl { color: #f87171; background: rgba(248, 113, 113, 0.09); }
+    .guide__size-table td.sz-3xl { color: #c084fc; background: rgba(192, 132, 252, 0.09); }
 
     .guide__size-legend {
       display: flex;
