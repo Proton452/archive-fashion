@@ -259,9 +259,168 @@
     .guide__eyebrow  { animation: guideIn 0.6s var(--ease-out) 0.05s both; }
     .guide__title    { animation: guideIn 0.7s var(--ease-out) 0.15s both; }
     .guide__divider  { animation: guideIn 0.6s var(--ease-out) 0.25s both; }
-    .guide__section:first-of-type  { animation: guideIn 0.7s var(--ease-out) 0.3s both; }
-    .guide__section:last-of-type   { animation: guideIn 0.7s var(--ease-out) 0.4s both; }
+    .guide__section:nth-of-type(1) { animation: guideIn 0.7s var(--ease-out) 0.30s both; }
+    .guide__section:nth-of-type(2) { animation: guideIn 0.7s var(--ease-out) 0.40s both; }
+    .guide__section:nth-of-type(3) { animation: guideIn 0.7s var(--ease-out) 0.50s both; }
     .guide__cta      { animation: guideIn 0.7s var(--ease-out) 0.5s both; }
+
+    /* ── Size Guide ── */
+    .guide__size-intro {
+      margin-bottom: 2.5rem;
+    }
+
+    .guide__size-block {
+      margin-bottom: 2rem;
+    }
+
+    .guide__size-block-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 0.6rem;
+    }
+
+    .guide__size-block-text {
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: #aaa;
+    }
+
+    .guide__size-block-text strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .guide__size-tips {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin-top: 0.25rem;
+    }
+
+    .guide__size-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .guide__size-tip::before {
+      content: '→';
+      flex-shrink: 0;
+      color: #444;
+      margin-top: 1px;
+    }
+
+    /* Table */
+    .guide__table-wrap {
+      overflow-x: auto;
+      margin: 2.5rem 0 2rem;
+      border: 1px solid #1a1a1a;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .guide__size-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      min-width: 600px;
+    }
+
+    .guide__size-table thead tr {
+      border-bottom: 1px solid #222;
+    }
+
+    .guide__size-table th {
+      padding: 10px 8px;
+      text-align: center;
+      color: #555;
+      font-weight: 400;
+      white-space: nowrap;
+      background: #0d0d0d;
+    }
+
+    .guide__size-table th:first-child {
+      text-align: left;
+      padding-left: 14px;
+      color: #444;
+    }
+
+    .guide__size-table td {
+      padding: 9px 8px;
+      text-align: center;
+      border-bottom: 1px solid #161616;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .guide__size-table td:first-child {
+      text-align: left;
+      padding-left: 14px;
+      color: #555;
+      font-size: 0.6rem;
+    }
+
+    .guide__size-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .guide__size-table tbody tr:hover td {
+      background: rgba(255,255,255,0.015);
+    }
+
+    /* Size color coding */
+    .sz-m    { color: #4ade80; }
+    .sz-l    { color: #94a3b8; }
+    .sz-xl   { color: #fb923c; }
+    .sz-xxl  { color: #f87171; }
+    .sz-3xl  { color: #c084fc; }
+
+    .guide__size-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .guide__legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: #555;
+    }
+
+    .guide__legend-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .guide__size-closing {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid #1a1a1a;
+      font-family: var(--serif);
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 300;
+      font-style: italic;
+      color: #555;
+    }
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
@@ -271,6 +430,9 @@
       }
       .guide__step-number {
         font-size: 1.8rem;
+      }
+      .guide__size-legend {
+        gap: 0.75rem 1.25rem;
       }
     }
   </style>
@@ -389,6 +551,146 @@
           </div>
 
         </div>
+      </section>
+
+      <!-- SIZE GUIDE -->
+      <section class="guide__section">
+        <p class="guide__section-label">Sizing reference</p>
+        <h2 class="guide__section-title">Size guide</h2>
+
+        <div class="guide__size-intro">
+          <p class="guide__size-block-text">
+            Asian sizing runs smaller than European standards —
+            an Asian <strong>M</strong> typically fits like a European <strong>S</strong>.
+            Use the chart below based on your height and weight.
+          </p>
+        </div>
+
+        <div class="guide__size-block">
+          <p class="guide__size-block-label">Why the difference?</p>
+          <p class="guide__size-block-text">
+            Asian sizing reflects local body standards and is cut more fitted.
+            If you're used to European or US sizing, <strong>expect to size up</strong> —
+            sometimes by one, sometimes two sizes.
+          </p>
+        </div>
+
+        <div class="guide__size-block">
+          <p class="guide__size-block-label">How to use this chart</p>
+          <p class="guide__size-block-text">
+            If a listing only shows <strong>S / M / L / XL</strong> with no measurements, use the chart.
+            If the description already lists chest, waist, or length in cm — use those directly.
+            They're more accurate.
+          </p>
+        </div>
+
+        <!-- Legend -->
+        <div class="guide__size-legend">
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#4ade80"></span>M</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#94a3b8"></span>L</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#fb923c"></span>XL</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#f87171"></span>XXL</span>
+          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#c084fc"></span>XXXL +</span>
+        </div>
+
+        <!-- Table -->
+        <div class="guide__table-wrap">
+          <table class="guide__size-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>45 kg</th>
+                <th>50 kg</th>
+                <th>55 kg</th>
+                <th>60 kg</th>
+                <th>65 kg</th>
+                <th>70 kg</th>
+                <th>75 kg</th>
+                <th>80 kg</th>
+                <th>85 kg</th>
+                <th>90 kg</th>
+                <th>95 kg</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1m55</td>
+                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td>
+              </tr>
+              <tr>
+                <td>1m60</td>
+                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td>
+              </tr>
+              <tr>
+                <td>1m65</td>
+                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
+              </tr>
+              <tr>
+                <td>1m70</td>
+                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
+              </tr>
+              <tr>
+                <td>1m75</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td>
+              </tr>
+              <tr>
+                <td>1m80</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-l">L</td><td class="sz-l">L</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td>
+              </tr>
+              <tr>
+                <td>1m85</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td><td class="sz-3xl">5XL</td>
+              </tr>
+              <tr>
+                <td>1m90</td>
+                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
+                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
+                <td class="sz-3xl">XXXL</td><td class="sz-3xl">4XL</td><td class="sz-3xl">5XL</td><td class="sz-3xl">5XL</td>
+              </tr>
+              <tr>
+                <td>1m95</td>
+                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
+                <td class="sz-3xl">XXXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">XXXL</td>
+                <td class="sz-3xl">4XL</td><td class="sz-3xl">5XL</td><td class="sz-3xl">5XL</td><td class="sz-3xl">5XL</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tips -->
+        <div class="guide__size-block">
+          <p class="guide__size-block-label">Practical tips</p>
+          <div class="guide__size-tips">
+            <span class="guide__size-tip">When between two sizes, always size up</span>
+            <span class="guide__size-tip">Check the seller's return policy before ordering</span>
+            <span class="guide__size-tip">For jackets and oversized pieces, going one size up improves both fit and silhouette</span>
+          </div>
+        </div>
+
+        <p class="guide__size-closing">
+          Use this chart on every order — it takes ten seconds and saves you from a bad fit.
+        </p>
+
       </section>
 
       <!-- CTA -->
