@@ -411,8 +411,8 @@ const SYNONYM_GROUPS = [
   ['sous-vêtements', 'underwear', 'ropa interior', 'unterwäsche', 'intimo', 'roupa íntima'],
   ['boxer', 'boxers', 'bóxer', 'boxershorts', 'boxer shorts'],
 
-  // Maillots & sport
-  ['maillot', 'jersey', 'camiseta', 'trikot', 'maglia', 'camisa', 'shirt'],
+  // Maillots & sport (termes spécifiques uniquement — "shirt"/"camiseta"/"maglia" retirés car ils chevauchent les groupes t-shirt/chemise)
+  ['maillot', 'jersey', 'trikot', 'football shirt', 'kit'],
   ['maillot de bain', 'swimwear', 'swimsuit', 'bañador', 'badeanzug', 'costume da bagno',
    'maiô', 'mizugi'],
 
@@ -666,9 +666,11 @@ function applyFilters() {
       const brand        = normalizeBrand(p.brand);
       const brandCompact = brand.replace(/\s+/g, '');
       const article      = normalizeTerm(p.article);
-      // Brand match: full normalized query OR compact form (handles "A.P.C."→"apc", "Hermès"→"hermes")
-      const brandMatch = normQuery.length >= 2 && (
-        brand.includes(normQuery) ||
+      // Brand match: every query word (≥2 chars) must appear in the brand,
+      // OR compact form matches (handles "A.P.C."→"apc", "Noé Mosen"→"noe mosen" vs "no e mosen")
+      const queryWords = normQuery.split(/\s+/).filter(w => w.length >= 2);
+      const brandMatch = queryWords.length > 0 && (
+        queryWords.every(w => brand.includes(w)) ||
         (queryCompact.length >= 2 && brandCompact.includes(queryCompact))
       );
       return brandMatch || terms.some(t => name.includes(t) || brand.includes(t) || article.includes(t));
