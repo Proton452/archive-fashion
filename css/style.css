@@ -1564,6 +1564,55 @@ a {
   }
 }
 
+/* ─── Tablette uniquement (769px – 1024px) ─────────────────────────── */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  /* 1. Hero plein écran → toolbar cachée au chargement, visible seulement au scroll */
+  .hero {
+    min-height: 100dvh;
+  }
+
+  /* 2. Logo réduit pour libérer de la place côté boutons */
+  .hero__logo {
+    width: clamp(220px, 40vw, 420px);
+  }
+
+  /* 3. Réduire l'écart entre logo et boutons */
+  .hero__inner {
+    gap: 2rem;
+  }
+
+  /* 4. Zone boutons : taille adaptée à la tablette */
+  .hero__right {
+    width: clamp(260px, 36vw, 380px);
+  }
+
+  /* 5. Sous-titre des boutons : autoriser le retour à la ligne pour ne pas déborder */
+  .cta-btn__hint {
+    white-space: normal;
+    line-height: 1.35;
+    font-size: 9px;
+  }
+
+  /* 6. Label principal légèrement réduit */
+  .cta-btn__label {
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  }
+
+  /* 7. Padding boutons compact */
+  .cta-btn--signup {
+    padding: 16px 18px;
+  }
+  .cta-btn--discord {
+    padding: 14px 18px;
+  }
+
+  /* 8. Gap entre les deux boutons réduit */
+  .cta-strip {
+    gap: 2.4rem;
+  }
+}
+
 @media (max-width: 768px) {
   :root { --nav-h: 56px; }
 
