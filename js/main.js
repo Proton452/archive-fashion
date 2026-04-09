@@ -666,14 +666,18 @@ function applyFilters() {
       const brand        = normalizeBrand(p.brand);
       const brandCompact = brand.replace(/\s+/g, '');
       const article      = normalizeTerm(p.article);
-      // Brand match: every query word (≥2 chars) must appear in the brand,
+      // Brand match: every query word (≥2 chars) must appear in the normalized brand,
       // OR compact form matches (handles "A.P.C."→"apc", "Noé Mosen"→"noe mosen" vs "no e mosen")
       const queryWords = normQuery.split(/\s+/).filter(w => w.length >= 2);
       const brandMatch = queryWords.length > 0 && (
         queryWords.every(w => brand.includes(w)) ||
         (queryCompact.length >= 2 && brandCompact.includes(queryCompact))
       );
-      return brandMatch || terms.some(t => name.includes(t) || brand.includes(t) || article.includes(t));
+      // Term match: only use terms ≥3 chars against name/article (avoids "e" matching everything)
+      // Brand is handled exclusively by brandMatch above
+      const meaningfulTerms = terms.filter(t => t.length >= 3);
+      const termMatch = meaningfulTerms.some(t => name.includes(t) || article.includes(t));
+      return brandMatch || termMatch;
     });
   }
 
