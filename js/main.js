@@ -448,16 +448,34 @@ SYNONYM_GROUPS.forEach(group => {
   });
 });
 
+// Normalize for term comparison: lowercase + strip diacritics
+function normalizeTerm(str) {
+  return (str || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+// Normalize for brand comparison: same as normalizeTerm + replace special chars with spaces
+function normalizeBrand(str) {
+  return normalizeTerm(str)
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /**
  * Retourne tous les termes de recherche étendus avec leurs synonymes.
  * Ex: "pull" → ["pull","pullover","sweater","hoodie",...]
  */
 function expandSearchTerms(query) {
-  const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
-  const expanded = new Set(words);
-  words.forEach(word => {
-    const synonyms = SYNONYM_MAP.get(word);
-    if (synonyms) synonyms.forEach(s => expanded.add(s));
+  const rawWords  = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  const normWords = rawWords.map(normalizeTerm);
+  const expanded  = new Set(normWords);
+  rawWords.forEach((word, i) => {
+    // Try SYNONYM_MAP with raw word first (preserves accented keys like 'écharpe')
+    const synonyms = SYNONYM_MAP.get(word) || SYNONYM_MAP.get(normWords[i]);
+    if (synonyms) synonyms.forEach(s => expanded.add(normalizeTerm(s)));
   });
   return [...expanded];
 }
@@ -640,12 +658,20 @@ function applyFilters() {
 
   // 3. Search
   if (searchQuery) {
-    const terms = expandSearchTerms(searchQuery);
+    const terms        = expandSearchTerms(searchQuery);
+    const normQuery    = normalizeBrand(searchQuery);
+    const queryCompact = normQuery.replace(/\s+/g, '');  // "a.p.c." → "apc"
     filtered = filtered.filter(p => {
-      const name    = (p.name    || '').toLowerCase();
-      const brand   = (p.brand   || '').toLowerCase();
-      const article = (p.article || '').toLowerCase();
-      return terms.some(t => name.includes(t) || brand.includes(t) || article.includes(t));
+      const name         = normalizeTerm(p.name);
+      const brand        = normalizeBrand(p.brand);
+      const brandCompact = brand.replace(/\s+/g, '');
+      const article      = normalizeTerm(p.article);
+      // Brand match: full normalized query OR compact form (handles "A.P.C."→"apc", "Hermès"→"hermes")
+      const brandMatch = normQuery.length >= 2 && (
+        brand.includes(normQuery) ||
+        (queryCompact.length >= 2 && brandCompact.includes(queryCompact))
+      );
+      return brandMatch || terms.some(t => name.includes(t) || brand.includes(t) || article.includes(t));
     });
   }
 
