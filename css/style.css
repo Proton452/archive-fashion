@@ -1567,39 +1567,64 @@ a {
 /* ─── Tablette uniquement (769px – 1024px) ─────────────────────────── */
 @media (min-width: 769px) and (max-width: 1024px) {
 
-  /* 1. Hero plein écran → toolbar cachée au chargement, visible seulement au scroll */
+  /* Animation dédiée tablette : pas de translateX permanent (évite le conflit
+     avec position:absolute + translateY(-50%) des boutons) */
+  @keyframes fadeInRightTablet {
+    from { opacity: 0; transform: translateY(calc(-50% + 1.5rem)); }
+    to   { opacity: 1; transform: translateY(-50%); }
+  }
+
+  /* 1. Hero plein écran → toolbar cachée au chargement, visible au scroll */
   .hero {
     min-height: 100dvh;
   }
 
-  /* 2. Logo réduit pour libérer de la place côté boutons */
-  .hero__logo {
-    width: clamp(220px, 40vw, 420px);
-  }
-
-  /* 3. Réduire l'écart entre logo et boutons */
+  /* 2. hero__inner : position relative pour les boutons en absolu */
   .hero__inner {
-    gap: 2rem;
+    position: relative;
+    gap: 0;
   }
 
-  /* 4. Zone boutons : taille adaptée à la tablette */
+  /* 3. Logo grand — les boutons peuvent le chevaucher */
+  .hero__logo {
+    width: clamp(300px, 58vw, 620px);
+  }
+
+  /* 4. Boutons collés à droite en position absolue, centrés verticalement */
   .hero__right {
-    width: clamp(260px, 36vw, 380px);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: clamp(260px, 30vw, 340px);
+    z-index: 5;
+    animation: fadeInRightTablet 0.8s var(--ease-out) 0.4s both;
   }
 
-  /* 5. Sous-titre des boutons : autoriser le retour à la ligne pour ne pas déborder */
+  /* 5. Description tirée dans le hero (height:0 + translateY, comme sur mobile)
+     → visible en bas du hero, toolbar reste hors-écran */
+  .hero__tagline {
+    position: relative;
+    height: 0;
+    overflow: visible;
+    margin-top: 0;
+    padding: 0 var(--pad-x);
+    z-index: 2;
+    transform: translateY(-5rem);
+  }
+
+  /* 6. Sous-titre des boutons : retour à la ligne → reste dans le bouton */
   .cta-btn__hint {
     white-space: normal;
     line-height: 1.35;
     font-size: 9px;
   }
 
-  /* 6. Label principal légèrement réduit */
+  /* 7. Label bouton légèrement compact */
   .cta-btn__label {
     font-size: clamp(0.9rem, 1.2vw, 1.1rem);
   }
 
-  /* 7. Padding boutons compact */
+  /* 8. Padding boutons réduit */
   .cta-btn--signup {
     padding: 16px 18px;
   }
@@ -1607,7 +1632,7 @@ a {
     padding: 14px 18px;
   }
 
-  /* 8. Gap entre les deux boutons réduit */
+  /* 9. Espace entre les deux boutons */
   .cta-strip {
     gap: 2.4rem;
   }
