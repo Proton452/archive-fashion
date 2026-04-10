@@ -1575,10 +1575,11 @@ a {
   }
 
   /* 1. Hero plein écran → toolbar cachée au chargement, visible au scroll
-     overflow-x:clip rogne les boutons qui dépassent à droite sans bloquer le scroll fixe */
+     overflow:hidden rogne les boutons absolus dépassant à droite
+     (position:fixed non affecté car .hero n'a pas de transform) */
   .hero {
     min-height: 100dvh;
-    overflow-x: clip;
+    overflow: hidden;
   }
 
   /* 2. hero__inner : sans position relative → les boutons se positionnent
@@ -1728,10 +1729,12 @@ a {
   }
 }
 
-/* ─── Tablette : scroll indicator au niveau de la description ─── */
+/* ─── Tablette : scroll indicator aligné avec la description ─── */
+/* description top ≈ 7rem du bas du viewport, hauteur texte ~2rem → centre ≈ 6rem du bas
+   scroll height ~3rem → bottom = 6rem - 1.5rem = 4.5rem                             */
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero__scroll {
-    bottom: 6.5rem;
+    bottom: 4.5rem;
   }
 }
 
