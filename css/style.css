@@ -1595,7 +1595,7 @@ a {
     position: absolute;
     right: 0;
     top: 50%;
-    width: clamp(260px, 30vw, 340px);
+    width: clamp(290px, 38vw, 420px);
     z-index: 5;
     animation: fadeInRightTablet 0.8s var(--ease-out) 0.4s both;
   }
@@ -1612,11 +1612,12 @@ a {
     transform: translateY(-5rem);
   }
 
-  /* 6. Sous-titre des boutons : retour à la ligne → reste dans le bouton */
+  /* 6. Sous-titre des boutons : une seule ligne, font réduit pour tenir */
   .cta-btn__hint {
-    white-space: normal;
-    line-height: 1.35;
-    font-size: 9px;
+    white-space: nowrap;
+    font-size: 7.5px;
+    letter-spacing: 0.05em;
+    line-height: 1;
   }
 
   /* 7. Label bouton légèrement compact */
