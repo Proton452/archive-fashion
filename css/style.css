@@ -1628,12 +1628,15 @@ a {
     font-size: clamp(0.9rem, 1.2vw, 1.1rem);
   }
 
-  /* 8. Padding boutons réduit */
+  /* 8. Padding boutons compact + gap interne réduit */
+  .cta-btn {
+    gap: 12px;
+  }
   .cta-btn--signup {
-    padding: 16px 18px;
+    padding: 10px 14px;
   }
   .cta-btn--discord {
-    padding: 14px 18px;
+    padding: 10px 14px;
   }
 
   /* 9. Espace entre les deux boutons */
@@ -1732,7 +1735,7 @@ a {
 /* ─── Tablette : scroll indicator aligné avec la description ─── */
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero__scroll {
-    bottom: 5.5rem;
+    bottom: 3.5rem;
   }
 }
 
