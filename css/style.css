@@ -1574,9 +1574,11 @@ a {
     to   { opacity: 1; transform: translateY(-50%); }
   }
 
-  /* 1. Hero plein écran → toolbar cachée au chargement, visible au scroll */
+  /* 1. Hero plein écran → toolbar cachée au chargement, visible au scroll
+     overflow-x:clip rogne les boutons qui dépassent à droite sans bloquer le scroll fixe */
   .hero {
     min-height: 100dvh;
+    overflow-x: clip;
   }
 
   /* 2. hero__inner : sans position relative → les boutons se positionnent
@@ -1590,10 +1592,10 @@ a {
     width: clamp(300px, 58vw, 620px);
   }
 
-  /* 4. Boutons collés à droite en position absolue, centrés verticalement */
+  /* 4. Boutons décalés à droite au-delà du bord → coupés par overflow-x:clip du hero */
   .hero__right {
     position: absolute;
-    right: 0;
+    right: -3.5rem;
     top: 50%;
     width: clamp(290px, 38vw, 420px);
     z-index: 5;
@@ -1724,7 +1726,16 @@ a {
   .hero__scroll {
     bottom: 1rem;
   }
+}
 
+/* ─── Tablette : scroll indicator au niveau de la description ─── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero__scroll {
+    bottom: 6.5rem;
+  }
+}
+
+@media (max-width: 768px) {
   .hero__logo {
     width: clamp(220px, 80vw, 420px);
   }
