@@ -1593,10 +1593,10 @@ a {
     width: clamp(300px, 58vw, 620px);
   }
 
-  /* 4. Boutons décalés à droite au-delà du bord → coupés par overflow-x:clip du hero */
+  /* 4. Boutons à droite, décalés vers la gauche */
   .hero__right {
     position: absolute;
-    right: -3.5rem;
+    right: 2rem;
     top: 50%;
     width: clamp(290px, 38vw, 420px);
     z-index: 5;
@@ -1730,11 +1730,9 @@ a {
 }
 
 /* ─── Tablette : scroll indicator aligné avec la description ─── */
-/* description top ≈ 7rem du bas du viewport, hauteur texte ~2rem → centre ≈ 6rem du bas
-   scroll height ~3rem → bottom = 6rem - 1.5rem = 4.5rem                             */
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero__scroll {
-    bottom: 4.5rem;
+    bottom: 5.5rem;
   }
 }
 
