@@ -1580,6 +1580,7 @@ a {
   .hero {
     min-height: 100dvh;
     overflow: hidden;
+    padding-bottom: 10rem;
   }
 
   /* 2. hero__inner : sans position relative → les boutons se positionnent
@@ -1593,12 +1594,12 @@ a {
     width: clamp(300px, 58vw, 620px);
   }
 
-  /* 4. Boutons à droite, décalés vers la gauche */
+  /* 4. Boutons à droite — largeur réduite pour coller au contenu */
   .hero__right {
     position: absolute;
     right: 2rem;
     top: 50%;
-    width: clamp(290px, 38vw, 420px);
+    width: clamp(200px, 26vw, 290px);
     z-index: 5;
     animation: fadeInRightTablet 0.8s var(--ease-out) 0.4s both;
   }
@@ -1735,7 +1736,7 @@ a {
 /* ─── Tablette : scroll indicator aligné avec la description ─── */
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero__scroll {
-    bottom: 3.5rem;
+    bottom: 4rem;
   }
 }
 
