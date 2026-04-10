@@ -1579,9 +1579,9 @@ a {
     min-height: 100dvh;
   }
 
-  /* 2. hero__inner : position relative pour les boutons en absolu */
+  /* 2. hero__inner : sans position relative → les boutons se positionnent
+     par rapport à .hero (plein viewport), pas à .hero__inner (inset pad-x) */
   .hero__inner {
-    position: relative;
     gap: 0;
   }
 
@@ -1609,7 +1609,7 @@ a {
     margin-top: 0;
     padding: 0 var(--pad-x);
     z-index: 2;
-    transform: translateY(-5rem);
+    transform: translateY(-7rem);
   }
 
   /* 6. Sous-titre des boutons : une seule ligne, font réduit pour tenir */
