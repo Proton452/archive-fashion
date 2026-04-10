@@ -1580,7 +1580,7 @@ a {
   .hero {
     min-height: 100dvh;
     overflow: hidden;
-    padding-bottom: 10rem;
+    padding-bottom: 6rem;
   }
 
   /* 2. hero__inner : sans position relative → les boutons se positionnent
