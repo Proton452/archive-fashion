@@ -656,30 +656,21 @@ function applyFilters() {
     );
   }
 
-  // 3. Search
-  if (searchQuery) {
-    const terms        = expandSearchTerms(searchQuery);
-    const normQuery    = normalizeBrand(searchQuery);
-    const queryCompact = normQuery.replace(/\s+/g, '');  // "a.p.c." → "apc"
-    filtered = filtered.filter(p => {
-      const name         = normalizeTerm(p.name);
-      const brand        = normalizeBrand(p.brand);
-      const brandCompact = brand.replace(/\s+/g, '');
-      const article      = normalizeTerm(p.article);
-      // Brand match: every query word (≥2 chars) must appear in the normalized brand,
-      // OR compact form matches (handles "A.P.C."→"apc", "Noé Mosen"→"noe mosen" vs "no e mosen")
-      const queryWords = normQuery.split(/\s+/).filter(w => w.length >= 2);
-      const brandMatch = queryWords.length > 0 && (
-        queryWords.every(w => brand.includes(w)) ||
-        (queryCompact.length >= 2 && brandCompact.includes(queryCompact))
-      );
-      // Term match: only use terms ≥3 chars against name/article (avoids "e" matching everything)
-      // Brand is handled exclusively by brandMatch above
-      const meaningfulTerms = terms.filter(t => t.length >= 3);
-      const termMatch = meaningfulTerms.some(t => name.includes(t));
-      return brandMatch || termMatch;
+// 3. Search
+if (searchQuery) {
+  const rawWords = searchQuery.toLowerCase().trim().split(/\s+/).filter(Boolean);
+
+  filtered = filtered.filter(p => {
+    const name = normalizeTerm(p.name);
+
+    // Chaque mot de la query doit matcher dans le nom (avec ses synonymes)
+    return rawWords.every(word => {
+      const normWord = normalizeTerm(word);
+      const synonyms = SYNONYM_MAP.get(word) || SYNONYM_MAP.get(normWord) || [normWord];
+      return synonyms.some(s => name.includes(normalizeTerm(s)));
     });
-  }
+  });
+}
 
   // 4. Sort by price — items without valid price go to the end
   if (sortOrder) {
