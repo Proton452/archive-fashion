@@ -662,16 +662,20 @@ if (searchQuery) {
 
   filtered = filtered.filter(p => {
     const name = normalizeTerm(p.name);
+    const nameWords = name.split(/\s+/);
 
-    // Chaque mot de la query doit matcher dans le nom (avec ses synonymes)
     return rawWords.every(word => {
       const normWord = normalizeTerm(word);
       const synonyms = SYNONYM_MAP.get(word) || SYNONYM_MAP.get(normWord) || [normWord];
-      return synonyms.some(s => name.includes(normalizeTerm(s)));
+
+      return synonyms.some(s => {
+        const ns = normalizeTerm(s);
+        return nameWords.some(nw => nw === ns || nw.startsWith(ns)) ||
+               (ns.length >= 4 && name.includes(ns));
+      });
     });
   });
 }
-
   // 4. Sort by price — items without valid price go to the end
   if (sortOrder) {
     const withPrice = [];
