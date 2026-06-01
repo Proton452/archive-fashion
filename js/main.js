@@ -676,7 +676,7 @@ function applyFilters() {
       // Term match: only use terms ≥3 chars against name/article (avoids "e" matching everything)
       // Brand is handled exclusively by brandMatch above
       const meaningfulTerms = terms.filter(t => t.length >= 3);
-      const termMatch = meaningfulTerms.some(t => name.includes(t) || article.includes(t));
+      const termMatch = meaningfulTerms.some(t => name.includes(t));
       return brandMatch || termMatch;
     });
   }
