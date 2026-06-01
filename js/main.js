@@ -182,8 +182,6 @@ sortBtn.addEventListener('click', () => {
 });
 
 // ─── Fetch via JSONP (contourne le CORS Google Sheets) ───
-// gviz/tq avec out:json + responseHandler injecte un <script>
-// qui appelle notre callback → pas de restriction CORS.
 function fetchSheetJSONP(sheetID) {
   return new Promise((resolve, reject) => {
     const cbName = '__gviz_cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
@@ -214,15 +212,12 @@ function fetchSheetJSONP(sheetID) {
 }
 
 // ─── Parse gviz JSON → product objects ───────────────────
-// Détecte les colonnes par leur label pour être robuste à l'ordre des colonnes
 function parseSheetData(data, category) {
   if (!data?.table?.rows || !data?.table?.cols) return [];
 
-  // Lire les labels des colonnes
   const cols = data.table.cols.map(c => (c.label || '').toLowerCase().trim());
   console.log('[Archive] Colonnes détectées:', cols.map((c, i) => `${i}:"${c}"`).join(' | '));
 
-  // Trouver chaque colonne par mot-clé dans son label
   const find = (...keywords) => cols.findIndex(c => keywords.some(k => c.includes(k)));
 
   const idx = {
@@ -235,7 +230,6 @@ function parseSheetData(data, category) {
     lien:          find('lien', 'link', 'url', 'produit'),
   };
 
-  // Fallback : si colonnes introuvables par label, prendre index par défaut
   if (idx.name    < 0) idx.name    = 0;
   if (idx.article < 0) idx.article = 2;
   if (idx.price   < 0) idx.price   = 3;
@@ -278,20 +272,14 @@ function deduplicateProducts(products) {
 }
 
 // ─── Price Parser ────────────────────────────────────────
-// Handles: €45 | 45€ | 45 EUR | 45.00 | 1,200 | 1.200,00 etc.
 function parsePrice(priceStr) {
   if (!priceStr) return null;
-  // Strip currency symbols and letters
   let s = priceStr.replace(/[€$£¥₹]|EUR|USD|GBP/gi, '').trim();
-  // If there's both comma and dot, the last one is the decimal separator
   if (s.includes(',') && s.includes('.')) {
-    // European format: 1.200,50 → remove dots (thousands sep), replace comma
     s = s.replace(/\./g, '').replace(',', '.');
   } else {
-    // Replace comma decimal separator
     s = s.replace(',', '.');
   }
-  // Remove any remaining non-numeric chars except dot
   s = s.replace(/[^\d.]/g, '');
   const val = parseFloat(s);
   return isNaN(val) ? null : val;
@@ -317,7 +305,6 @@ function fisherYates(arr, rng) {
 }
 
 // ─── Dictionnaire de synonymes multilingue ───────────────
-// Chaque tableau = groupe de termes équivalents (FR/EN/ES/DE/IT/PT/JP romaji/AR translittéré)
 const SYNONYM_GROUPS = [
   // Hauts
   ['pull', 'pullover', 'sweater', 'sweatshirt', 'hoodie', 'knit', 'knitwear', 'jumper',
@@ -411,7 +398,7 @@ const SYNONYM_GROUPS = [
   ['sous-vêtements', 'underwear', 'ropa interior', 'unterwäsche', 'intimo', 'roupa íntima'],
   ['boxer', 'boxers', 'bóxer', 'boxershorts', 'boxer shorts'],
 
-  // Maillots & sport (termes spécifiques uniquement — "shirt"/"camiseta"/"maglia" retirés car ils chevauchent les groupes t-shirt/chemise)
+  // Maillots & sport
   ['maillot', 'jersey', 'trikot', 'football shirt', 'kit'],
   ['maillot de bain', 'swimwear', 'swimsuit', 'bañador', 'badeanzug', 'costume da bagno',
    'maiô', 'mizugi'],
@@ -420,7 +407,6 @@ const SYNONYM_GROUPS = [
   ['coque', 'phone case', 'case', 'funda', 'hülle', 'custodia', 'capa', 'cover'],
   ['portefeuille', 'wallet', 'billetera', 'geldbörse', 'portafoglio', 'carteira'],
   ['gants', 'gloves', 'guantes', 'handschuhe', 'guanti', 'luvas'],
-  ['ceinture', 'belt', 'cinturón', 'gürtel', 'cintura', 'cinto'],
 
   // Matières courantes
   ['cuir', 'leather', 'cuero', 'leder', 'pelle', 'couro', 'kawa'],
@@ -473,7 +459,6 @@ function expandSearchTerms(query) {
   const normWords = rawWords.map(normalizeTerm);
   const expanded  = new Set(normWords);
   rawWords.forEach((word, i) => {
-    // Try SYNONYM_MAP with raw word first (preserves accented keys like 'écharpe')
     const synonyms = SYNONYM_MAP.get(word) || SYNONYM_MAP.get(normWords[i]);
     if (synonyms) synonyms.forEach(s => expanded.add(normalizeTerm(s)));
   });
@@ -485,10 +470,6 @@ const PUSH_RATES = { running: 0.8, gym: 0.8, decoration: 0.8, puffer: 0.5, jerse
 const SHUFFLE_SEED = 0xAF2025;
 
 // ─── Shuffle déterministe post-fetch ─────────────────────
-// • Les 20 premières lignes restent en place
-// • Pour les catégories ciblées : X% poussés en fin
-// • Le reste (mainPool) est mélangé entre lui
-// • Le endPool est mélangé entre lui (pas groupé par cat)
 function deterministicShuffle(products) {
   if (products.length <= 40) return products;
 
@@ -499,7 +480,6 @@ function deterministicShuffle(products) {
   const mainPool = [];
   const endPool  = [];
 
-  // Grouper les items des catégories ciblées
   const byCategory = {};
   rest.forEach(p => {
     const cat = (p.article || '').toLowerCase().trim();
@@ -510,7 +490,6 @@ function deterministicShuffle(products) {
     }
   });
 
-  // Pour chaque catégorie ciblée : split déterministe selon le taux
   Object.entries(byCategory).forEach(([cat, items]) => {
     const shuffled  = fisherYates([...items], rng);
     const keepCount = Math.round(items.length * (1 - PUSH_RATES[cat]));
@@ -568,7 +547,6 @@ async function loadProducts() {
 function generateFilterDropdown() {
   filterDropdown.innerHTML = '';
 
-  // Count categories among currently visible products
   const productsInView = currentCollection === 'mixt'
     ? allProducts
     : allProducts.filter(p => p.category === currentCollection);
@@ -579,7 +557,6 @@ function generateFilterDropdown() {
     if (cat) categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
   });
 
-  // ALL button — always visible, resets filters
   const allItem = document.createElement('div');
   allItem.className = 'toolbar__filter-item toolbar__filter-item--all' +
                       (selectedFilters.size === 0 ? ' is-active' : '');
@@ -592,7 +569,6 @@ function generateFilterDropdown() {
   });
   filterDropdown.appendChild(allItem);
 
-  // Only categories with ≥ 5 products
   const validCategories = Object.entries(categoryCounts)
     .filter(([, count]) => count >= 5)
     .map(([cat]) => cat)
@@ -620,7 +596,6 @@ function generateFilterDropdown() {
     filterDropdown.appendChild(div);
   });
 
-  // Filter button toggle (attach only once)
   const filterBtn = document.getElementById('filterBtn');
   if (filterBtn && !filterBtn._eventAttached) {
     filterBtn.addEventListener('click', e => {
@@ -660,21 +635,16 @@ function applyFilters() {
   if (searchQuery) {
     const terms        = expandSearchTerms(searchQuery);
     const normQuery    = normalizeBrand(searchQuery);
-    const queryCompact = normQuery.replace(/\s+/g, '');  // "a.p.c." → "apc"
+    const queryCompact = normQuery.replace(/\s+/g, '');
     filtered = filtered.filter(p => {
       const name         = normalizeTerm(p.name);
       const brand        = normalizeBrand(p.brand);
       const brandCompact = brand.replace(/\s+/g, '');
-      const article      = normalizeTerm(p.article);
-      // Brand match: every query word (≥2 chars) must appear in the normalized brand,
-      // OR compact form matches (handles "A.P.C."→"apc", "Noé Mosen"→"noe mosen" vs "no e mosen")
-      const queryWords = normQuery.split(/\s+/).filter(w => w.length >= 2);
-      const brandMatch = queryWords.length > 0 && (
+      const queryWords   = normQuery.split(/\s+/).filter(w => w.length >= 2);
+      const brandMatch   = queryWords.length > 0 && (
         queryWords.every(w => brand.includes(w)) ||
         (queryCompact.length >= 2 && brandCompact.includes(queryCompact))
       );
-      // Term match: only use terms ≥3 chars against name/article (avoids "e" matching everything)
-      // Brand is handled exclusively by brandMatch above
       const meaningfulTerms = terms.filter(t => t.length >= 3);
       const termMatch = meaningfulTerms.some(t => name.includes(t));
       return brandMatch || termMatch;
@@ -704,7 +674,6 @@ function applyFilters() {
 
 // ─── Render Products ────────────────────────────────────
 function renderProducts(products) {
-  // Tear down any existing sentinel
   infiniteScrollObserver.unobserve(sentinel);
   if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel);
 
@@ -726,13 +695,13 @@ function renderProducts(products) {
 
 // ─── Append Next Batch (infinite scroll) ────────────────
 function appendNextBatch() {
-  const batch     = visibleProducts.slice(displayedCount, displayedCount + PAGE_SIZE);
+  const batch = visibleProducts.slice(displayedCount, displayedCount + PAGE_SIZE);
   if (!batch.length) return;
 
-  const batchStart  = displayedCount;
-  const numColumns  = getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length;
-  const fragment    = document.createDocumentFragment();
-  const newCards    = [];
+  const batchStart = displayedCount;
+  const numColumns = getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length;
+  const fragment   = document.createDocumentFragment();
+  const newCards   = [];
 
   batch.forEach((p, i) => {
     const globalIdx = batchStart + i;
@@ -778,7 +747,6 @@ function appendNextBatch() {
 
   newCards.forEach((el, i) => {
     if (batchStart > 0 && el.getBoundingClientRect().top < window.innerHeight) {
-      // Déjà dans le viewport au moment du chargement — apparaît sans animation
       el.style.transitionDelay = '0ms';
       el.classList.add('is-visible');
     } else {
@@ -787,7 +755,6 @@ function appendNextBatch() {
     if (batchStart + i >= 8) preloadObserver.observe(el);
   });
 
-  // Place sentinel after the grid if more products remain
   if (displayedCount < visibleProducts.length) {
     grid.after(sentinel);
     infiniteScrollObserver.observe(sentinel);
@@ -832,7 +799,7 @@ document.querySelectorAll('a[href="how-to-order.html"]').forEach(el => {
   el.addEventListener('click', () => gaEvent('click_how_to_order'));
 });
 
-// Filtre Men / Women (Mixt ignoré — pas un filtre de genre)
+// Filtre Men / Women
 document.querySelectorAll('.toolbar__collection-item[data-collection="men"], .toolbar__collection-item[data-collection="women"]').forEach(item => {
   item.addEventListener('click', () => {
     gaEvent('click_filter', { gender: item.dataset.collection });
@@ -840,5 +807,4 @@ document.querySelectorAll('.toolbar__collection-item[data-collection="men"], .to
 });
 
 // ─── Init ────────────────────────────────────────────────
-// Délai pour laisser les animations hero se terminer avant de charger les données
 setTimeout(loadProducts, 800);
