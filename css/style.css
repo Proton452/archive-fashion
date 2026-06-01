@@ -765,7 +765,6 @@ a {
   opacity: 1;
 }
 
-/* Archive */
 .hero__title-archive {
   font-family: var(--script);
   font-size: clamp(4rem, 14vw, 18rem);
@@ -806,18 +805,11 @@ a {
   overflow: visible;
 }
 
-.hero__title-archive.hover::before {
-  opacity: 1;
-}
-
+.hero__title-archive.hover::before { opacity: 1; }
 .hero__title-archive.glow::before {
-  text-shadow:
-    0 0 10px rgba(255,100,200,0.5),
-    0 0 20px rgba(200,50,255,0.3),
-    0 0 30px rgba(150,0,255,0.2);
+  text-shadow: 0 0 10px rgba(255,100,200,0.5), 0 0 20px rgba(200,50,255,0.3), 0 0 30px rgba(150,0,255,0.2);
 }
 
-/* FASHION */
 .hero__title-fashion {
   font-family: var(--serif);
   font-size: clamp(3.5rem, 14vw, 17rem);
@@ -859,19 +851,11 @@ a {
   overflow: visible;
 }
 
-.hero__title-fashion.hover::before {
-  opacity: 1;
-}
-
+.hero__title-fashion.hover::before { opacity: 1; }
 .hero__title-fashion.glow::before {
-  text-shadow:
-    0 0 10px rgba(255,100,200,0.5),
-    0 0 20px rgba(200,50,255,0.3),
-    0 0 30px rgba(150,0,255,0.2);
+  text-shadow: 0 0 10px rgba(255,100,200,0.5), 0 0 20px rgba(200,50,255,0.3), 0 0 30px rgba(150,0,255,0.2);
 }
 
-
-/* Hero Subtitle */
 .hero__subtitle {
   font-family: var(--sans);
   font-size: clamp(0.7rem, 1.4vw, 0.88rem);
@@ -901,9 +885,7 @@ a {
   gap: 1rem;
 }
 
-.info-strip__item:last-child {
-  border-right: none;
-}
+.info-strip__item:last-child { border-right: none; }
 
 .info-strip__label {
   font-family: var(--mono);
@@ -956,13 +938,11 @@ a {
   color: #9a9a90;
 }
 
-/* ── Hero Tagline (below hero section) ── */
 .hero__tagline {
   padding: 0 var(--pad-x) 1.5rem;
   margin-top: -2rem;
 }
 
-/* ── Hero Right column ── */
 .hero__right {
   display: flex;
   flex-direction: column;
@@ -981,7 +961,6 @@ a {
   to   { opacity: 1; transform: translateX(-3rem) translateY(0); }
 }
 
-/* ── Hero Subtitle ── */
 .hero__subtitle {
   font-family: var(--sans);
   font-weight: 300;
@@ -993,7 +972,6 @@ a {
   max-width: 700px;
 }
 
-/* ── CTA Strip ── */
 .cta-strip {
   display: flex;
   flex-direction: column;
@@ -1016,9 +994,7 @@ a {
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s, background 0.3s;
 }
 
-.cta-btn:hover {
-  transform: translateY(-2px);
-}
+.cta-btn:hover { transform: translateY(-2px); }
 
 .cta-btn__img {
   width: 44px;
@@ -1029,16 +1005,9 @@ a {
   transform: scale(1.45);
 }
 
-.amp {
-  font-family: var(--sans);
-  font-style: normal;
-}
+.amp { font-family: var(--sans); font-style: normal; }
 
-.cta-btn__icon {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-}
+.cta-btn__icon { width: 44px; height: 44px; flex-shrink: 0; }
 
 .cta-btn__text {
   display: flex;
@@ -1067,29 +1036,22 @@ a {
   white-space: nowrap;
 }
 
-/* float-inner: transform only — carries the float movement so btn + SVG travel together */
 .cta-float-inner {
   position: relative;
   width: 100%;
   animation: ctaFloatMove 2.8s cubic-bezier(0.4, 0, 0.2, 1) 1.4s infinite;
-  /* translate stacks with transform independently — no conflict with the animation */
   translate: 0 0;
   transition: translate 0.35s var(--ease-out);
 }
 
-/* hover sur le bouton (enfant) → hover sur le wrapper → btn + comet montent ensemble */
-.cta-float-inner:hover {
-  translate: 0 -2px;
-}
+.cta-float-inner:hover { translate: 0 -2px; }
 
-/* Sign up — green pill (most important CTA) */
 .cta-btn--signup {
-  position: relative; /* ensures ::before is clipped by overflow:hidden on this element */
+  position: relative;
   background: linear-gradient(135deg, rgba(90,185,140,0.18) 0%, rgba(90,185,140,0.08) 100%);
   border-color: transparent;
   padding: 22px 24px;
   overflow: hidden;
-  /* box-shadow animation stays on the pill-shaped button — not on the wrapper div */
   animation: ctaFloatShadow 2.8s cubic-bezier(0.4, 0, 0.2, 1) 1.4s infinite;
 }
 
@@ -1109,21 +1071,16 @@ a {
 .cta-btn--signup .cta-btn__hint  { color: rgba(168, 223, 196, 0.6); }
 
 .cta-btn--signup:hover {
-  transform: none; /* movement handled by .cta-float-inner via translate property */
+  transform: none;
   background: linear-gradient(135deg, rgba(90,185,140,0.26) 0%, rgba(90,185,140,0.12) 100%);
   border-color: transparent;
 }
 
-/* ── Comet animation — signup button ── */
 .cta-comet-wrap {
   position: relative;
   width: 100%;
-  margin-top: 0.5rem; /* moved here from .cta-btn--signup so SVG positioning is correct */
+  margin-top: 0.5rem;
 }
-
-/*
-  Comet via conic-gradient + @property — zero hard cuts, CSS-native interpolation.
-*/
 
 @property --comet {
   syntax: '<angle>';
@@ -1131,7 +1088,6 @@ a {
   inherits: false;
 }
 
-/* Permanent ghost track — sits flush on the button edge */
 .cta-float-inner::before {
   content: '';
   position: absolute;
@@ -1147,36 +1103,21 @@ a {
   inset: 0;
   border-radius: 100px;
   padding: 2px;
-
   background: conic-gradient(
     from var(--comet) at 50% 50%,
-    transparent              0%,
-    transparent             58%,
-    rgba(66,255,130,.02)    63%,
-    rgba(66,255,130,.06)    67%,
-    rgba(66,255,130,.13)    71%,
-    rgba(66,255,130,.24)    75%,
-    rgba(66,255,130,.41)    79%,
-    rgba(66,255,130,.63)    83%,
-    rgba(66,255,130,.84)    87%,
-    rgba(90,255,148,.93)    89%,
-    rgba(130,255,172,1.0)   91%,
-    rgba(150,255,185,1.0)   93%,  /* pic : mint clair, pas blanc */
-    rgba(110,255,158,.85)   95%,
-    rgba(66,255,130,.40)    97%,
-    rgba(66,255,130,.06)    99%,
-    transparent            100%
+    transparent 0%, transparent 58%,
+    rgba(66,255,130,.02) 63%, rgba(66,255,130,.06) 67%,
+    rgba(66,255,130,.13) 71%, rgba(66,255,130,.24) 75%,
+    rgba(66,255,130,.41) 79%, rgba(66,255,130,.63) 83%,
+    rgba(66,255,130,.84) 87%, rgba(90,255,148,.93) 89%,
+    rgba(130,255,172,1.0) 91%, rgba(150,255,185,1.0) 93%,
+    rgba(110,255,158,.85) 95%, rgba(66,255,130,.40) 97%,
+    rgba(66,255,130,.06) 99%, transparent 100%
   );
-
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
-
   pointer-events: none;
   filter:
     drop-shadow(0 0 2px rgba(240,255,248,1.0))
@@ -1187,11 +1128,8 @@ a {
   animation: comet-spin 3s linear 1.4s infinite;
 }
 
-@keyframes comet-spin {
-  to { --comet: 360deg; }
-}
+@keyframes comet-spin { to { --comet: 360deg; } }
 
-/* Discord — blue pill */
 .cta-btn--discord {
   margin-top: 2.5rem;
   padding: 15px 24px;
@@ -1208,14 +1146,12 @@ a {
   box-shadow: inset 0 0 0 1px rgba(88, 101, 242, 0.55), 0 0 24px rgba(88,101,242,0.15), 0 8px 24px rgba(0,0,0,0.3);
 }
 
-/* transform only — drives .cta-float-inner so btn + SVG move as one */
 @keyframes ctaFloatMove {
-  0%, 100% { transform: translateY(0)    scale(1);     }
+  0%, 100% { transform: translateY(0) scale(1); }
   45%       { transform: translateY(-10px) scale(1.025); }
-  65%       { transform: translateY(-7px)  scale(1.015); }
+  65%       { transform: translateY(-7px) scale(1.015); }
 }
 
-/* box-shadow only — stays on the pill button for correct glow shape */
 @keyframes ctaFloatShadow {
   0%, 100% { box-shadow: 0 4px 20px rgba(90,185,140,0.08); }
   45%       { box-shadow: 0 18px 45px rgba(90,185,140,0.28), 0 0 25px rgba(90,185,140,0.15); }
@@ -1223,18 +1159,9 @@ a {
 }
 
 @keyframes ctaFloat {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    box-shadow: 0 4px 20px rgba(90,185,140,0.08);
-  }
-  45% {
-    transform: translateY(-10px) scale(1.025);
-    box-shadow: 0 18px 45px rgba(90,185,140,0.28), 0 0 25px rgba(90,185,140,0.15);
-  }
-  65% {
-    transform: translateY(-7px) scale(1.015);
-    box-shadow: 0 12px 30px rgba(90,185,140,0.18);
-  }
+  0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 4px 20px rgba(90,185,140,0.08); }
+  45% { transform: translateY(-10px) scale(1.025); box-shadow: 0 18px 45px rgba(90,185,140,0.28), 0 0 25px rgba(90,185,140,0.15); }
+  65% { transform: translateY(-7px) scale(1.015); box-shadow: 0 12px 30px rgba(90,185,140,0.18); }
 }
 
 @keyframes ctaShimmer {
@@ -1243,11 +1170,7 @@ a {
   50%, 100% { left: 160%; opacity: 0; }
 }
 
-
-
-.hero__line {
-  display: block;
-}
+.hero__line { display: block; }
 
 .hero__line--serif {
   font-family: var(--serif);
@@ -1280,7 +1203,6 @@ a {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--text-muted);
-  /* Annule le text-fill transparent hérité du parent */
   -webkit-text-fill-color: var(--text-muted);
 }
 
@@ -1298,10 +1220,7 @@ a {
   transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
-.hero__scroll.is-hidden {
-  opacity: 0;
-  visibility: hidden;
-}
+.hero__scroll.is-hidden { opacity: 0; visibility: hidden; }
 
 .hero__scroll-label {
   font-family: var(--mono);
@@ -1328,14 +1247,8 @@ a {
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Collection --- */
@@ -1368,9 +1281,7 @@ a {
   50%       { opacity: 0; }
 }
 
-.loading__dots {
-  animation: blink 1.4s step-end infinite;
-}
+.loading__dots { animation: blink 1.4s step-end infinite; }
 
 /* --- Product Card --- */
 .product-card {
@@ -1383,15 +1294,17 @@ a {
   transition: background 0.35s var(--ease-out);
 }
 
-.product-card:hover {
-  background: var(--bg-card);
-}
+.product-card:hover { background: var(--bg-card); }
 
+/* ↓↓↓ MODIFIÉ — image à 80% centrée avec fond blanc ↓↓↓ */
 .product-card__image {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   position: relative;
   background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-card__image::after {
@@ -1402,8 +1315,8 @@ a {
 }
 
 .product-card__image img {
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 80%;
   object-fit: contain;
   transition: transform 0.7s var(--ease-out);
   mix-blend-mode: multiply;
@@ -1413,6 +1326,7 @@ a {
 .product-card:hover .product-card__image img {
   transform: scale(1.04);
 }
+/* ↑↑↑ FIN MODIFICATION ↑↑↑ */
 
 .product-card__image-placeholder {
   width: 100%;
@@ -1432,9 +1346,7 @@ a {
   transition: border-color 0.3s;
 }
 
-.product-card:hover .product-card__info {
-  border-color: var(--accent);
-}
+.product-card:hover .product-card__info { border-color: var(--accent); }
 
 .product-card__name {
   font-family: var(--sans);
@@ -1457,24 +1369,17 @@ a {
   color: var(--text-muted);
 }
 
-/* --- Fade In (IntersectionObserver — premier batch) --- */
+/* --- Fade In --- */
 .fade-in {
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
 }
 
-.fade-in.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
+.fade-in.is-visible { opacity: 1; transform: translateY(0); }
 
 /* --- Infinite Scroll Sentinel --- */
-.products-sentinel {
-  height: 1px;
-  pointer-events: none;
-}
+.products-sentinel { height: 1px; pointer-events: none; }
 
 /* --- Footer --- */
 .footer {
@@ -1546,55 +1451,24 @@ a {
   transition: opacity 0.3s var(--ease-out), visibility 0.3s, transform 0.3s var(--ease-out), border-color 0.2s, color 0.2s;
 }
 
-.back-to-top.is-visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.back-to-top:hover {
-  border-color: rgba(255,255,255,0.22);
-  color: var(--text);
-}
+.back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+.back-to-top:hover { border-color: rgba(255,255,255,0.22); color: var(--text); }
 
 /* --- Responsive --- */
 @media (max-width: 1200px) {
-  .collection__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  .collection__grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* ─── Tablette uniquement (769px – 1024px) ─────────────────────────── */
 @media (min-width: 769px) and (max-width: 1024px) {
-
-  /* Animation dédiée tablette : pas de translateX permanent (évite le conflit
-     avec position:absolute + translateY(-50%) des boutons) */
   @keyframes fadeInRightTablet {
     from { opacity: 0; transform: translateY(calc(-50% + 1.5rem)); }
     to   { opacity: 1; transform: translateY(-50%); }
   }
 
-  /* 1. Hero plein écran → toolbar cachée au chargement, visible au scroll
-     overflow:hidden rogne les boutons absolus dépassant à droite
-     (position:fixed non affecté car .hero n'a pas de transform) */
-  .hero {
-    min-height: 100dvh;
-    overflow: hidden;
-    padding-bottom: 6rem;
-  }
+  .hero { min-height: 100dvh; overflow: hidden; padding-bottom: 6rem; }
+  .hero__inner { gap: 0; }
+  .hero__logo { width: clamp(300px, 58vw, 620px); }
 
-  /* 2. hero__inner : sans position relative → les boutons se positionnent
-     par rapport à .hero (plein viewport), pas à .hero__inner (inset pad-x) */
-  .hero__inner {
-    gap: 0;
-  }
-
-  /* 3. Logo grand — les boutons peuvent le chevaucher */
-  .hero__logo {
-    width: clamp(300px, 58vw, 620px);
-  }
-
-  /* 4. Boutons à droite — largeur réduite pour coller au contenu */
   .hero__right {
     position: absolute;
     right: 2rem;
@@ -1604,8 +1478,6 @@ a {
     animation: fadeInRightTablet 0.8s var(--ease-out) 0.4s both;
   }
 
-  /* 5. Description tirée dans le hero (height:0 + translateY, comme sur mobile)
-     → visible en bas du hero, toolbar reste hors-écran */
   .hero__tagline {
     position: relative;
     height: 0;
@@ -1616,40 +1488,17 @@ a {
     transform: translateY(-7rem);
   }
 
-  /* 6. Sous-titre des boutons : une seule ligne, font réduit pour tenir */
-  .cta-btn__hint {
-    white-space: nowrap;
-    font-size: 7.5px;
-    letter-spacing: 0.05em;
-    line-height: 1;
-  }
-
-  /* 7. Label bouton légèrement compact */
-  .cta-btn__label {
-    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-  }
-
-  /* 8. Padding boutons compact + gap interne réduit */
-  .cta-btn {
-    gap: 12px;
-  }
-  .cta-btn--signup {
-    padding: 10px 14px;
-  }
-  .cta-btn--discord {
-    padding: 10px 14px;
-  }
-
-  /* 9. Espace entre les deux boutons */
-  .cta-strip {
-    gap: 2.4rem;
-  }
+  .cta-btn__hint { white-space: nowrap; font-size: 7.5px; letter-spacing: 0.05em; line-height: 1; }
+  .cta-btn__label { font-size: clamp(0.9rem, 1.2vw, 1.1rem); }
+  .cta-btn { gap: 12px; }
+  .cta-btn--signup { padding: 10px 14px; }
+  .cta-btn--discord { padding: 10px 14px; }
+  .cta-strip { gap: 2.4rem; }
 }
 
 @media (max-width: 768px) {
   :root { --nav-h: 56px; }
 
-  /* Hero section — plein écran pour cacher la toolbar au chargement */
   .hero {
     padding-left: var(--pad-x);
     padding-bottom: 4.5rem;
@@ -1657,13 +1506,8 @@ a {
     background: linear-gradient(to bottom, rgba(26, 92, 71, 0.22) 0%, transparent 28%);
   }
 
-  .hero__inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
+  .hero__inner { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 
-  /* Boutons centrés */
   .hero__right {
     align-self: center;
     width: min(85vw, 360px);
@@ -1671,44 +1515,14 @@ a {
     animation: fadeInUp 0.8s var(--ease-out) 0.4s both;
   }
 
-  .cta-strip {
-    gap: 1.5rem;
-    align-items: center;
-    width: 100%;
-  }
+  .cta-strip { gap: 1.5rem; align-items: center; width: 100%; }
+  .cta-btn--discord { margin-top: 0; }
+  .cta-btn__hint { font-size: 9px; white-space: nowrap; line-height: 1; }
+  .cta-btn--signup { padding: 16px 18px; }
+  .cta-btn--discord { padding: 12px 18px; }
+  .cta-btn__img { width: 36px; height: 36px; }
+  .cta-btn--discord .cta-btn__icon { width: 28px; height: 28px; }
 
-  .cta-btn--discord {
-    margin-top: 0;
-  }
-
-  /* Sous-texte lovegobuy : tenir sur une seule ligne */
-  .cta-btn__hint {
-    font-size: 9px;
-    white-space: nowrap;
-    line-height: 1;
-  }
-
-  /* Boutons légèrement réduits pour cohérence */
-  .cta-btn--signup {
-    padding: 16px 18px;
-  }
-
-  .cta-btn--discord {
-    padding: 12px 18px;
-  }
-
-  .cta-btn__img {
-    width: 36px;
-    height: 36px;
-  }
-
-  .cta-btn--discord .cta-btn__icon {
-    width: 28px;
-    height: 28px;
-  }
-
-  /* Mini text : dans le flux (height:0 pour ne pas pousser la toolbar),
-     affiché via overflow:visible et remonté par transform */
   .hero__tagline {
     position: relative;
     height: 0;
@@ -1722,199 +1536,50 @@ a {
     justify-content: center;
   }
 
-  .hero__tagline .hero__subtitle {
-    text-align: left;
-    max-width: 85vw;
-  }
-
-  /* Scroll indicator : un peu plus bas sur mobile */
-  .hero__scroll {
-    bottom: 1rem;
-  }
+  .hero__tagline .hero__subtitle { text-align: left; max-width: 85vw; }
+  .hero__scroll { bottom: 1rem; }
 }
 
-/* ─── Tablette : scroll indicator aligné avec la description ─── */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .hero__scroll {
-    bottom: 4rem;
-  }
+  .hero__scroll { bottom: 4rem; }
 }
 
 @media (max-width: 768px) {
-  .hero__logo {
-    width: clamp(220px, 80vw, 420px);
-  }
+  .hero__logo { width: clamp(220px, 80vw, 420px); }
 
-  .info-strip {
-    grid-template-columns: 1fr;
-  }
+  .info-strip { grid-template-columns: 1fr; }
+  .info-strip__item { border-right: none; border-bottom: 1px solid var(--border); padding: 1.75rem 24px; }
+  .info-strip__item:last-child { border-bottom: none; }
 
-  .info-strip__item {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    padding: 1.75rem 24px;
-  }
+  .nav { padding: 0 0.75rem; gap: 0.3rem; }
+  .nav__actions { gap: 0.2rem; }
+  .nav__link { font-size: 8px; padding: 4px 6px; letter-spacing: 0; gap: 3px; }
+  .nav__lovego-icon { width: 14px; height: 14px; }
+  .nav__link--discord span { display: none; }
+  .nav__discord-icon { width: 16px; height: 13px; }
 
-  .info-strip__item:last-child {
-    border-bottom: none;
-  }
+  .toolbar { flex-wrap: wrap; gap: 10px; padding: 14px 16px 8px; }
+  .toolbar__collection-wrapper { flex-basis: calc(50% - 5px); }
+  .toolbar__collection-btn { width: 100%; justify-content: space-between; padding: 8px 12px; font-size: 11px; }
+  .toolbar__filter-wrapper { flex-basis: calc(50% - 5px); }
+  .toolbar__filter-btn { width: 100%; justify-content: center; padding: 8px 12px; font-size: 11px; }
+  .toolbar__search-wrapper { flex-basis: calc(50% - 5px); max-width: none; }
+  .toolbar__search { font-size: 12px; padding: 8px 14px 8px 36px; }
+  .toolbar__search-icon { width: 14px; height: 14px; left: 10px; }
+  .toolbar__sort { flex-basis: calc(50% - 5px); justify-content: center; padding: 8px 10px; font-size: 11px; }
+  .toolbar__search { font-size: 16px; }
 
-  .hero__title-wrapper {
-    padding: 20px;
-  }
-
-  .hero__info {
-    max-width: 100%;
-  }
-
-  .hero__title {
-    gap: 8px;
-  }
-
-  .hero__title-text {
-    font-size: clamp(1.8rem, 8vw, 5rem);
-  }
-
-  .nav {
-    padding: 0 0.75rem;
-    gap: 0.3rem;
-  }
-
-  .nav__actions {
-    gap: 0.2rem;
-  }
-
-  .nav__link {
-    font-size: 8px;
-    padding: 4px 6px;
-    letter-spacing: 0;
-    gap: 3px;
-  }
-
-  .nav__lovego-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  /* Discord : icône seule sur mobile */
-  .nav__link--discord span {
-    display: none;
-  }
-
-  .nav__discord-icon {
-    width: 16px;
-    height: 13px;
-  }
-
-  .toolbar {
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 14px 16px 8px;
-  }
-
-  .toolbar__collection-wrapper {
-    flex-basis: calc(50% - 5px);
-  }
-
-  .toolbar__collection-btn {
-    width: 100%;
-    justify-content: space-between;
-    padding: 8px 12px;
-    font-size: 11px;
-  }
-
-  .toolbar__filter-wrapper {
-    flex-basis: calc(50% - 5px);
-  }
-
-  .toolbar__filter-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 8px 12px;
-    font-size: 11px;
-  }
-
-  .toolbar__search-wrapper {
-    flex-basis: calc(50% - 5px);
-    max-width: none;
-  }
-
-  .toolbar__search {
-    font-size: 12px;
-    padding: 8px 14px 8px 36px;
-  }
-
-  .toolbar__search-icon {
-    width: 14px;
-    height: 14px;
-    left: 10px;
-  }
-
-  .toolbar__sort {
-    flex-basis: calc(50% - 5px);
-    justify-content: center;
-    padding: 8px 10px;
-    font-size: 11px;
-  }
-
-  /* Anti-zoom iOS sur l'input de recherche */
-  .toolbar__search {
-    font-size: 16px;
-  }
-
-  .collection {
-    padding: 3rem var(--pad-x) 7rem;
-  }
-
-  .collection__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .collection { padding: 3rem var(--pad-x) 7rem; }
+  .collection__grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 480px) {
-  .toolbar {
-    padding: 10px 12px 6px;
-    gap: 6px;
-  }
-
-  .toolbar__collection-btn {
-    flex-basis: calc(50% - 3px);
-    padding: 6px 10px;
-    font-size: 10px;
-  }
-
-  .toolbar__filter-btn {
-    flex-basis: calc(50% - 3px);
-    font-size: 10px;
-    padding: 6px 10px;
-  }
-
-  /* Search + euro sur la même ligne */
-  .toolbar__search-wrapper {
-    flex: 1;
-    margin-top: 2px;
-  }
-
-  .toolbar__search {
-    font-size: 16px; /* anti-zoom iOS */
-    padding: 6px 12px 6px 32px;
-  }
-
-  .toolbar__search-icon {
-    width: 12px;
-    height: 12px;
-    left: 8px;
-  }
-
-  .toolbar__sort {
-    flex-basis: auto;
-    justify-content: center;
-    margin-top: 2px;
-    font-size: 10px;
-    padding: 6px 10px;
-  }
-
-  .collection__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .toolbar { padding: 10px 12px 6px; gap: 6px; }
+  .toolbar__collection-btn { flex-basis: calc(50% - 3px); padding: 6px 10px; font-size: 10px; }
+  .toolbar__filter-btn { flex-basis: calc(50% - 3px); font-size: 10px; padding: 6px 10px; }
+  .toolbar__search-wrapper { flex: 1; margin-top: 2px; }
+  .toolbar__search { font-size: 16px; padding: 6px 12px 6px 32px; }
+  .toolbar__search-icon { width: 12px; height: 12px; left: 8px; }
+  .toolbar__sort { flex-basis: auto; justify-content: center; margin-top: 2px; font-size: 10px; padding: 6px 10px; }
+  .collection__grid { grid-template-columns: repeat(2, 1fr); }
 }
