@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Capture thumbnails</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f5f5f5; }
+    h2 { margin-bottom: 1rem; }
+    .status { margin: 0.5rem 0; font-size: 0.9rem; color: #555; }
+    .done { color: green; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Extraction des thumbnails — ne ferme pas cette page</h2>
+  <div id="log"></div>
+  <script>
+    const clips = [
+      { src: 'assets/2.mp4',  name: 'thumb-2.jpg',  time: 1   },
+      { src: 'assets/8.mp4',  name: 'thumb-8.jpg',  time: 0.5 },
+      { src: 'assets/7.mp4',  name: 'thumb-7.jpg',  time: 2   },
+      { src: 'assets/6.mp4',  name: 'thumb-6.jpg',  time: 0.5 },
+    ];
+
+    const log = document.getElementById('log');
+
+    function capture({ src, name, time }) {
+      return new Promise(resolve => {
+        const p = document.createElement('p');
+        p.className = 'status';
+        p.textContent = `⏳ ${name} …`;
+        log.appendChild(p);
+
+        const video = document.createElement('video');
+        video.src = src;
+        video.muted = true;
+        video.style.cssText = 'position:fixed;opacity:0;pointer-events:none;width:1px;height:1px';
+        document.body.appendChild(video);
+
+        video.addEventListener('loadeddata', () => { video.currentTime = time; }, { once: true });
+        video.addEventListener('seeked', () => {
+          const canvas = document.createElement('canvas');
+          canvas.width  = video.videoWidth;
+          canvas.height = video.videoHeight;
+          canvas.getContext('2d').drawImage(video, 0, 0);
+          const a = document.createElement('a');
+          a.href     = canvas.toDataURL('image/jpeg', 0.92);
+          a.download = name;
+          a.click();
+          document.body.removeChild(video);
+          p.className = 'status done';
+          p.textContent = `✓ ${name} téléchargé`;
+          resolve();
+        }, { once: true });
+
+        video.load();
+      });
+    }
+
+    (async () => {
+      for (const clip of clips) await capture(clip);
+      const done = document.createElement('p');
+      done.style.cssText = 'margin-top:1rem;font-weight:bold;color:green;font-size:1.1rem';
+      done.textContent = '✅ Tout est téléchargé. Mets les 4 fichiers dans le dossier assets/ puis ferme cette page.';
+      log.appendChild(done);
+    })();
+  </script>
+</body>
+</html>

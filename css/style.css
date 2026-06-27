@@ -967,6 +967,35 @@ a { text-decoration: none; color: inherit; }
 
 .review-card__photo--video { position: relative; cursor: pointer; }
 
+.review-card__photo--yt {
+  background-size: cover;
+  background-position: center top;
+  cursor: pointer;
+  position: relative;
+}
+
+.review-card__photo--yt iframe {
+  position: absolute;
+  width: 178%;
+  height: 178%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.review-card__photo--yt.is-playing iframe {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.review-card__photo--yt.is-playing .review-card__play {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .review-card__play {
   position: absolute;
   inset: 0;

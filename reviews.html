@@ -65,7 +65,7 @@
           <div class="reviews__track" id="reviewsTrack">
 
           <div class="review-card">
-            <div class="review-card__photo review-card__photo--video"><video src="assets/2.mp4" class="review-card__video" muted playsinline preload="none"></video><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
+            <div class="review-card__photo review-card__photo--yt" data-ytid="v_tCgQkSSd4" style="background-image:url('https://archivefashion.b-cdn.net/archive-fashion/2_00-00-03.png')"><iframe frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
             <div class="review-card__stars">★★★★★</div>
             <p class="review-card__text">"Wasn't sure at first but gave it a shot. Jersey came exactly as described, packaging was solid. Takes a few weeks but nothing crazy. Will be ordering again for sure."</p>
             <div class="review-card__author">
@@ -75,7 +75,7 @@
           </div>
 
           <div class="review-card">
-            <div class="review-card__photo review-card__photo--video"><video src="assets/8.mp4" class="review-card__video" muted playsinline preload="none"></video><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
+            <div class="review-card__photo review-card__photo--yt" data-ytid="MD5PsrTYzSQ" style="background-image:url('https://archivefashion.b-cdn.net/archive-fashion/8_00-00-05%20(1).png')"><iframe frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
             <div class="review-card__stars">★★★★★</div>
             <p class="review-card__text">"Got the 500€ bonus when I signed up, used it straight on shipping. Netherlands jersey looks great, bought one for my brother too. Really good experience overall."</p>
             <div class="review-card__author">
@@ -85,7 +85,7 @@
           </div>
 
           <div class="review-card">
-            <div class="review-card__photo review-card__photo--video"><video src="assets/7.mp4" class="review-card__video" muted playsinline preload="none"></video><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
+            <div class="review-card__photo review-card__photo--yt" data-ytid="h7c01oGAOKU" style="background-image:url('https://archivefashion.b-cdn.net/archive-fashion/7_00-00-08.png')"><iframe frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
             <div class="review-card__stars">★★★★<span class="review-card__star-empty">★</span></div>
             <p class="review-card__text">"Ordered 3 OM jerseys, the quality is really good but the shipping was more expensive than I expected. Didn't realize you really need to go above 1kg to make it worth it. Next order I'll add more items for sure."</p>
             <div class="review-card__author">
@@ -95,7 +95,7 @@
           </div>
 
           <div class="review-card">
-            <div class="review-card__photo review-card__photo--video"><video src="assets/6.mp4" class="review-card__video" muted playsinline preload="none"></video><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
+            <div class="review-card__photo review-card__photo--yt" data-ytid="fX9PVVM6BoQ" style="background-image:url('https://archivefashion.b-cdn.net/archive-fashion/6_00-00-07.png')"><iframe frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
             <div class="review-card__stars">★★★★<span class="review-card__star-empty">★</span></div>
             <p class="review-card__text">"Ordered a puffer and two tops. One tip: don't order just one item, at 10€/kg the shipping makes way more sense when you bulk it up. Happy with everything, arrived well packaged."</p>
             <div class="review-card__author">
@@ -182,27 +182,17 @@
   <script src="js/nav.js"></script>
   <script>
     document.addEventListener('click', e => {
-      const wrapper = e.target.closest('.review-card__photo--video');
-      if (!wrapper) return;
-      const video = wrapper.querySelector('video');
-      if (video.paused) {
-        document.querySelectorAll('.review-card__photo--video.is-playing').forEach(w => {
-          w.querySelector('video').pause();
-          w.classList.remove('is-playing');
-        });
-        video.play();
-        wrapper.classList.add('is-playing');
-      } else {
-        video.pause();
-        wrapper.classList.remove('is-playing');
-      }
+      const wrapper = e.target.closest('.review-card__photo--yt');
+      if (!wrapper || wrapper.classList.contains('is-playing')) return;
+      document.querySelectorAll('.review-card__photo--yt.is-playing').forEach(w => {
+        w.querySelector('iframe').src = '';
+        w.classList.remove('is-playing');
+      });
+      const iframe = wrapper.querySelector('iframe');
+      const ytid = wrapper.dataset.ytid;
+      iframe.src = `https://www.youtube.com/embed/${ytid}?controls=0&rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`;
+      wrapper.classList.add('is-playing');
     });
-
-    document.addEventListener('ended', e => {
-      if (!e.target.classList.contains('review-card__video')) return;
-      const wrapper = e.target.closest('.review-card__photo--video');
-      if (wrapper) wrapper.classList.remove('is-playing');
-    }, true);
 
     const track    = document.getElementById('reviewsTrack');
     const prevBtn  = document.getElementById('reviewsPrev');
@@ -283,40 +273,6 @@
       moveTo(dx < 0 ? idx + 1 : idx - 1, true);
     });
 
-    // Pause auto quand la section reviews sort du viewport
-    new IntersectionObserver(entries => {
-      if (!entries[0].isIntersecting) {
-        document.querySelectorAll('.review-card__photo--video.is-playing').forEach(w => {
-          w.querySelector('video').pause();
-          w.classList.remove('is-playing');
-        });
-      }
-    }, { threshold: 0.1 }).observe(document.getElementById('reviews'));
-
-    // Miniatures statiques via canvas — identiques sur originaux et clones, zéro flash
-    function capturePoster(src, time) {
-      const tmp = document.createElement('video');
-      tmp.muted = true;
-      tmp.src = src;
-      tmp.style.cssText = 'position:fixed;opacity:0;pointer-events:none;width:1px;height:1px';
-      document.body.appendChild(tmp);
-      tmp.addEventListener('loadeddata', () => { tmp.currentTime = time; }, { once: true });
-      tmp.addEventListener('seeked', () => {
-        const c = document.createElement('canvas');
-        c.width = tmp.videoWidth;
-        c.height = tmp.videoHeight;
-        c.getContext('2d').drawImage(tmp, 0, 0);
-        const poster = c.toDataURL('image/jpeg', 0.85);
-        document.querySelectorAll(`.review-card__video[src="${src}"]`).forEach(v => { v.poster = poster; });
-        document.body.removeChild(tmp);
-      }, { once: true });
-      tmp.load();
-    }
-
-    capturePoster('assets/2.mp4', 1);
-    capturePoster('assets/8.mp4', 0.5);
-    capturePoster('assets/7.mp4', 2);
-    capturePoster('assets/6.mp4', 0.5);
-</script>
+  </script>
 </body>
 </html>
