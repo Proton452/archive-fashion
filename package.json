@@ -1,0 +1,16 @@
+{
+  "name": "archive-fashion",
+  "version": "1.0.0",
+  "description": "Archive Fashion - The best archive and trending finds, all in one place",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static HTML project - no build needed'"
+  },
+  "keywords": ["fashion", "archive", "catalog"],
+  "author": "Archive Fashion",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  }
+}
