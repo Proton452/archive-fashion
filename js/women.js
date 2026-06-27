@@ -494,7 +494,16 @@ function appendNextBatch() {
       card.rel    = 'noopener noreferrer';
     }
 
-    card.addEventListener('click', () => {
+    let _touchY = 0, _scrolled = false;
+    card.addEventListener('touchstart', e => {
+      _touchY = e.touches[0].clientY;
+      _scrolled = false;
+    }, { passive: true });
+    card.addEventListener('touchmove', e => {
+      if (Math.abs(e.touches[0].clientY - _touchY) > 8) _scrolled = true;
+    }, { passive: true });
+    card.addEventListener('click', e => {
+      if (_scrolled) { e.preventDefault(); return; }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
     });
 
