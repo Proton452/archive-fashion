@@ -40,6 +40,17 @@ const filterDropdown = document.getElementById('filterDropdown');
 const sortBtn     = document.getElementById('sortBtn');
 const backToTop   = document.getElementById('backToTop');
 
+// ─── Global touch-scroll detection (mobile tap vs scroll) ───
+let _docTouchY = 0;
+let _docScrolled = false;
+document.addEventListener('touchstart', e => {
+  _docTouchY = e.touches[0].clientY;
+  _docScrolled = false;
+}, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (Math.abs(e.touches[0].clientY - _docTouchY) > 8) _docScrolled = true;
+}, { passive: true });
+
 // ─── Navbar scroll + back to top ────────────────
 window.addEventListener('scroll', () => {
   nav.classList.toggle('is-scrolled', window.scrollY > 20);
@@ -612,16 +623,8 @@ function appendNextBatch() {
       card.rel    = 'noopener noreferrer';
     }
 
-    let _touchY = 0, _scrolled = false;
-    card.addEventListener('touchstart', e => {
-      _touchY = e.touches[0].clientY;
-      _scrolled = false;
-    }, { passive: true });
-    card.addEventListener('touchmove', e => {
-      if (Math.abs(e.touches[0].clientY - _touchY) > 8) _scrolled = true;
-    }, { passive: true });
     card.addEventListener('click', e => {
-      if (_scrolled) { e.preventDefault(); return; }
+      if (_docScrolled) { e.preventDefault(); return; }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
     });
 
