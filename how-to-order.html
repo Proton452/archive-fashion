@@ -3,742 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Archive Fashion</title>
-  <link rel="icon" type="image/png" href="logo vv5.png">
+  <title>How to Order | Lovegobuy Finds</title>
+  <meta name="description" content="Step-by-step guide: how to order football jerseys and trending clothes from China via Lovegobuy Finds. Sign up and get 500€ bonus.">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://res.cloudinary.com">
-  <link rel="preconnect" href="https://lh3.googleusercontent.com">
-  <link rel="preconnect" href="https://drive.google.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    /* ── Page layout ── */
-    .guide {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: calc(var(--nav-h) + 5rem) var(--pad-x) 4.5rem;
-    }
-
-    /* ── Header ── */
-    .guide__eyebrow {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-    }
-
-    .guide__title {
-      font-family: var(--serif);
-      font-size: clamp(2.8rem, 7vw, 5rem);
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1;
-      color: var(--text);
-      margin-bottom: 2.5rem;
-    }
-
-    /* ── Divider ── */
-    .guide__divider {
-      width: 40px;
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 2rem;
-    }
-
-    /* ── Section: What is ── */
-    .guide__section {
-      margin-bottom: 5rem;
-    }
-
-    .guide__section-label {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 1.25rem;
-    }
-
-    .guide__section-title {
-      font-family: var(--serif);
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 1.25rem;
-      letter-spacing: 0.01em;
-    }
-
-    .guide__text {
-      font-family: var(--sans);
-      font-size: 0.88rem;
-      font-weight: 300;
-      line-height: 1.85;
-      color: #aaa;
-      max-width: 640px;
-    }
-
-    .guide__text strong {
-      color: var(--text);
-      font-weight: 400;
-    }
-
-    /* ── Steps ── */
-    .guide__steps {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .guide__step {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 0 1.25rem;
-      padding: 2.25rem 0;
-      border-top: 1px solid var(--border);
-      position: relative;
-    }
-
-    .guide__step:last-child {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .guide__step-number {
-      font-family: var(--serif);
-      font-size: 2.4rem;
-      font-weight: 300;
-      font-style: italic;
-      color: #2a2a2a;
-      line-height: 1;
-      padding-top: 2px;
-      user-select: none;
-    }
-
-    .guide__step-body {}
-
-    .guide__step-title {
-      font-family: var(--sans);
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text);
-      margin-bottom: 0.75rem;
-    }
-
-    .guide__step-text {
-      font-family: var(--sans);
-      font-size: 0.85rem;
-      font-weight: 300;
-      line-height: 1.85;
-      color: #aaa;
-    }
-
-    .guide__step-text strong {
-      color: var(--text);
-      font-weight: 400;
-    }
-
-    .guide__step-tip {
-      display: inline-flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      margin-top: 0.85rem;
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: #666;
-      line-height: 1.6;
-    }
-
-    .guide__step-tip::before {
-      content: '→';
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .guide__inline-link {
-      color: #4ade80;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: rgba(74, 222, 128, 0.35);
-      transition: text-decoration-color 0.2s;
-    }
-
-    .guide__inline-link:hover {
-      text-decoration-color: rgba(74, 222, 128, 0.8);
-    }
-
-    .guide__eyebrow-link {
-      color: inherit;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: rgba(136, 136, 136, 0.3);
-      transition: text-decoration-color 0.2s, color 0.2s;
-    }
-
-    .guide__eyebrow-link:hover {
-      color: var(--text);
-      text-decoration-color: rgba(240, 237, 232, 0.4);
-    }
-
-    .guide__section:last-of-type {
-      margin-bottom: 0;
-    }
-
-    /* ── CTA ── */
-    .guide__cta {
-      margin-top: 4.5rem;
-      padding-top: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .guide__cta-text {
-      font-family: var(--serif);
-      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-      font-weight: 300;
-      font-style: italic;
-      color: var(--text);
-    }
-
-    .guide__cta-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .guide__cta-link {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 10px 18px;
-      border: 1px solid #4a4a4a;
-      color: #8a8280;
-      transition: all 0.25s var(--ease-out);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .guide__cta-link:hover {
-      border-color: rgba(255,255,255,0.3);
-      color: #fff;
-      transform: translateY(-2px);
-    }
-
-    .guide__cta-link--green {
-      border-color: rgba(74, 222, 128, 0.27);
-      color: #4ade80;
-    }
-    .guide__cta-link--green:hover {
-      border-color: rgba(74, 222, 128, 0.5);
-      color: #6fe89a;
-      background: rgba(74, 222, 128, 0.06);
-    }
-
-    .guide__cta-link--discord {
-      border-color: rgba(88, 101, 242, 0.27);
-      color: #8b93f8;
-    }
-    .guide__cta-link--discord:hover {
-      border-color: rgba(88, 101, 242, 0.5);
-      color: #8b93f8;
-      background: rgba(88, 101, 242, 0.06);
-    }
-
-    /* ── Entrance animations ── */
-    @keyframes guideIn {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .guide__eyebrow  { animation: guideIn 0.6s var(--ease-out) 0.05s both; }
-    .guide__title    { animation: guideIn 0.7s var(--ease-out) 0.15s both; }
-    .guide__divider  { animation: guideIn 0.6s var(--ease-out) 0.25s both; }
-    .guide__section:nth-of-type(1) { animation: guideIn 0.7s var(--ease-out) 0.30s both; }
-    .guide__section:nth-of-type(2) { animation: guideIn 0.7s var(--ease-out) 0.40s both; }
-    .guide__section:nth-of-type(3) { animation: guideIn 0.7s var(--ease-out) 0.50s both; }
-    .guide__cta      { animation: guideIn 0.7s var(--ease-out) 0.5s both; }
-
-    /* ── Size Guide ── */
-    .guide__size-intro {
-      margin-bottom: 2.5rem;
-    }
-
-    .guide__size-block {
-      margin-bottom: 2rem;
-    }
-
-    .guide__size-block-label {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #555;
-      margin-bottom: 0.6rem;
-    }
-
-    .guide__size-block-text {
-      font-family: var(--sans);
-      font-size: 0.85rem;
-      font-weight: 300;
-      line-height: 1.85;
-      color: #aaa;
-    }
-
-    .guide__size-block-text strong {
-      color: var(--text);
-      font-weight: 400;
-    }
-
-    .guide__size-tips {
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-      margin-top: 0.25rem;
-    }
-
-    .guide__size-tip {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: #666;
-      line-height: 1.5;
-    }
-
-    .guide__size-tip::before {
-      content: '→';
-      flex-shrink: 0;
-      color: #444;
-      margin-top: 1px;
-    }
-
-    /* Table axes labels */
-    .guide__table-axes {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 0.5rem;
-    }
-    .guide__table-axis {
-      font-family: var(--mono);
-      font-size: 0.58rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: #555;
-    }
-
-    /* Table */
-    .guide__table-wrap {
-      margin: 0 0 2rem;
-      border: 1px solid #222;
-    }
-
-    .guide__size-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.03em;
-      table-layout: fixed;
-    }
-
-    /* Header */
-    .guide__size-table thead tr {
-      background: #0e0e0e;
-      border-bottom: 1px solid #2a2a2a;
-    }
-
-    .guide__size-table th {
-      padding: 11px 4px;
-      text-align: center;
-      color: #888;
-      font-weight: 400;
-      white-space: nowrap;
-      letter-spacing: 0.05em;
-    }
-
-    .guide__size-table th:first-child {
-      text-align: left;
-      padding-left: 14px;
-      width: 52px;
-      border-right: 1px solid #222;
-      color: #666;
-    }
-
-    /* Body rows */
-    .guide__size-table tbody tr {
-      border-bottom: 1px solid #181818;
-    }
-
-    .guide__size-table tbody tr:last-child {
-      border-bottom: none;
-    }
-
-    .guide__size-table td {
-      padding: 9px 4px;
-      text-align: center;
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-
-    /* Row header column */
-    .guide__size-table td:first-child {
-      text-align: left;
-      padding-left: 14px;
-      color: #888;
-      font-size: 0.6rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      border-right: 1px solid #222;
-      background: #0e0e0e;
-    }
-
-    /* Hover — brightens data cells, row header stays stable */
-    .guide__size-table tbody tr:hover td:not(:first-child) {
-      filter: brightness(1.4) saturate(1.1);
-    }
-
-    /* Size color zones — single green→aqua hue, 7-step progressive intensity */
-    .guide__size-table td.sz-m   { color: #4a8f6e; background: rgba( 74, 143, 110, 0.07); }
-    .guide__size-table td.sz-l   { color: #29b07f; background: rgba( 41, 176, 127, 0.09); }
-    .guide__size-table td.sz-xl  { color: #0dcc91; background: rgba( 13, 204, 145, 0.10); }
-    .guide__size-table td.sz-xxl { color: #00e2a2; background: rgba(  0, 226, 162, 0.12); }
-    .guide__size-table td.sz-3xl { color: #00eebb; background: rgba(  0, 238, 187, 0.13); }
-    .guide__size-table td.sz-4xl { color: #00f5cc; background: rgba(  0, 245, 204, 0.14); }
-    .guide__size-table td.sz-5xl { color: #33fce8; background: rgba( 51, 252, 232, 0.16); }
-
-    .guide__size-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem 1.75rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .guide__legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      color: #555;
-    }
-
-    .guide__legend-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
-      .guide__step {
-        grid-template-columns: 40px 1fr;
-        gap: 0 1.25rem;
-      }
-      .guide__step-number {
-        font-size: 1.8rem;
-      }
-      .guide__size-legend {
-        gap: 0.75rem 1.25rem;
-      }
-    }
-  </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <nav class="nav is-scrolled" id="nav">
-    <a href="index.html" class="nav__brand">Archive Fashion</a>
-    <div class="nav__spacer"></div>
-    <div class="nav__actions">
-      <a href="how-to-order.html" class="nav__link">How to order</a>
-      <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" class="nav__link nav__link--signup">
-        <img src="assets/lovegologo.png" alt="" class="nav__lovego-icon">
-        <span>Sign up 500€</span>
-      </a>
-      <a href="https://discord.gg/rkfmXMBkYd" target="_blank" class="nav__link nav__link--discord">
-        <svg class="nav__discord-icon" width="12" height="9" viewBox="0 0 71 55" fill="currentColor">
-          <path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A26.5 26.5 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.9 9.1.2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.7.2.2 0 01 0-.4c.4-.3.7-.6 1.1-.9a.2.2 0 01.2 0c11.5 5.3 24 5.3 35.3 0a.2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.3 47.2 47.2 0 003.6 5.9.2.2 0 00.3.1A58.6 58.6 0 0070.3 45.6v-.1c1.4-15-2.3-28-9.8-39.6a.2.2 0 00-.1-.1zM23.7 37.3c-3.4 0-6.2-3.1-6.2-7s2.7-7 6.2-7 6.3 3.2 6.2 7-2.8 7-6.2 7zm23 0c-3.4 0-6.2-3.1-6.2-7s2.7-7 6.2-7 6.3 3.2 6.2 7-2.8 7-6.2 7z"/>
-        </svg>
-        <span>Discord</span>
-      </a>
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__brand"><svg class="nav__brand-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18.5" cy="13.5" r="8" stroke="#00A86B" stroke-width="2.5"/><path d="M14.5 10.5 Q16.5 8.2 19.5 9.2" stroke="#00A86B" stroke-width="1.7" stroke-linecap="round"/><path d="M12.8 19.2 Q9.5 23 5 27.5" stroke="#00A86B" stroke-width="3.2" stroke-linecap="round"/></svg><span class="nav__brand-text">Lovegobuy<span class="nav__brand-accent">Finds</span></span></a>
+    <div class="nav__center">
+      <div class="nav__pill">
+        <a href="index.html" class="nav__link">Men</a>
+        <a href="women.html" class="nav__link">Women</a>
+        <a href="reviews.html" class="nav__link">Reviews</a>
+        <a href="how-to-order.html" class="nav__link is-active-page">How to order</a>
+        <a href="faq.html" class="nav__link">FAQ</a>
+      </div>
+    </div>
+    <div class="nav__right">
+      <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" rel="noopener noreferrer" class="nav__cta">Sign up &amp; save on shipping →</a>
+      <button class="nav__burger" id="navBurger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
+  <!-- MOBILE MENU -->
+  <div class="nav__mobile" id="navMobile" aria-hidden="true">
+    <a href="index.html" class="nav__mobile-link">Men</a>
+    <a href="women.html" class="nav__mobile-link">Women</a>
+    <a href="reviews.html" class="nav__mobile-link">Reviews</a>
+    <a href="how-to-order.html" class="nav__mobile-link">How to order</a>
+    <a href="faq.html" class="nav__mobile-link">FAQ</a>
+    <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" rel="noopener noreferrer" class="nav__mobile-cta">Sign up &amp; save on shipping →</a>
+  </div>
+
   <main>
-    <article class="guide">
 
-      <p class="guide__eyebrow"><a href="index.html" class="guide__eyebrow-link">Archive Fashion</a> / Guide</p>
-      <h1 class="guide__title">How to order ?</h1>
-      <div class="guide__divider"></div>
+    <div class="page-hero">
+      <span class="page-hero__label">How to Order</span>
+      <h1 class="page-hero__title">From click to delivery</h1>
+      <p class="page-hero__sub">Simple enough for a first order.</p>
+    </div>
 
-      <!-- WHAT IS LOVEGOBUY -->
-      <section class="guide__section">
-        <p class="guide__section-label">Platform overview</p>
-        <h2 class="guide__section-title">What is LoveGoBuy?</h2>
-        <p class="guide__text">
-          LoveGoBuy is a cross-border e-commerce platform that simplifies international shopping on Chinese marketplaces.
-          It handles <strong>purchasing assistance, quality inspection, warehousing,</strong> and <strong>worldwide shipping</strong>,
-          removing every barrier between you and the product: language, payment, and logistics.
-          <br><br>
-          LoveGoBuy is the <strong>cheapest agent on the market</strong> and one of the fastest,
-          with delivery averaging <strong>around 10 days</strong> to your door.
-        </p>
-      </section>
+    <!-- 4 STEPS -->
+    <section class="how-to-order" id="how-to-order">
+      <div class="how-to-order__inner">
 
-      <!-- HOW TO USE -->
-      <section class="guide__section">
-        <p class="guide__section-label">Step by step</p>
-        <h2 class="guide__section-title">How to use LoveGoBuy</h2>
+        <div class="how-to-order__steps">
 
-        <div class="guide__steps">
-
-          <div class="guide__step">
-            <span class="guide__step-number">1</span>
-            <div class="guide__step-body">
-              <p class="guide__step-title">Create your account</p>
-              <p class="guide__step-text">
-                <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" class="guide__inline-link">Sign up</a> via the link on the homepage, order now and unlock a
-                <strong>500€ bonus</strong>, <strong>exclusive coupons</strong>, and <strong>1 free item</strong>.
-              </p>
-              <span class="guide__step-tip">
-                You can create secondary accounts to claim new coupons once the previous ones are used up.
-              </span>
-            </div>
+          <div class="step">
+            <div class="step__num">1</div>
+            <h2 class="step__title">Sign up on Lovegobuy</h2>
+            <p class="step__desc">Create your free account using our referral link and instantly unlock 500€ in shipping coupons. Use our link, the standard signup won't include the bonus.</p>
+            <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" rel="noopener noreferrer" class="btn btn--primary" style="margin-top:auto; width:fit-content;">Create account →</a>
           </div>
 
-          <div class="guide__step">
-            <span class="guide__step-number">2</span>
-            <div class="guide__step-body">
-              <p class="guide__step-title">Find your pieces</p>
-              <p class="guide__step-text">
-                Browse the <strong>spreadsheet</strong> on the homepage (updated regularly)
-                or join the <strong>Archive Fashion Discord</strong> for drops, finds, and community picks.
-              </p>
-            </div>
+          <div class="step">
+            <div class="step__num">2</div>
+            <h2 class="step__title">Find your item</h2>
+            <p class="step__desc">Browse our curated selection on the homepage. Click any product and it takes you directly to the listing on Lovegobuy, already in the right size and colour.</p>
           </div>
 
-          <div class="guide__step">
-            <span class="guide__step-number">3</span>
-            <div class="guide__step-body">
-              <p class="guide__step-title">Place your order</p>
-              <p class="guide__step-text">
-                Add items to your cart and proceed to checkout.
-                LoveGoBuy handles purchasing on your behalf if needed.
-                Items typically arrive at the warehouse within <strong>5 days</strong>.
-              </p>
-            </div>
+          <div class="step">
+            <div class="step__num">3</div>
+            <h2 class="step__title">Place your order</h2>
+            <p class="step__desc">Add to cart and pay. Lovegobuy purchases the item from the Chinese seller on your behalf, performs a quality inspection, photos it, and warehouses it for you.</p>
           </div>
 
-          <div class="guide__step">
-            <span class="guide__step-number">4</span>
-            <div class="guide__step-body">
-              <p class="guide__step-title">Quality check & shipping</p>
-              <p class="guide__step-text">
-                Once your items reach the warehouse, LoveGoBuy performs a full
-                <strong>quality inspection (QC)</strong> and sends you photos.
-                After approval, you select a shipping line and pay the fees.
-              </p>
-              <span class="guide__step-tip">
-                DHL and UPS are both reliable. UPS is the preferred choice for most orders.
-              </span>
-            </div>
-          </div>
-
-          <div class="guide__step">
-            <span class="guide__step-number">5</span>
-            <div class="guide__step-body">
-              <p class="guide__step-title">Track your package</p>
-              <p class="guide__step-text">
-                Everything is managed directly on the <strong>LoveGoBuy website</strong>.
-                Tracking updates automatically from warehouse departure to your front door.
-                Expect delivery within <strong>~10 days</strong>.
-              </p>
-            </div>
+          <div class="step">
+            <div class="step__num">4</div>
+            <h2 class="step__title">Receive your package</h2>
+            <p class="step__desc">Choose your preferred shipping line (DHL, UPS, etc.) and get your items delivered home. Most orders arrive within 2 to 4 weeks with real time tracking.</p>
           </div>
 
         </div>
-      </section>
 
-      <!-- SIZE GUIDE -->
-      <section class="guide__section">
-        <p class="guide__section-label">Sizing reference</p>
-        <h2 class="guide__section-title">Size guide</h2>
-
-        <div class="guide__size-intro">
-          <p class="guide__size-block-text">
-            This chart applies to <strong>Asian-sized items</strong> only (listings where the size range goes up to 3XL, 4XL, or 5XL).
-            Asian sizing runs smaller than European standards: an Asian <strong>M</strong> typically fits like a European <strong>S</strong>.
-          </p>
-        </div>
-
-        <div class="guide__size-block">
-          <p class="guide__size-block-label">When to use this chart</p>
-          <p class="guide__size-block-text">
-            Only use it if the seller has <strong>not included measurements</strong> (chest, waist, length in cm) in the item description.
-            If those figures are listed, use them directly. They are always more accurate than a general chart.
-          </p>
-        </div>
-
-        <div class="guide__size-block">
-          <p class="guide__size-block-label">Why the difference?</p>
-          <p class="guide__size-block-text">
-            Asian sizing reflects local body standards and is cut more fitted.
-            If you're used to European or US sizing, <strong>expect to size up,</strong>
-            sometimes by one, sometimes two sizes.
-          </p>
-        </div>
-
-        <!-- Legend -->
-        <div class="guide__size-legend">
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#4a8f6e"></span>M</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#29b07f"></span>L</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#0dcc91"></span>XL</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00e2a2"></span>XXL</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00eebb"></span>XXXL</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#00f5cc"></span>4XL</span>
-          <span class="guide__legend-item"><span class="guide__legend-dot" style="background:#33fce8"></span>5XL</span>
-        </div>
-
-        <!-- Table -->
-        <div class="guide__table-axes">
-          <span class="guide__table-axis">Height ↓</span>
-          <span class="guide__table-axis">Weight →</span>
-        </div>
-        <div class="guide__table-wrap">
-          <table class="guide__size-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>45 kg</th>
-                <th>50 kg</th>
-                <th>55 kg</th>
-                <th>60 kg</th>
-                <th>65 kg</th>
-                <th>70 kg</th>
-                <th>75 kg</th>
-                <th>80 kg</th>
-                <th>85 kg</th>
-                <th>90 kg</th>
-                <th>95 kg</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1m55</td>
-                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td>
-              </tr>
-              <tr>
-                <td>1m60</td>
-                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td>
-              </tr>
-              <tr>
-                <td>1m65</td>
-                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
-              </tr>
-              <tr>
-                <td>1m70</td>
-                <td class="sz-m">M</td><td class="sz-m">M</td><td class="sz-m">M</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
-              </tr>
-              <tr>
-                <td>1m75</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td>
-              </tr>
-              <tr>
-                <td>1m80</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-l">L</td><td class="sz-l">L</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td>
-              </tr>
-              <tr>
-                <td>1m85</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xl">XL</td><td class="sz-xl">XL</td><td class="sz-xl">XL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td><td class="sz-5xl">5XL</td>
-              </tr>
-              <tr>
-                <td>1m90</td>
-                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
-                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
-                <td class="sz-3xl">XXXL</td><td class="sz-4xl">4XL</td><td class="sz-5xl">5XL</td><td class="sz-5xl">5XL</td>
-              </tr>
-              <tr>
-                <td>1m95</td>
-                <td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td><td class="sz-xxl">XXL</td>
-                <td class="sz-3xl">XXXL</td><td class="sz-3xl">XXXL</td><td class="sz-3xl">XXXL</td>
-                <td class="sz-4xl">4XL</td><td class="sz-5xl">5XL</td><td class="sz-5xl">5XL</td><td class="sz-5xl">5XL</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Tips -->
-        <div class="guide__size-block">
-          <p class="guide__size-block-label">Practical tips</p>
-          <div class="guide__size-tips">
-            <span class="guide__size-tip">When between two sizes, always size up</span>
-            <span class="guide__size-tip">Check the seller's return policy before ordering</span>
-            <span class="guide__size-tip">For jackets and oversized pieces, going one size up improves both fit and silhouette</span>
+        <!-- Video placeholder -->
+        <div class="how-to-order__video">
+          <!-- Replace VIDEO_ID when ready:
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="How to order on Lovegobuy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          -->
+          <div class="video-placeholder">
+            <div class="video-placeholder__btn">▶</div>
+            <p>Full video tutorial — coming soon</p>
           </div>
         </div>
 
-      </section>
-
-      <!-- CTA -->
-      <div class="guide__cta">
-        <p class="guide__cta-text">Ready to start? Any questions? We're on Discord.</p>
-        <div class="guide__cta-links">
-          <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" class="guide__cta-link guide__cta-link--green">
-            <img src="assets/lovegologo.png" alt="" style="width:14px;height:14px;object-fit:contain;pointer-events:none;">
-            Sign up / 500€ bonus
-          </a>
-          <a href="https://discord.gg/rkfmXMBkYd" target="_blank" class="guide__cta-link guide__cta-link--discord">
-            <svg width="12" height="9" viewBox="0 0 71 55" fill="currentColor">
-              <path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A26.5 26.5 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.9 9.1.2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.7.2.2 0 01 0-.4c.4-.3.7-.6 1.1-.9a.2.2 0 01.2 0c11.5 5.3 24 5.3 35.3 0a.2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.3 47.2 47.2 0 003.6 5.9.2.2 0 00.3.1A58.6 58.6 0 0070.3 45.6v-.1c1.4-15-2.3-28-9.8-39.6a.2.2 0 00-.1-.1zM23.7 37.3c-3.4 0-6.2-3.1-6.2-7s2.7-7 6.2-7 6.3 3.2 6.2 7-2.8 7-6.2 7zm23 0c-3.4 0-6.2-3.1-6.2-7s2.7-7 6.2-7 6.3 3.2 6.2 7-2.8 7-6.2 7z"/>
-            </svg>
-            Join the Discord
-          </a>
-          <a href="index.html" class="guide__cta-link">← Back to collection</a>
+        <!-- CTA -->
+        <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:1rem;">
+          <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Sign up &amp; save on shipping →</a>
+          <a href="faq.html" class="btn btn--ghost">Still have questions? Read the FAQ</a>
         </div>
+
       </div>
+    </section>
 
-    </article>
   </main>
 
+  <div class="collab-strip">
+    <p class="collab-strip__text"><strong>Interested in working with us?</strong> Get paid to create. 100+ creators already partnered.</p>
+    <a href="https://discord.gg/5EhjDVZ2x7" target="_blank" rel="noopener noreferrer" class="collab-strip__btn">Open a collab ticket →</a>
+  </div>
+
   <footer class="footer">
-    <span class="footer__brand">Archive Fashion</span>
-    <div class="footer__right">
-      <span class="footer__copy">© 2026 Archive Fashion Spreadsheet. All rights reserved.</span>
-      <span class="footer__by">by Saint</span>
+    <div class="footer__inner">
+      <a href="index.html" class="footer__brand"><svg class="footer__brand-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18.5" cy="13.5" r="8" stroke="#00A86B" stroke-width="2.5"/><path d="M14.5 10.5 Q16.5 8.2 19.5 9.2" stroke="#00A86B" stroke-width="1.7" stroke-linecap="round"/><path d="M12.8 19.2 Q9.5 23 5 27.5" stroke="#00A86B" stroke-width="3.2" stroke-linecap="round"/></svg><span class="footer__brand-text">Lovegobuy<span class="footer__brand-accent">Finds</span></span></a>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="how-to-order.html">How to order</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://discord.gg/rkfmXMBkYd" target="_blank" rel="noopener noreferrer">Discord</a>
+      </nav>
+      <span class="footer__copy">© 2026 Lovegobuy · All rights reserved</span>
     </div>
   </footer>
 
+  <script src="js/nav.js"></script>
 </body>
 </html>

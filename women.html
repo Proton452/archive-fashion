@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lovegobuy Finds | Trending women's picks at the lowest prices</title>
+  <meta name="description" content="Women's trending clothes at unbeatable prices. Order from China via Lovegobuy and get 500€ bonus on signup.">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://res.cloudinary.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H85B12JS2Y"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H85B12JS2Y');
+  </script>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__brand"><svg class="nav__brand-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18.5" cy="13.5" r="8" stroke="#00A86B" stroke-width="2.5"/><path d="M14.5 10.5 Q16.5 8.2 19.5 9.2" stroke="#00A86B" stroke-width="1.7" stroke-linecap="round"/><path d="M12.8 19.2 Q9.5 23 5 27.5" stroke="#00A86B" stroke-width="3.2" stroke-linecap="round"/></svg><span class="nav__brand-text">Lovegobuy<span class="nav__brand-accent">Finds</span></span></a>
+
+    <div class="nav__center">
+      <div class="nav__pill">
+        <a href="index.html" class="nav__link">Men</a>
+        <a href="women.html" class="nav__link is-active-page">Women</a>
+        <a href="reviews.html" class="nav__link">Reviews</a>
+        <a href="how-to-order.html" class="nav__link">How to order</a>
+        <a href="faq.html" class="nav__link">FAQ</a>
+      </div>
+    </div>
+
+    <div class="nav__right">
+      <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" rel="noopener noreferrer" class="nav__cta">Sign up &amp; save on shipping →</a>
+      <button class="nav__burger" id="navBurger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="nav__mobile" id="navMobile" aria-hidden="true">
+    <a href="index.html" class="nav__mobile-link">Men</a>
+    <a href="women.html" class="nav__mobile-link">Women</a>
+    <a href="reviews.html" class="nav__mobile-link">Reviews</a>
+    <a href="how-to-order.html" class="nav__mobile-link">How to order</a>
+    <a href="faq.html" class="nav__mobile-link">FAQ</a>
+    <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" rel="noopener noreferrer" class="nav__mobile-cta">Sign up &amp; save on shipping →</a>
+  </div>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero__content">
+        <h1 class="hero__title">Women's fits &amp; trending finds<br><span class="hero__title-accent">top quality, unbeatable prices</span></h1>
+        <p class="hero__sub">The same quality for less, shipped worldwide via Lovegobuy.</p>
+        <div class="hero__ctas">
+          <a href="https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Sign up &amp; save on shipping →</a>
+          <a href="how-to-order.html" class="btn btn--ghost">How it works</a>
+        </div>
+        <div class="hero__tp-badge">
+          <span class="hero__tp-wordmark">Trustpilot</span>
+          <span class="hero__tp-sep">·</span>
+          <span class="hero__tp-stars">★★★★<span class="hero__tp-half">★</span></span>
+          <strong class="hero__tp-score">4.3</strong>
+          <span class="hero__tp-sep">·</span>
+          <span class="hero__tp-count">450+ reviews</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORY TABS -->
+    <div class="cat-tabs-wrapper" id="catTabsWrapper">
+      <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab" data-cat="best-sellers">Best Sellers</button>
+        <button class="cat-tab is-active" data-cat="all">All</button>
+        <button class="cat-tab" data-cat="summer">Summer</button>
+        <button class="cat-tab" data-cat="tops">Tops</button>
+        <button class="cat-tab" data-cat="pants">Pants</button>
+        <button class="cat-tab" data-cat="accessories">Accessories</button>
+        <button class="cat-tab" data-cat="winter">Winter</button>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar" id="toolbar">
+      <div class="toolbar__filter-wrapper">
+        <button class="toolbar__filter-btn" id="filterBtn">
+          Filter <span class="toolbar__chevron">▾</span>
+        </button>
+        <div class="toolbar__filter-dropdown" id="filterDropdown"></div>
+      </div>
+
+      <div class="toolbar__search-wrapper">
+        <svg class="toolbar__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" class="toolbar__search" id="searchInput" placeholder="Search items, brands..." maxlength="100" autocomplete="off">
+      </div>
+
+      <button class="toolbar__sort" id="sortBtn">
+        Price <span class="toolbar__sort-chevron">↕</span>
+      </button>
+    </div>
+
+
+    <!-- PRODUCTS -->
+    <section class="collection">
+      <div class="collection__grid" id="productsGrid"></div>
+      <div class="collection__loading" id="loading">
+        <span>Loading collection</span><span class="loading__dots">...</span>
+      </div>
+      <div class="collection__empty" id="emptyState" hidden>
+        <span>No items found</span>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="collab-strip">
+    <p class="collab-strip__text"><strong>Interested in working with us?</strong> Get paid to create. 100+ creators already partnered.</p>
+    <a href="https://discord.gg/5EhjDVZ2x7" target="_blank" rel="noopener noreferrer" class="collab-strip__btn">Open a collab ticket →</a>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <a href="index.html" class="footer__brand"><svg class="footer__brand-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18.5" cy="13.5" r="8" stroke="#00A86B" stroke-width="2.5"/><path d="M14.5 10.5 Q16.5 8.2 19.5 9.2" stroke="#00A86B" stroke-width="1.7" stroke-linecap="round"/><path d="M12.8 19.2 Q9.5 23 5 27.5" stroke="#00A86B" stroke-width="3.2" stroke-linecap="round"/></svg><span class="footer__brand-text">Lovegobuy<span class="footer__brand-accent">Finds</span></span></a>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="how-to-order.html">How to order</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://discord.gg/rkfmXMBkYd" target="_blank" rel="noopener noreferrer">Discord</a>
+      </nav>
+      <span class="footer__copy">© 2026 Lovegobuy · All rights reserved</span>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+  <script src="js/women.js"></script>
+</body>
+</html>
