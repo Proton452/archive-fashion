@@ -1513,6 +1513,8 @@ a { text-decoration: none; color: inherit; }
   /* Reviews */
   .reviews { padding: 3.5rem var(--pad-x); }
   .reviews__grid { grid-template-columns: 1fr; gap: 1rem; }
+  .review-card { flex: 0 0 calc(100vw - 2 * var(--pad-x) - 100px); }
+  .reviews__arrow { width: 32px; height: 32px; font-size: 0.85rem; }
 
   /* How to order */
   .how-to-order { padding: 3.5rem var(--pad-x); }
