@@ -269,12 +269,14 @@ a { text-decoration: none; color: inherit; }
   gap: 0;
   transform: translateY(-8px);
   opacity: 0;
+  pointer-events: none;
   transition: transform 0.28s var(--ease-out), opacity 0.25s;
 }
 
 .nav__mobile.is-open {
   transform: translateY(0);
   opacity: 1;
+  pointer-events: auto;
 }
 
 .nav__mobile-link {
@@ -684,7 +686,8 @@ a { text-decoration: none; color: inherit; }
 .toolbar__sort:hover { border-color: var(--text-muted); color: var(--text); }
 .toolbar__sort.is-asc .toolbar__sort-chevron,
 .toolbar__sort.is-desc .toolbar__sort-chevron { color: var(--accent); }
-.toolbar__sort-chevron { font-size: 10px; }
+.toolbar__sort-chevron { font-size: 10px; display: inline-block; transition: transform 0.2s; }
+.toolbar__sort.is-desc .toolbar__sort-chevron { transform: rotate(180deg); }
 
 /* Count */
 .collection__count-wrapper {
