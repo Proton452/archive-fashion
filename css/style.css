@@ -39,6 +39,7 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 body {
@@ -375,7 +376,6 @@ a { text-decoration: none; color: inherit; }
   color: var(--text-muted);
   line-height: 1.7;
   max-width: 640px;
-  white-space: nowrap;
 }
 
 .hero__sub strong { color: var(--text); }

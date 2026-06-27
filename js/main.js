@@ -128,6 +128,7 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
     searchInput.value = '';
     sortOrder = null;
     sortBtn.classList.remove('is-asc', 'is-desc');
+    sortBtn.querySelector('.toolbar__sort-chevron').textContent = '↕';
 
     gaEvent('click_category', { category: chosen });
     applyFilters();
@@ -142,17 +143,21 @@ searchInput.addEventListener('input', e => {
 
 // ─── Sort by Price ───────────────────────────────
 sortBtn.addEventListener('click', () => {
+  const chevron = sortBtn.querySelector('.toolbar__sort-chevron');
   if (sortOrder === null) {
     sortOrder = 'asc';
     sortBtn.classList.add('is-asc');
     sortBtn.classList.remove('is-desc');
+    chevron.textContent = '↓';
   } else if (sortOrder === 'asc') {
     sortOrder = 'desc';
     sortBtn.classList.remove('is-asc');
     sortBtn.classList.add('is-desc');
+    chevron.textContent = '↓';
   } else {
     sortOrder = null;
     sortBtn.classList.remove('is-asc', 'is-desc');
+    chevron.textContent = '↕';
   }
   applyFilters();
 });
