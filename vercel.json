@@ -1,3 +1,10 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/FOOTBALL",
+      "destination": "https://www.lovegobuy.com/login/signup/?invite_code=FOOTBALL",
+      "permanent": false
+    }
+  ]
 }
