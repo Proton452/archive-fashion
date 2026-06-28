@@ -4,7 +4,8 @@
    Sheet columns: NAME | BRAND | ARTICLE | PRICE | IMAGE | LIEN
 ============================================== */
 
-const SHEET_ID_WOMEN = '1yVRRCiO-uM56SoLhqIUzigH1Nvi2WwNZcAI7DVYhy1A';
+const SHEET_ID_WOMEN = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
+const SHEET_NAME_WOMEN = 'Feuille 2';
 
 const CATEGORY_MAP = {
   'best-sellers': ['best seller', 'bestseller', 'best-seller'],
@@ -170,11 +171,12 @@ const infiniteScrollObserver = new IntersectionObserver(entries => {
   }
 }, { rootMargin: '400px 0px' });
 
-function fetchSheetJSONP(sheetID) {
+function fetchSheetJSONP(sheetID, sheetName) {
   return new Promise((resolve, reject) => {
     const cbName = '__gviz_cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const sheetParam = sheetName ? `&sheet=${encodeURIComponent(sheetName)}` : '';
     const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq`
-      + `?tqx=out:json;responseHandler:${cbName}`;
+      + `?tqx=out:json;responseHandler:${cbName}${sheetParam}`;
 
     const timeout = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, 15000);
 
@@ -311,7 +313,7 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    const womenData = await fetchSheetJSONP(SHEET_ID_WOMEN);
+    const womenData = await fetchSheetJSONP(SHEET_ID_WOMEN, SHEET_NAME_WOMEN);
     allProducts = parseSheetData(womenData);
 
     loading.style.display = 'none';
