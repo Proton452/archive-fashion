@@ -38,6 +38,12 @@
       if (map[href] !== undefined) link.setAttribute('href', map[href]);
     });
 
+    // Force brand links (navbar + footer logo) to keep partner code
+    var home = c || '/';
+    document.querySelectorAll('.nav__brand, .footer__brand').forEach(function (el) {
+      el.setAttribute('href', home);
+    });
+
     // Replace invite_code with the real Lovegobuy code
     if (inviteCode) {
       document.querySelectorAll('a[href*="invite_code="]').forEach(function (link) {
