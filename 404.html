@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      var WHITELIST = ['FOOTBALL'];
+      var code = window.location.pathname.replace(/^\//, '').split('/')[0].toUpperCase();
+      if (WHITELIST.indexOf(code) !== -1) {
+        sessionStorage.setItem('partnerCode', code);
+        window.location.replace('/');
+      }
+    })();
+  </script>
+</head>
+<body></body>
+</html>
