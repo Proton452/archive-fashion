@@ -1,26 +1,30 @@
 (function () {
-  var WHITELIST = ['football'];
+  var CODE_MAP = {
+    'football': 'FOOTBALL'
+  };
 
   // Extract partner code from any position in the path
   var parts = window.location.pathname.split('/').filter(Boolean);
-  var code = null;
+  var slug = null;
   for (var i = 0; i < parts.length; i++) {
-    if (WHITELIST.indexOf(parts[i].toLowerCase()) !== -1) { code = parts[i].toLowerCase(); break; }
+    var p = parts[i].toLowerCase();
+    if (CODE_MAP[p]) { slug = p; break; }
   }
 
-  if (code) {
-    sessionStorage.setItem('partnerCode', code);
+  if (slug) {
+    sessionStorage.setItem('partnerSlug', slug);
   } else {
-    var stored = sessionStorage.getItem('partnerCode');
-    if (stored && WHITELIST.indexOf(stored) !== -1) code = stored;
+    var stored = sessionStorage.getItem('partnerSlug');
+    if (stored && CODE_MAP[stored]) slug = stored;
   }
 
-  window.PARTNER_CODE = code;
+  var inviteCode = slug ? CODE_MAP[slug] : null;
+  window.PARTNER_CODE = inviteCode;
 
   document.addEventListener('DOMContentLoaded', function () {
-    var c = code ? '/' + code : '';
+    var c = slug ? '/' + slug : '';
 
-    // Rewrite nav links: clean URLs + partner code
+    // Rewrite nav links: clean URLs + partner slug
     var map = {
       'index.html': c || '/',
       'women.html': '/women' + c,
@@ -34,10 +38,10 @@
       if (map[href] !== undefined) link.setAttribute('href', map[href]);
     });
 
-    // Replace invite_code in signup CTAs
-    if (code) {
+    // Replace invite_code with the real Lovegobuy code
+    if (inviteCode) {
       document.querySelectorAll('a[href*="invite_code="]').forEach(function (link) {
-        link.href = link.href.replace(/invite_code=[^&\s]+/, 'invite_code=' + code);
+        link.href = link.href.replace(/invite_code=[^&\s]+/, 'invite_code=' + inviteCode);
       });
     }
   });

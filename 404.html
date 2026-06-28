@@ -2,7 +2,10 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script>window.location.replace('/');</script>
+  <script>
+    sessionStorage.removeItem('partnerSlug');
+    window.location.replace('/');
+  </script>
 </head>
 <body></body>
 </html>
