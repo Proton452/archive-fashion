@@ -1,15 +1,15 @@
 {
   "routes": [
-    { "src": "/football", "dest": "/index.html" },
-    { "src": "/women/football", "dest": "/women.html" },
-    { "src": "/reviews/football", "dest": "/reviews.html" },
-    { "src": "/faq/football", "dest": "/faq.html" },
-    { "src": "/how-to-order/football", "dest": "/how-to-order.html" },
+    { "src": "/", "dest": "/index.html" },
     { "src": "/women", "dest": "/women.html" },
     { "src": "/reviews", "dest": "/reviews.html" },
     { "src": "/faq", "dest": "/faq.html" },
     { "src": "/how-to-order", "dest": "/how-to-order.html" },
-    { "src": "/", "dest": "/index.html" },
+    { "src": "/women/([^/]+)", "dest": "/women.html" },
+    { "src": "/reviews/([^/]+)", "dest": "/reviews.html" },
+    { "src": "/faq/([^/]+)", "dest": "/faq.html" },
+    { "src": "/how-to-order/([^/]+)", "dest": "/how-to-order.html" },
+    { "src": "/([^/.]+)", "dest": "/index.html" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
