@@ -500,7 +500,9 @@ function appendNextBatch() {
     card.style.transitionDelay = `${((batchStart + i) % numColumns) * 60}ms`;
 
     if (link) {
-      card.href   = link;
+      var cardHref = link;
+      if (window.PARTNER_CODE) cardHref = cardHref.replace(/invite_code=[^&\s]+/, 'invite_code=' + window.PARTNER_CODE);
+      card.href   = cardHref;
       card.target = '_blank';
       card.rel    = 'noopener noreferrer';
     }
