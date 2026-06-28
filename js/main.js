@@ -415,7 +415,6 @@ function deterministicShuffle(products) {
 
 // ─── Load Products (always both sheets) ──────────
 async function loadProducts() {
-  if (window.partnerReady) await window.partnerReady;
   loading.style.display = 'block';
   emptyState.hidden = true;
   grid.innerHTML = '';

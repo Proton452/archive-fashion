@@ -306,7 +306,6 @@ function expandSearchTerms(query) {
 }
 
 async function loadProducts() {
-  if (window.partnerReady) await window.partnerReady;
   loading.style.display = 'block';
   emptyState.hidden = true;
   grid.innerHTML = '';
