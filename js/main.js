@@ -6,7 +6,6 @@
 
 // ─── Google Sheets Config ───────────────────────
 const SHEET_ID_MEN   = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
-const SHEET_ID_WOMEN = '1yVRRCiO-uM56SoLhqIUzigH1Nvi2WwNZcAI7DVYhy1A';
 
 // ─── Category Tab → article type mapping ────────
 const CATEGORY_MAP = {
