@@ -1,3 +1,9 @@
 {
-  "cleanUrls": true
+  "rewrites": [
+    { "source": "/faq", "destination": "/faq.html" },
+    { "source": "/women", "destination": "/women.html" },
+    { "source": "/reviews", "destination": "/reviews.html" },
+    { "source": "/how-to-order", "destination": "/how-to-order.html" },
+    { "source": "/FOOTBALL", "destination": "/index.html" }
+  ]
 }
