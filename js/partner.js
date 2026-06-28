@@ -1,11 +1,11 @@
 (function () {
-  var WHITELIST = ['FOOTBALL'];
+  var WHITELIST = ['football'];
 
   // Extract partner code from any position in the path
   var parts = window.location.pathname.split('/').filter(Boolean);
   var code = null;
   for (var i = 0; i < parts.length; i++) {
-    if (WHITELIST.indexOf(parts[i]) !== -1) { code = parts[i]; break; }
+    if (WHITELIST.indexOf(parts[i].toLowerCase()) !== -1) { code = parts[i].toLowerCase(); break; }
   }
 
   if (code) {
