@@ -1,24 +1,44 @@
 (function () {
-  const WHITELIST = ['FOOTBALL'];
+  var WHITELIST = ['FOOTBALL'];
 
-  const pathCode = window.location.pathname.split('/').filter(Boolean)[0] || '';
-  let activeCode = null;
+  // Extract partner code from any position in the path
+  var parts = window.location.pathname.split('/').filter(Boolean);
+  var code = null;
+  for (var i = 0; i < parts.length; i++) {
+    if (WHITELIST.indexOf(parts[i]) !== -1) { code = parts[i]; break; }
+  }
 
-  if (WHITELIST.includes(pathCode)) {
-    activeCode = pathCode;
-    sessionStorage.setItem('partnerCode', pathCode);
+  if (code) {
+    sessionStorage.setItem('partnerCode', code);
   } else {
-    const stored = sessionStorage.getItem('partnerCode');
-    if (stored && WHITELIST.includes(stored)) activeCode = stored;
+    var stored = sessionStorage.getItem('partnerCode');
+    if (stored && WHITELIST.indexOf(stored) !== -1) code = stored;
   }
 
-  window.PARTNER_CODE = activeCode;
+  window.PARTNER_CODE = code;
 
-  if (activeCode) {
-    document.addEventListener('DOMContentLoaded', function () {
-      document.querySelectorAll('a[href*="invite_code="]').forEach(function (link) {
-        link.href = link.href.replace(/invite_code=[^&\s]+/, 'invite_code=' + activeCode);
-      });
+  document.addEventListener('DOMContentLoaded', function () {
+    var c = code ? '/' + code : '';
+
+    // Rewrite nav links: clean URLs + partner code
+    var map = {
+      'index.html': c || '/',
+      'women.html': '/women' + c,
+      'reviews.html': '/reviews' + c,
+      'how-to-order.html': '/how-to-order' + c,
+      'faq.html': '/faq' + c
+    };
+
+    document.querySelectorAll('a[href]').forEach(function (link) {
+      var href = link.getAttribute('href');
+      if (map[href] !== undefined) link.setAttribute('href', map[href]);
     });
-  }
+
+    // Replace invite_code in signup CTAs
+    if (code) {
+      document.querySelectorAll('a[href*="invite_code="]').forEach(function (link) {
+        link.href = link.href.replace(/invite_code=[^&\s]+/, 'invite_code=' + code);
+      });
+    }
+  });
 })();

@@ -1,9 +1,13 @@
 {
   "rewrites": [
-    { "source": "/faq", "destination": "/faq.html" },
+    { "source": "/women/:code", "destination": "/women.html" },
+    { "source": "/reviews/:code", "destination": "/reviews.html" },
+    { "source": "/faq/:code", "destination": "/faq.html" },
+    { "source": "/how-to-order/:code", "destination": "/how-to-order.html" },
     { "source": "/women", "destination": "/women.html" },
     { "source": "/reviews", "destination": "/reviews.html" },
+    { "source": "/faq", "destination": "/faq.html" },
     { "source": "/how-to-order", "destination": "/how-to-order.html" },
-    { "source": "/FOOTBALL", "destination": "/index.html" }
+    { "source": "/:code", "destination": "/index.html" }
   ]
 }
