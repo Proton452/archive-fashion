@@ -1,13 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/women/:code", "destination": "/women.html" },
-    { "source": "/reviews/:code", "destination": "/reviews.html" },
-    { "source": "/faq/:code", "destination": "/faq.html" },
-    { "source": "/how-to-order/:code", "destination": "/how-to-order.html" },
-    { "source": "/women", "destination": "/women.html" },
-    { "source": "/reviews", "destination": "/reviews.html" },
-    { "source": "/faq", "destination": "/faq.html" },
-    { "source": "/how-to-order", "destination": "/how-to-order.html" },
-    { "source": "/:code", "destination": "/index.html" }
+  "routes": [
+    { "src": "/FOOTBALL", "dest": "/index.html" },
+    { "src": "/women/FOOTBALL", "dest": "/women.html" },
+    { "src": "/reviews/FOOTBALL", "dest": "/reviews.html" },
+    { "src": "/faq/FOOTBALL", "dest": "/faq.html" },
+    { "src": "/how-to-order/FOOTBALL", "dest": "/how-to-order.html" },
+    { "src": "/women", "dest": "/women.html" },
+    { "src": "/reviews", "dest": "/reviews.html" },
+    { "src": "/faq", "dest": "/faq.html" },
+    { "src": "/how-to-order", "dest": "/how-to-order.html" },
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
