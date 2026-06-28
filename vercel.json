@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/:code([A-Z][A-Z0-9]*)", "destination": "/index.html" }
+    { "source": "/:code", "destination": "/index.html" }
   ]
 }
