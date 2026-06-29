@@ -314,6 +314,7 @@ a { text-decoration: none; color: inherit; }
 ================================================ */
 .hero {
   padding: calc(var(--nav-h) + 5rem) var(--pad-x) 0;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--border);
@@ -364,7 +365,7 @@ a { text-decoration: none; color: inherit; }
 
 .hero__title {
   font-family: var(--sans);
-  font-size: clamp(2.2rem, 4.5vw, 4.8rem);
+  font-size: clamp(2.5rem, 5.5vw, 5.5rem);
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.03em;
