@@ -364,10 +364,10 @@ a { text-decoration: none; color: inherit; }
 
 .hero__title {
   font-family: var(--sans);
-  font-size: clamp(2.2rem, 4.5vw, 4.2rem);
+  font-size: clamp(2.2rem, 4vw, 3rem);
   font-weight: 700;
   line-height: 1.08;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   color: var(--text);
 }
 
