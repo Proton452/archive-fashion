@@ -1495,6 +1495,7 @@ a { text-decoration: none; color: inherit; }
   .hero { padding: calc(var(--nav-h) + 3rem) var(--pad-x) 0; }
   .hero__content { padding-bottom: 3rem; gap: 1.25rem; }
   .hero__title { font-size: clamp(2.4rem, 10vw, 3.5rem); }
+  .toolbar__search { font-size: 16px; }
   .hero__stats { margin: 0 calc(-1 * var(--pad-x)); }
   .hero__stat { padding: 1.25rem 1rem; }
   .hero__stat-num { font-size: 1.5rem; }
