@@ -314,7 +314,6 @@ a { text-decoration: none; color: inherit; }
 ================================================ */
 .hero {
   padding: calc(var(--nav-h) + 5rem) var(--pad-x) 0;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--border);
