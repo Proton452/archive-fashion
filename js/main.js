@@ -632,12 +632,15 @@ function appendNextBatch() {
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
     });
 
+    const isFootball = CATEGORY_MAP.football.some(k => (p.article || '').toLowerCase().includes(k));
+
     card.innerHTML = `
       <div class="product-card__image">
         ${image
           ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(name)}" decoding="async"${globalIdx >= 8 ? ' loading="lazy"' : ''}>`
           : `<div class="product-card__image-placeholder">No image</div>`
         }
+        ${isFootball ? `<span class="product-card__badge">Min. 4</span>` : ''}
       </div>
       <div class="product-card__info">
         <h3 class="product-card__name" data-tooltip="${escapeAttr(name)}">${escapeHTML(name)}</h3>
