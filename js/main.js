@@ -757,9 +757,6 @@ document.addEventListener('mouseout', e => {
 
 // ─── Jersey Popup ────────────────────────────────
 document.getElementById('jerseyPopupCancel').addEventListener('click', () => {
-  document.getElementById('jerseyPopup').hidden = true;
-});
-document.getElementById('jerseyPopupConfirm').addEventListener('click', () => {
   sessionStorage.setItem('jerseyPopupSeen', '1');
   document.getElementById('jerseyPopup').hidden = true;
 });
