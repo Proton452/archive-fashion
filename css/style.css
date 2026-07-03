@@ -547,14 +547,13 @@ a { text-decoration: none; color: inherit; }
 ================================================ */
 .football-notice {
   display: none;
-  position: sticky;
-  top: var(--nav-h);
-  z-index: 100;
-  padding: 9px var(--pad-x);
-  background: rgba(26, 92, 71, 0.15);
-  border-bottom: 1px solid rgba(26, 92, 71, 0.35);
+  margin: 0 var(--pad-x);
+  padding: 10px 16px;
+  background: rgba(26, 92, 71, 0.12);
+  border: 1px solid rgba(26, 92, 71, 0.35);
+  border-radius: 8px;
   color: var(--text-muted);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   text-align: center;
 }
 .football-notice.is-visible { display: block; }
