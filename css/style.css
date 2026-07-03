@@ -780,20 +780,6 @@ a { text-decoration: none; color: inherit; }
   justify-content: center;
 }
 
-.product-card__badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 3px 7px;
-  border-radius: 4px;
-  letter-spacing: 0.03em;
-  pointer-events: none;
-}
-
 .product-card__image img {
   width: 84%;
   height: 84%;
