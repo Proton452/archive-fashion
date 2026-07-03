@@ -721,6 +721,67 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ================================================
+   JERSEY POPUP
+================================================ */
+.jersey-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad-x);
+}
+.jersey-popup[hidden] { display: none; }
+
+.jersey-popup__box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+.jersey-popup__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+.jersey-popup__text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.jersey-popup__text strong { color: var(--text); }
+.jersey-popup__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.jersey-popup__cancel {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.jersey-popup__confirm {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ================================================
    COLLECTION / PRODUCTS
 ================================================ */
 .collection {
