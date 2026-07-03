@@ -759,6 +759,10 @@ document.getElementById('jerseyPopupCancel').addEventListener('click', () => {
   jerseyPopupDismissed = true;
   document.getElementById('jerseyPopup').hidden = true;
 });
+document.getElementById('jerseyPopupConfirm').addEventListener('click', () => {
+  jerseyPopupDismissed = true;
+  document.getElementById('jerseyPopup').hidden = true;
+});
 document.getElementById('jerseyPopup').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.hidden = true;
 });
