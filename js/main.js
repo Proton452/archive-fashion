@@ -634,7 +634,7 @@ function appendNextBatch() {
     card.addEventListener('click', e => {
       if (_docScrolled) { e.preventDefault(); return; }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
-      if (isFootball && link && !sessionStorage.getItem('jerseyPopupSeen')) {
+      if (isFootball && link && currentCategoryTab === 'football' && !sessionStorage.getItem('jerseyPopupSeen')) {
         e.preventDefault();
         const popup = document.getElementById('jerseyPopup');
         const confirm = document.getElementById('jerseyPopupConfirm');
