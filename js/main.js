@@ -130,6 +130,7 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
     sortBtn.querySelector('.toolbar__sort-chevron').textContent = '↕︎';
 
     gaEvent('click_category', { category: chosen });
+    document.getElementById('footballNotice').classList.toggle('is-visible', chosen === 'football');
     applyFilters();
   });
 });
@@ -414,6 +415,7 @@ function deterministicShuffle(products) {
 
 // ─── Load Products (always both sheets) ──────────
 async function loadProducts() {
+  document.getElementById('footballNotice').classList.toggle('is-visible', currentCategoryTab === 'football');
   loading.style.display = 'block';
   emptyState.hidden = true;
   grid.innerHTML = '';
