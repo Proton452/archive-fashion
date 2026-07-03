@@ -624,17 +624,15 @@ function appendNextBatch() {
     var cardHref = link;
     if (link) {
       if (window.PARTNER_CODE) cardHref = cardHref.replace(/invite_code=[^&\s]+/, 'invite_code=' + window.PARTNER_CODE);
-      if (!isFootball) {
-        card.href   = cardHref;
-        card.target = '_blank';
-        card.rel    = 'noopener noreferrer';
-      }
+      card.href   = cardHref;
+      card.target = '_blank';
+      card.rel    = 'noopener noreferrer';
     }
 
     card.addEventListener('click', e => {
       if (_docScrolled) { e.preventDefault(); return; }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
-      if (isFootball && link && currentCategoryTab === 'football' && !sessionStorage.getItem('jerseyPopupSeen')) {
+      if (isFootball && link && currentCategoryTab === 'football' && !jerseyPopupDismissed) {
         e.preventDefault();
         const popup = document.getElementById('jerseyPopup');
         const confirm = document.getElementById('jerseyPopupConfirm');
@@ -756,8 +754,9 @@ document.addEventListener('mouseout', e => {
 });
 
 // ─── Jersey Popup ────────────────────────────────
+let jerseyPopupDismissed = false;
 document.getElementById('jerseyPopupCancel').addEventListener('click', () => {
-  sessionStorage.setItem('jerseyPopupSeen', '1');
+  jerseyPopupDismissed = true;
   document.getElementById('jerseyPopup').hidden = true;
 });
 document.getElementById('jerseyPopup').addEventListener('click', e => {
