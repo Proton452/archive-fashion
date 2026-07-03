@@ -547,8 +547,7 @@ a { text-decoration: none; color: inherit; }
 ================================================ */
 .football-notice {
   display: none;
-  max-width: 480px;
-  margin: 0 auto;
+  margin: 1.5rem var(--pad-x) 0;
   padding: 10px 16px;
   background: rgba(26, 92, 71, 0.12);
   border: 1px solid rgba(26, 92, 71, 0.35);
