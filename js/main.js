@@ -634,7 +634,7 @@ function appendNextBatch() {
     card.addEventListener('click', e => {
       if (_docScrolled) { e.preventDefault(); return; }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
-      if (isFootball && link) {
+      if (isFootball && link && !sessionStorage.getItem('jerseyPopupSeen')) {
         e.preventDefault();
         const popup = document.getElementById('jerseyPopup');
         const confirm = document.getElementById('jerseyPopupConfirm');
@@ -757,6 +757,10 @@ document.addEventListener('mouseout', e => {
 
 // ─── Jersey Popup ────────────────────────────────
 document.getElementById('jerseyPopupCancel').addEventListener('click', () => {
+  document.getElementById('jerseyPopup').hidden = true;
+});
+document.getElementById('jerseyPopupConfirm').addEventListener('click', () => {
+  sessionStorage.setItem('jerseyPopupSeen', '1');
   document.getElementById('jerseyPopup').hidden = true;
 });
 document.getElementById('jerseyPopup').addEventListener('click', e => {
