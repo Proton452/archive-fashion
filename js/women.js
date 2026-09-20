@@ -551,8 +551,15 @@ function appendNextBatch() {
 }
 
 function cloudinaryOptimize(url) {
-  if (!url || !url.includes('res.cloudinary.com')) return url;
-  return url.replace('/upload/', '/upload/f_auto,q_auto,w_400/');
+  if (!url) return url;
+  if (url.includes('res.cloudinary.com')) {
+    return url.replace('/upload/', '/upload/f_auto,q_auto,w_400/');
+  }
+  if (url.includes('b-cdn.net')) {
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}width=400&quality=75&format=auto`;
+  }
+  return url;
 }
 
 function escapeHTML(str) {
