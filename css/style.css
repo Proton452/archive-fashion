@@ -1130,11 +1130,11 @@ a { text-decoration: none; color: inherit; }
 }
 
 .how-to-order__inner {
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  gap: 4rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 3.5rem;
   align-items: start;
 }
 
