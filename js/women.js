@@ -582,6 +582,18 @@ document.querySelectorAll('.nav__cta, .btn--primary').forEach(el => {
   el.addEventListener('click', () => gaEvent('click_signup'));
 });
 
+// ─── Category tabs: right-edge fade while more tabs are off-screen ───
+(function () {
+  const wrapper = document.getElementById('catTabsWrapper');
+  const tabs = document.getElementById('catTabs');
+  if (!wrapper || !tabs) return;
+  const update = () => wrapper.classList.toggle('has-more',
+    tabs.scrollLeft + tabs.clientWidth < tabs.scrollWidth - 4);
+  tabs.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
+
 // ─── Tooltip ─────────────────────────────────────
 const tooltip = document.createElement('div');
 tooltip.className = 'product-tooltip';

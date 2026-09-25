@@ -509,19 +509,34 @@ a { text-decoration: none; color: inherit; }
   z-index: 100;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
-.cat-tabs-wrapper::-webkit-scrollbar { display: none; }
+/* Fade on the right edge while more tabs are hidden off-screen */
+.cat-tabs-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  background: linear-gradient(to right, transparent, var(--bg));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cat-tabs-wrapper.has-more::after { opacity: 1; }
 
 .cat-tabs {
   display: flex;
   align-items: center;
   padding: 0 var(--pad-x);
-  min-width: max-content;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
+
+.cat-tabs::-webkit-scrollbar { display: none; }
 
 .cat-tab {
   padding: 14px 18px;
