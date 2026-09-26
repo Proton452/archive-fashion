@@ -126,8 +126,18 @@
     <!-- PRODUCTS -->
     <section class="collection">
       <div class="collection__grid" id="productsGrid"></div>
-      <div class="collection__loading" id="loading">
-        <span>Loading collection</span><span class="loading__dots">...</span>
+      <div class="collection__loading" id="loading" role="status">
+        <span class="visually-hidden">Loading collection</span>
+        <div class="collection__grid" aria-hidden="true">
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+          <div class="skeleton-card"><div class="skeleton-card__image"></div><div class="skeleton-card__info"><span class="skeleton-card__line"></span><span class="skeleton-card__line skeleton-card__line--short"></span></div></div>
+        </div>
       </div>
       <div class="collection__empty" id="emptyState" hidden>
         <span>No items found</span>
