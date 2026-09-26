@@ -1370,6 +1370,11 @@ a { text-decoration: none; color: inherit; }
 .track-box__input:focus { outline: none; border-color: var(--accent); }
 
 .track-box__form .track-box__btn { padding: 11px 22px; width: auto; flex-shrink: 0; }
+
+/* Inline with the input: no hover lift, just a darker green */
+@media (hover: hover) {
+  .track-box__form .track-box__btn:hover { transform: none; box-shadow: none; }
+}
 .track-box__form.is-loading .track-box__btn { opacity: 0.6; }
 
 .track-box__result {
