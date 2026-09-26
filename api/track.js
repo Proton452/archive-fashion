@@ -25,11 +25,21 @@ function normalize(item) {
   const info     = item.track_info || {};
   const latest   = info.latest_status || {};
   const provider = (info.tracking && info.tracking.providers && info.tracking.providers[0]) || {};
-  const events   = (provider.events || []).slice(0, 40).map(e => ({
-    time:        e.time_iso || e.time_utc || '',
-    description: e.description || '',
-    location:    e.location || '',
-  }));
+  // Carriers often report the same scan twice: drop exact duplicates
+  const seen   = new Set();
+  const events = (provider.events || [])
+    .map(e => ({
+      time:        e.time_iso || e.time_utc || '',
+      description: e.description || '',
+      location:    e.location || '',
+    }))
+    .filter(e => {
+      const key = e.time + '|' + e.description;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 40);
   return {
     state:     'tracking',
     number:    item.number,
