@@ -1086,7 +1086,7 @@ a { text-decoration: none; color: inherit; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 0.875rem;
+  margin-bottom: 13px; /* lines the title (and the divider below) up with How to order / FAQ */
 }
 
 .reviews__tp-stars { color: #00B67A; font-size: 1rem; letter-spacing: 2px; }
