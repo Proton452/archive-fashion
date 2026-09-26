@@ -147,6 +147,13 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
   update();
 })();
 
+// Clear the stagger delay once a card has faded in, so press feedback isn't delayed
+grid.addEventListener('transitionend', e => {
+  if (e.propertyName === 'opacity' && e.target.classList.contains('product-card')) {
+    e.target.style.transitionDelay = '';
+  }
+});
+
 // ─── Search ─────────────────────────────────────
 searchInput.addEventListener('input', e => {
   searchQuery = e.target.value.toLowerCase().trim();

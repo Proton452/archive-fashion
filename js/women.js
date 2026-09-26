@@ -594,6 +594,13 @@ document.querySelectorAll('.nav__cta, .btn--primary').forEach(el => {
   update();
 })();
 
+// Clear the stagger delay once a card has faded in, so press feedback isn't delayed
+grid.addEventListener('transitionend', e => {
+  if (e.propertyName === 'opacity' && e.target.classList.contains('product-card')) {
+    e.target.style.transitionDelay = '';
+  }
+});
+
 // ─── Tooltip ─────────────────────────────────────
 const tooltip = document.createElement('div');
 tooltip.className = 'product-tooltip';
