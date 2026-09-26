@@ -1,14 +1,15 @@
 (function () {
   var SHEET_ID = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
   var CODES_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=Codes';
-  var PAGE_NAMES = ['women', 'reviews', 'faq', 'how-to-order'];
+  var PAGE_NAMES = ['index', 'women', 'reviews', 'faq', 'how-to-order'];
 
-  // Detect potential slug from URL path
+  // Detect potential slug from URL path ("women.html" is a page, not a slug)
   var parts = window.location.pathname.split('/').filter(Boolean);
   var urlSlug = null;
   for (var i = 0; i < parts.length; i++) {
-    if (PAGE_NAMES.indexOf(parts[i].toLowerCase()) === -1) {
-      urlSlug = parts[i].toLowerCase();
+    var part = parts[i].toLowerCase().replace(/\.html$/, '');
+    if (PAGE_NAMES.indexOf(part) === -1) {
+      urlSlug = part;
       break;
     }
   }
@@ -41,9 +42,13 @@
       'faq.html': '/faq' + c
     };
 
+    // data-page keeps the original target so links can be rewritten again once the slug is known
     document.querySelectorAll('a[href]').forEach(function (link) {
-      var href = link.getAttribute('href');
-      if (map[href] !== undefined) link.setAttribute('href', map[href]);
+      var page = link.dataset.page || link.getAttribute('href');
+      if (map[page] !== undefined) {
+        link.dataset.page = page;
+        link.setAttribute('href', map[page]);
+      }
     });
 
     // Brand logo always resets to default homepage
@@ -61,6 +66,18 @@
       });
     }
   }
+
+  function onReady(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  // Rewrite nav links right away (clean URLs + cached partner slug) instead of waiting for the sheet,
+  // so a quick click never lands on a raw "page.html" URL
+  onReady(function () {
+    var fastSlug = (activeSlug && cachedSlug === activeSlug && cachedCode) ? activeSlug : null;
+    applyRewrites(fastSlug, fastSlug ? cachedCode : null);
+  });
 
   // Background fetch to validate + refresh cache (runs in parallel with product loading)
   window.partnerReady = fetch(CODES_URL)
@@ -96,11 +113,7 @@
       var inviteCode = slug ? codeMap[slug] : null;
       window.PARTNER_CODE = inviteCode;
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { applyRewrites(slug, inviteCode); });
-      } else {
-        applyRewrites(slug, inviteCode);
-      }
+      onReady(function () { applyRewrites(slug, inviteCode); });
     })
     .catch(function () {
       // Fetch failed: keep cached code if available
