@@ -85,6 +85,7 @@ Le sheet doit être partagé en « Lecture pour tous avec le lien ».
 
 - `fetchSheetJSONP()`, `parseSheetData()`, `loadProducts()` — fonctionnels, branchés sur le vrai sheet
 - `partner.js` et les routes de `vercel.json` — les liens partenaires en dépendent
+- Le code Google Analytics (`gtag.js`, `G-H85B12JS2Y`) dans le `<head>` de chaque page — il sert aussi à valider le site dans Google Search Console
 - Les design tokens `:root` — toute modification impacte l'ensemble du site
 - La structure BEM des classes CSS
 
