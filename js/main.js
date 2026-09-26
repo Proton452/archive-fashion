@@ -20,7 +20,7 @@ const CATEGORY_MAP = {
 
 // ─── State ──────────────────────────────────────
 let allProducts      = [];
-let currentCategoryTab = 'football';
+let currentCategoryTab = 'all';
 let selectedFilters  = new Set();
 let searchQuery      = '';
 let sortOrder        = null;
@@ -726,7 +726,6 @@ function appendNextBatch() {
 
     card.innerHTML = `
       <div class="product-card__image">
-        ${p.isBestSeller && currentCategoryTab !== 'best-sellers' ? '<span class="product-card__badge">Best seller</span>' : ''}
         ${image
           ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(displayName)}" decoding="async"${globalIdx >= 8 ? ' loading="lazy"' : ''}>`
           : `<div class="product-card__image-placeholder">No image</div>`

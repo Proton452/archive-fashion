@@ -1011,22 +1011,6 @@ a { text-decoration: none; color: inherit; }
   overflow: hidden;
 }
 
-.product-card__badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: var(--text);
-  color: #fff;
-  font-size: 0.64rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-  pointer-events: none;
-}
-
 .product-tooltip {
   position: fixed;
   background: #fff;
@@ -1047,8 +1031,8 @@ a { text-decoration: none; color: inherit; }
 
 .product-card__price {
   font-family: var(--sans);
-  font-size: 1.02rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 600;
   color: var(--text);
   letter-spacing: 0;
 }
@@ -1126,13 +1110,9 @@ a { text-decoration: none; color: inherit; }
 .reviews__sub { font-size: 0.88rem; color: var(--text-muted); margin-top: -0.5rem; }
 
 .reviews__wall {
-  columns: 4 260px;
-  column-gap: 1.25rem;
-}
-
-.reviews__wall .review-card {
-  break-inside: avoid;
-  margin-bottom: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
 }
 
 .review-card {
@@ -1765,6 +1745,7 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 1200px) {
   .collection__grid       { grid-template-columns: repeat(3, 1fr); }
   .reviews__grid          { grid-template-columns: repeat(2, 1fr); }
+  .reviews__wall          { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* Mobile */
@@ -1804,7 +1785,6 @@ a { text-decoration: none; color: inherit; }
   .reviews { padding: 3.5rem var(--pad-x); }
   .reviews__grid { grid-template-columns: 1fr; gap: 1rem; }
   .reviews__wall {
-    columns: auto;
     display: flex;
     gap: 1rem;
     overflow-x: auto;
@@ -1815,7 +1795,7 @@ a { text-decoration: none; color: inherit; }
     scroll-padding: 0 var(--pad-x);
   }
   .reviews__wall::-webkit-scrollbar { display: none; }
-  .reviews__wall .review-card { flex: 0 0 82%; margin-bottom: 0; scroll-snap-align: center; }
+  .reviews__wall .review-card { flex: 0 0 82%; scroll-snap-align: center; }
 
   /* How to order */
 
