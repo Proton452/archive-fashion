@@ -840,13 +840,42 @@ a { text-decoration: none; color: inherit; }
 }
 
 .collection__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   text-align: center;
-  padding: 6rem 0;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  padding: 5rem var(--pad-x);
 }
+
+.collection__empty[hidden] { display: none; }
+
+.collection__empty-text {
+  max-width: 420px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.collection__empty-btn {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: border-color 0.2s, color 0.2s, transform 0.16s var(--ease-out);
+}
+
+.collection__empty-btn[hidden] { display: none; }
+
+@media (hover: hover) {
+  .collection__empty-btn:hover { border-color: var(--accent); color: var(--accent); }
+}
+
+.collection__empty-btn:active { transform: scale(0.97); }
 
 /* Skeleton cards shown while the collection loads */
 .skeleton-card {

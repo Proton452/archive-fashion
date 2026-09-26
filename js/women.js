@@ -117,9 +117,21 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
   });
 });
 
+let searchTrackTimer  = null;
+let lastTrackedSearch = '';
+
 searchInput.addEventListener('input', e => {
   searchQuery = e.target.value.toLowerCase().trim();
   applyFilters();
+
+  // Track what people search for once they stop typing (GA4 "search" event)
+  clearTimeout(searchTrackTimer);
+  searchTrackTimer = setTimeout(() => {
+    if (searchQuery.length < 2 || searchQuery === lastTrackedSearch) return;
+    lastTrackedSearch = searchQuery;
+    gaEvent('search', { search_term: searchQuery });
+    if (!visibleProducts.length) gaEvent('search_no_results', { search_term: searchQuery });
+  }, 1200);
 });
 
 sortBtn.addEventListener('click', () => {
@@ -323,6 +335,8 @@ async function loadProducts() {
   } catch (err) {
     console.error('[Lovegobuy Finds] Failed to load products:', err);
     loading.style.display = 'none';
+    emptyText.textContent = "Couldn't load the items. Please refresh the page.";
+    emptyReset.hidden = true;
     emptyState.hidden = false;
     countEl.textContent = '— Error loading items';
   }
@@ -457,6 +471,33 @@ function applyFilters() {
   renderProducts(filtered);
 }
 
+// ─── Empty state ─────────────────────────────────
+const emptyText  = document.getElementById('emptyText');
+const emptyReset = document.getElementById('emptyReset');
+
+function showEmptyState() {
+  const raw = searchInput.value.trim();
+  const isFiltered = raw || selectedFilters.size > 0 || currentCategoryTab !== 'all';
+  emptyText.textContent = raw
+    ? `Nothing found for "${raw}". Try another word or browse all items.`
+    : 'Nothing here yet. Browse all items instead.';
+  emptyReset.hidden = !isFiltered;
+  emptyState.hidden = false;
+}
+
+emptyReset.addEventListener('click', () => {
+  searchInput.value = '';
+  searchQuery = '';
+  selectedFilters.clear();
+  const allTab = document.querySelector('.cat-tab[data-cat="all"]');
+  if (currentCategoryTab !== 'all' && allTab) {
+    allTab.click();
+  } else {
+    applyFilters();
+  }
+  generateFilterDropdown();
+});
+
 function renderProducts(products) {
   infiniteScrollObserver.unobserve(sentinel);
   if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel);
@@ -466,7 +507,7 @@ function renderProducts(products) {
   displayedCount  = 0;
 
   if (!products.length) {
-    emptyState.hidden = false;
+    showEmptyState();
     countEl.textContent = '— 0 items';
     return;
   }
