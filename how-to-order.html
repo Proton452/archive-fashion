@@ -123,7 +123,15 @@
             <span class="tl-step__num">6</span>
             <div class="tl-step__body">
               <h2 class="tl-step__title">Track your delivery</h2>
-              <p class="tl-step__desc">Follow your package in real time with <a href="https://www.17track.net/" target="_blank" rel="noopener noreferrer" class="tl-step__link">17track</a>, every step of the way to your door.</p>
+              <p class="tl-step__desc">Paste your tracking number below to follow your package, every step of the way to your door.</p>
+              <div class="track-box">
+                <form class="track-box__form" id="trackForm" novalidate>
+                  <label class="visually-hidden" for="trackInput">Tracking number</label>
+                  <input class="track-box__input" id="trackInput" type="text" placeholder="Tracking number" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40">
+                  <button class="btn btn--primary track-box__btn" type="submit">Track</button>
+                </form>
+                <div class="track-box__result" id="trackResult" aria-live="polite" hidden></div>
+              </div>
             </div>
           </li>
 
@@ -175,6 +183,7 @@
 
   <script src="js/partner.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/track.js"></script>
   <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
