@@ -606,6 +606,27 @@ function applyFilters() {
   renderProducts(filtered);
 }
 
+// ─── Display name: "PSG 2026 HOME JERSEY" → "PSG 2026 Home Jersey" ───
+const KEEP_UPPER = new Set(['ac','adv','amg','ap','bape','cp','dn','erd','fc','ig','jfk','led','lv','mcm','nyc','og','om','psg','rb','sb','sv','tn','uefa','ufc','ugg','uk','us','usa','ysl','wrld','nba','nfl','ii','iii','xl','xxl','xs']);
+const KEEP_LOWER = new Set(['and','with','the','of','to','in','on','for','x']);
+
+function formatName(str) {
+  if (!str) return '';
+  return str.trim().split(/\s+/).map((word, i) => {
+    return word.split('-').map(part => {
+      const m = part.match(/^([^A-Za-z0-9]*)(.*?)([^A-Za-z0-9]*)$/);
+      const [, pre, core, post] = m;
+      const low = core.toLowerCase();
+      let out;
+      if (!core || /\d/.test(core)) out = core;
+      else if (KEEP_UPPER.has(low)) out = core.toUpperCase();
+      else if (i > 0 && KEEP_LOWER.has(low)) out = low;
+      else out = low.charAt(0).toUpperCase() + low.slice(1);
+      return pre + out + post;
+    }).join('-');
+  }).join(' ');
+}
+
 // ─── Empty state ─────────────────────────────────
 const emptyText  = document.getElementById('emptyText');
 const emptyReset = document.getElementById('emptyReset');
@@ -614,7 +635,8 @@ function showEmptyState() {
   const raw = searchInput.value.trim();
   const isFiltered = raw || selectedFilters.size > 0 || currentCategoryTab !== 'all';
   emptyText.textContent = raw
-    ? `Nothing found for "${raw}". Try another word or browse all items.`
+    ? `Nothing found for "${raw}".
+Try another word or browse all items.`
     : 'Nothing here yet. Browse all items instead.';
   emptyReset.hidden = !isFiltered;
   emptyState.hidden = false;
@@ -666,6 +688,7 @@ function appendNextBatch() {
   batch.forEach((p, i) => {
     const globalIdx = batchStart + i;
     const name    = p.name    || '';
+    const displayName = formatName(name);
     const brand   = p.brand   || '';
     const price   = p.price   || '';
     const image   = cloudinaryOptimize(
@@ -703,13 +726,14 @@ function appendNextBatch() {
 
     card.innerHTML = `
       <div class="product-card__image">
+        ${p.isBestSeller && currentCategoryTab !== 'best-sellers' ? '<span class="product-card__badge">Best seller</span>' : ''}
         ${image
-          ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(name)}" decoding="async"${globalIdx >= 8 ? ' loading="lazy"' : ''}>`
+          ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(displayName)}" decoding="async"${globalIdx >= 8 ? ' loading="lazy"' : ''}>`
           : `<div class="product-card__image-placeholder">No image</div>`
         }
       </div>
       <div class="product-card__info">
-        <h3 class="product-card__name" data-tooltip="${escapeAttr(name)}">${escapeHTML(name)}</h3>
+        <h3 class="product-card__name" data-tooltip="${escapeAttr(displayName)}">${escapeHTML(displayName)}</h3>
         ${price ? `<span class="product-card__price">${escapeHTML(price)}</span>` : ''}
       </div>
     `;
@@ -801,7 +825,7 @@ let tooltipTimer = null;
 document.addEventListener('mouseover', e => {
   const el = e.target.closest('.product-card__name');
   if (!el || !el.dataset.tooltip) return;
-  if (el.scrollWidth <= el.clientWidth) return;
+  if (el.scrollWidth <= el.clientWidth && el.scrollHeight <= el.clientHeight) return;
   tooltipTimer = setTimeout(() => {
     tooltip.textContent = el.dataset.tooltip;
     tooltip.style.opacity = '1';

@@ -71,10 +71,7 @@
     <section class="reviews" id="reviews">
       <div class="reviews__inner">
 
-        <div class="reviews__carousel">
-          <button class="reviews__arrow" id="reviewsPrev" aria-label="Previous">←</button>
-          <div class="reviews__track-wrapper">
-          <div class="reviews__track" id="reviewsTrack">
+        <div class="reviews__wall">
 
           <div class="review-card">
             <div class="review-card__photo review-card__photo--yt" data-ytid="v_tCgQkSSd4" style="background-image:url('assets/reviews/thumb-2.webp')"><iframe frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="review-card__play"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.45)"/><polygon points="19,14 38,24 19,34" fill="#fff"/></svg></div></div>
@@ -156,9 +153,6 @@
             </div>
           </div>
 
-          </div>
-          </div>
-          <button class="reviews__arrow" id="reviewsNext" aria-label="Next">→</button>
         </div>
 
         <!-- CTA -->
@@ -209,86 +203,6 @@
       iframe.src = `https://www.youtube.com/embed/${ytid}?controls=0&rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`;
       wrapper.classList.add('is-playing');
     });
-
-    const track    = document.getElementById('reviewsTrack');
-    const prevBtn  = document.getElementById('reviewsPrev');
-    const nextBtn  = document.getElementById('reviewsNext');
-
-    const originals = [...track.querySelectorAll('.review-card')];
-    const n = originals.length;
-
-    // Clones avant (ordre inverse pour que le slide gauche soit cohérent)
-    [...originals].reverse().forEach(c => track.prepend(c.cloneNode(true)));
-    // Clones après
-    originals.forEach(c => track.appendChild(c.cloneNode(true)));
-
-
-    let idx = n;
-    let animating = false;
-
-    function getW() {
-      const card = track.children[0];
-      const gap = parseFloat(window.getComputedStyle(track).gap) || 20;
-      return card.offsetWidth + gap;
-    }
-
-    function moveTo(i, animate) {
-      track.style.transition = animate
-        ? 'transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94)'
-        : 'none';
-      if (!animate) void track.offsetLeft; // force reflow — évite le flash au reset
-      track.style.transform = `translateX(-${i * getW()}px)`;
-      idx = i;
-    }
-
-    moveTo(n, false);
-
-    track.addEventListener('transitionend', () => {
-      if (idx >= n * 2) moveTo(idx - n, false);
-      else if (idx < n) moveTo(idx + n, false);
-      animating = false;
-    });
-
-    prevBtn.addEventListener('click', () => {
-      if (animating) return;
-      animating = true;
-      moveTo(idx - 1, true);
-    });
-
-    nextBtn.addEventListener('click', () => {
-      if (animating) return;
-      animating = true;
-      moveTo(idx + 1, true);
-    });
-
-    // Swipe mobile
-    const trackWrapper = document.querySelector('.reviews__track-wrapper');
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let isSwiping = false;
-
-    trackWrapper.addEventListener('touchstart', e => {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      isSwiping = false;
-    }, { passive: true });
-
-    trackWrapper.addEventListener('touchmove', e => {
-      const dx = e.touches[0].clientX - touchStartX;
-      const dy = e.touches[0].clientY - touchStartY;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
-        isSwiping = true;
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    trackWrapper.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      if (!isSwiping || Math.abs(dx) < 40 || animating) return;
-      animating = true;
-      moveTo(dx < 0 ? idx + 1 : idx - 1, true);
-    });
-
   </script>
 </body>
 </html>
