@@ -1793,6 +1793,16 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ================================================
+   KEYBOARD FOCUS
+================================================ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.toolbar__search:focus-visible { outline: none; }
+
+/* ================================================
    PRESS FEEDBACK
 ================================================ */
 .jersey-popup__cancel,
