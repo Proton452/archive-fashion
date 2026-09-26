@@ -316,7 +316,7 @@ a { text-decoration: none; color: inherit; }
    HERO
 ================================================ */
 .hero {
-  padding: calc(var(--nav-h) + 5rem) var(--pad-x) 0;
+  padding: calc(var(--nav-h) + 3rem) var(--pad-x) 0;
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--border);
@@ -328,10 +328,10 @@ a { text-decoration: none; color: inherit; }
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
   max-width: 1150px;
   margin: 0 auto;
-  padding-bottom: 4rem;
+  padding-bottom: 2.75rem;
 }
 
 .hero__tp-badge {
@@ -367,7 +367,7 @@ a { text-decoration: none; color: inherit; }
 
 .hero__title {
   font-family: var(--sans);
-  font-size: clamp(2.2rem, 5.1vw, 7.5rem);
+  font-size: clamp(2.2rem, 4.2vw, 5.5rem);
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.03em;
@@ -1691,8 +1691,8 @@ a { text-decoration: none; color: inherit; }
   .nav__mobile { display: flex; }
 
   /* Hero */
-  .hero { padding: calc(var(--nav-h) + 3rem) var(--pad-x) 0; }
-  .hero__content { padding-bottom: 3rem; gap: 1.25rem; }
+  .hero { padding: calc(var(--nav-h) + 2.25rem) var(--pad-x) 0; }
+  .hero__content { padding-bottom: 2.25rem; gap: 1.1rem; }
   .hero__title { font-size: clamp(2.4rem, 10vw, 3.5rem); }
   .toolbar__search { font-size: 16px; }
   .hero__stats { margin: 0 calc(-1 * var(--pad-x)); }
@@ -1731,7 +1731,7 @@ a { text-decoration: none; color: inherit; }
 
   .nav__cta { display: none; }
 
-  .hero { padding: calc(var(--nav-h) + 2rem) var(--pad-x) 0; }
+  .hero { padding: calc(var(--nav-h) + 1.5rem) var(--pad-x) 0; }
   .hero__ctas .btn--ghost { display: none; }
   .btn--primary { width: 100%; justify-content: center; }
 
