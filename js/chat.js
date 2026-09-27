@@ -12,7 +12,8 @@
   const DISCORD_URL = 'https://discord.gg/5EhjDVZ2x7';
   const WELCOME = "Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.";
   const SUGGESTIONS = ['How do I order?', 'Find a PSG jersey', 'Track my package'];
-  const isFrench = /^fr\b/i.test(navigator.language || '');
+  // The site is English for now; switch this to the site's language mode once it exists
+  const isFrench = false;
 
   // ─── State ────────────────────────────────────
   let state = { open: false, messages: [] };
@@ -346,7 +347,7 @@
 
   // ─── Teaser: one-time nudge after 20s, left of the bubble ───
   const TEASER_KEY   = 'lgf-chat-teaser';
-  const TEASER_DELAY = 20000;
+  const TEASER_DELAY = 12000;
   const TEASER_TIME  = 15000;
   let teaser = null;
 
