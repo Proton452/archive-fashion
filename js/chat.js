@@ -98,7 +98,7 @@
   const bubble = el('button', 'chat-bubble');
   bubble.type = 'button';
   bubble.setAttribute('aria-label', 'Open chat assistant');
-  bubble.innerHTML = ICON_CHAT + '<span class="chat-bubble__label">' + (isFrench ? 'Aide' : 'Help') + '</span>';
+  bubble.innerHTML = ICON_CHAT + '<span class="chat-bubble__label">' + (isFrench ? 'Assistant IA' : 'AI assistant') + '</span>';
 
   const panel = el('section', 'chat-panel');
   panel.setAttribute('role', 'dialog');
@@ -452,12 +452,20 @@
   });
 
   // ─── Teaser: nudge next to the bubble until the visitor opens the chat ───
-  // Stays up until the chat is opened (then never again) or dismissed with ×
-  // (then not again this visit). Shows sooner on the help pages.
+  // Two triggers: a timer (8s, 3s on the help pages) and coming back from Lovegobuy,
+  // where people get stuck. Stays up until the chat is opened (then never again) or
+  // dismissed with × (the timer one then stops for this visit).
   const OPENED_KEY    = 'lgf-chat-opened';        // localStorage: chat opened once
   const DISMISSED_KEY = 'lgf-chat-teaser-off';    // sessionStorage: × clicked this visit
   const SHOWN_KEY     = 'lgf-chat-teaser-shown';  // sessionStorage: already shown this visit
+  const RETURN_KEY    = 'lgf-chat-teaser-return'; // sessionStorage: "back from Lovegobuy" shown
   const onHelpPage = /^\/(how-to-order|faq)(\/|\.html|$)/.test(location.pathname);
+  const TEASER_TEXT = {
+    timer:  onHelpPage
+      ? (isFrench ? 'Bloqué ? Pose-moi ta question 👋' : 'Stuck? Ask me, I reply instantly 👋')
+      : (isFrench ? 'Besoin d’aide pour commander ? 👋' : 'Need help ordering? 👋'),
+    return: isFrench ? 'Bloqué sur Lovegobuy ? Demande-moi 👋' : 'Stuck on Lovegobuy? Ask me 👋',
+  };
   let teaser = null;
   let teaserTimer = null;
 
@@ -470,9 +478,10 @@
 
   function placeTeaser() {
     if (!teaser) return;
-    // Sits just left of the bubble, whatever its width (pill on desktop, round on phones)
+    // Sits just left of the bubble, whatever its width; wraps instead of running off narrow screens
     const r = bubble.getBoundingClientRect();
-    teaser.style.right = Math.round(window.innerWidth - r.left + 10) + 'px';
+    teaser.style.right = Math.round(window.innerWidth - r.left + 8) + 'px';
+    teaser.style.maxWidth = Math.round(r.left - 8 - 12) + 'px';
   }
   window.addEventListener('resize', placeTeaser);
 
@@ -485,30 +494,32 @@
     setTimeout(() => t.remove(), 250);
   }
 
-  function teaserAllowed() {
-    return !state.open && !state.messages.length
-      && !flag(localStorage, OPENED_KEY) && !flag(sessionStorage, DISMISSED_KEY);
+  function teaserAllowed(trigger) {
+    if (state.open || state.messages.length || flag(localStorage, OPENED_KEY)) return false;
+    return trigger === 'return' ? !flag(sessionStorage, RETURN_KEY) : !flag(sessionStorage, DISMISSED_KEY);
   }
 
-  function showTeaser() {
-    if (teaser || !teaserAllowed()) return;
+  function showTeaser(trigger = 'timer') {
+    if (!teaserAllowed(trigger)) return;
+    // The Lovegobuy text wins: a late timer never replaces it
+    if (teaser && (teaser.dataset.trigger === trigger || trigger === 'timer')) return;
     // Wait until the visitor can actually see the tab
     if (document.hidden) {
-      document.addEventListener('visibilitychange', () => { teaserTimer = setTimeout(showTeaser, 1500); }, { once: true });
+      document.addEventListener('visibilitychange', () => { teaserTimer = setTimeout(showTeaser, 1500, trigger); }, { once: true });
       return;
     }
-    flag(sessionStorage, SHOWN_KEY, true);
+    if (teaser) teaser.remove();                  // swap the timer text for the Lovegobuy one
+    clearTimeout(teaserTimer);
+    flag(sessionStorage, trigger === 'return' ? RETURN_KEY : SHOWN_KEY, true);
 
-    const text = onHelpPage
-      ? (isFrench ? 'Bloqué ? Pose-moi ta question 👋' : 'Stuck? Ask me, I reply instantly 👋')
-      : (isFrench ? 'Besoin d’aide pour commander ? 👋' : 'Need help ordering? 👋');
     teaser = el('div', 'chat-teaser');
-    const open = el('button', 'chat-teaser__text', text);
+    teaser.dataset.trigger = trigger;
+    const open = el('button', 'chat-teaser__text', TEASER_TEXT[trigger]);
     open.type = 'button';
     open.addEventListener('click', () => {
-      track('chat_teaser_click');
+      track('chat_teaser_click', { trigger });
       setOpen(true);
-      track('chat_open', { source: 'teaser' });
+      track('chat_open', { source: 'teaser', trigger });
     });
     const close = el('button', 'chat-teaser__close');
     close.type = 'button';
@@ -516,13 +527,21 @@
     close.innerHTML = ICON_CLOSE;
     close.addEventListener('click', () => {
       flag(sessionStorage, DISMISSED_KEY, true);
+      track('chat_teaser_dismiss', { trigger });
       hideTeaser();
     });
     teaser.append(open, close);
     document.body.append(teaser);
     placeTeaser();
     requestAnimationFrame(() => teaser && teaser.classList.add('is-visible'));
+    track('chat_teaser_show', { trigger });
+
+    // One gentle pulse on the bubble to draw the eye to the corner
+    bubble.classList.remove('is-pulsing');
+    void bubble.offsetWidth;
+    bubble.classList.add('is-pulsing');
   }
+  bubble.addEventListener('animationend', () => bubble.classList.remove('is-pulsing'));
 
   // Opening the chat (bubble or teaser) retires the teaser for good; called from setOpen
   function markOpened() {
@@ -530,11 +549,24 @@
     hideTeaser();
   }
 
-  if (teaserAllowed()) {
+  if (teaserAllowed('timer')) {
     // Already shown earlier this visit: bring it back quickly on the next page
     const delay = flag(sessionStorage, SHOWN_KEY) ? 1500 : onHelpPage ? 3000 : 8000;
-    teaserTimer = setTimeout(showTeaser, delay);
+    teaserTimer = setTimeout(showTeaser, delay, 'timer');
   }
+
+  // Back from Lovegobuy (product or sign-up links open it in a new tab) after a few seconds there
+  let leftForLovegobuy = 0;
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href*="lovegobuy.com"]');
+    if (a && a.target === '_blank') leftForLovegobuy = Date.now();
+  }, true);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !leftForLovegobuy) return;
+    const away = Date.now() - leftForLovegobuy;
+    leftForLovegobuy = 0;
+    if (away > 5000) setTimeout(showTeaser, 800, 'return');
+  });
 
   if (state.open) setOpen(true, false);
 })();
