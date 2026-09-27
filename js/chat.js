@@ -337,6 +337,11 @@
 
   function showTeaser() {
     if (state.open || state.messages.length || teaserSeen()) return;
+    // Only show (and use up) the teaser when the visitor can actually see the tab
+    if (document.hidden) {
+      document.addEventListener('visibilitychange', () => setTimeout(showTeaser, 1500), { once: true });
+      return;
+    }
     try { localStorage.setItem(TEASER_KEY, '1'); } catch (e) {}
 
     teaser = el('div', 'chat-teaser');
