@@ -94,7 +94,7 @@
   const bubble = el('button', 'chat-bubble');
   bubble.type = 'button';
   bubble.setAttribute('aria-label', 'Open chat assistant');
-  bubble.innerHTML = ICON_CHAT;
+  bubble.innerHTML = ICON_CHAT + '<span class="chat-bubble__label">' + (isFrench ? 'Aide' : 'Help') + '</span>';
 
   const panel = el('section', 'chat-panel');
   panel.setAttribute('role', 'dialog');
@@ -282,6 +282,7 @@
     save();
     clearTimeout(closeTimer);
     bubble.classList.toggle('is-hidden', open);
+    if (open) markOpened();
     document.documentElement.classList.toggle('chat-open', open);
     lockPage(open);
 
@@ -436,17 +437,33 @@
     send(input.value);
   });
 
-  // ─── Teaser: one-time nudge after 20s, left of the bubble ───
-  const TEASER_KEY   = 'lgf-chat-teaser';
-  const TEASER_DELAY = 12000;
-  const TEASER_TIME  = 15000;
+  // ─── Teaser: nudge next to the bubble until the visitor opens the chat ───
+  // Stays up until the chat is opened (then never again) or dismissed with ×
+  // (then not again this visit). Shows sooner on the help pages.
+  const OPENED_KEY    = 'lgf-chat-opened';        // localStorage: chat opened once
+  const DISMISSED_KEY = 'lgf-chat-teaser-off';    // sessionStorage: × clicked this visit
+  const SHOWN_KEY     = 'lgf-chat-teaser-shown';  // sessionStorage: already shown this visit
+  const onHelpPage = /^\/(how-to-order|faq)(\/|\.html|$)/.test(location.pathname);
   let teaser = null;
+  let teaserTimer = null;
 
-  function teaserSeen() {
-    try { return localStorage.getItem(TEASER_KEY) === '1'; } catch (e) { return true; }
+  function flag(storage, key, set) {
+    try {
+      if (set) storage.setItem(key, '1');
+      return storage.getItem(key) === '1';
+    } catch (e) { return false; }
   }
 
+  function placeTeaser() {
+    if (!teaser) return;
+    // Sits just left of the bubble, whatever its width (pill on desktop, round on phones)
+    const r = bubble.getBoundingClientRect();
+    teaser.style.right = Math.round(window.innerWidth - r.left + 10) + 'px';
+  }
+  window.addEventListener('resize', placeTeaser);
+
   function hideTeaser() {
+    clearTimeout(teaserTimer);
     if (!teaser) return;
     teaser.classList.remove('is-visible');
     const t = teaser;
@@ -454,21 +471,28 @@
     setTimeout(() => t.remove(), 250);
   }
 
+  function teaserAllowed() {
+    return !state.open && !state.messages.length
+      && !flag(localStorage, OPENED_KEY) && !flag(sessionStorage, DISMISSED_KEY);
+  }
+
   function showTeaser() {
-    if (state.open || state.messages.length || teaserSeen()) return;
-    // Only show (and use up) the teaser when the visitor can actually see the tab
+    if (teaser || !teaserAllowed()) return;
+    // Wait until the visitor can actually see the tab
     if (document.hidden) {
       document.addEventListener('visibilitychange', () => { teaserTimer = setTimeout(showTeaser, 1500); }, { once: true });
       return;
     }
-    try { localStorage.setItem(TEASER_KEY, '1'); } catch (e) {}
+    flag(sessionStorage, SHOWN_KEY, true);
 
+    const text = onHelpPage
+      ? (isFrench ? 'Bloqué ? Pose-moi ta question 👋' : 'Stuck? Ask me, I reply instantly 👋')
+      : (isFrench ? 'Besoin d’aide pour commander ? 👋' : 'Need help ordering? 👋');
     teaser = el('div', 'chat-teaser');
-    const open = el('button', 'chat-teaser__text', isFrench ? 'Besoin d’aide pour commander ? 👋' : 'Need help ordering? 👋');
+    const open = el('button', 'chat-teaser__text', text);
     open.type = 'button';
     open.addEventListener('click', () => {
       track('chat_teaser_click');
-      hideTeaser();
       setOpen(true);
       track('chat_open', { source: 'teaser' });
     });
@@ -476,28 +500,26 @@
     close.type = 'button';
     close.setAttribute('aria-label', isFrench ? 'Fermer' : 'Dismiss');
     close.innerHTML = ICON_CLOSE;
-    close.addEventListener('click', hideTeaser);
+    close.addEventListener('click', () => {
+      flag(sessionStorage, DISMISSED_KEY, true);
+      hideTeaser();
+    });
     teaser.append(open, close);
     document.body.append(teaser);
+    placeTeaser();
     requestAnimationFrame(() => teaser && teaser.classList.add('is-visible'));
-    setTimeout(hideTeaser, TEASER_TIME);
   }
 
-  bubble.addEventListener('click', hideTeaser);
-
-  // Visitors who already click around (products, tabs, sign-up, search) don't need the nudge
-  // on this visit; it isn't marked as seen, so it can still show on a later visit.
-  let teaserTimer = null;
-  function cancelTeaser(e) {
-    if (e && e.target.closest && e.target.closest('.chat-teaser')) return;
-    clearTimeout(teaserTimer);
-    document.removeEventListener('click', cancelTeaser, true);
-    document.removeEventListener('input', cancelTeaser, true);
+  // Opening the chat (bubble or teaser) retires the teaser for good; called from setOpen
+  function markOpened() {
+    flag(localStorage, OPENED_KEY, true);
+    hideTeaser();
   }
-  if (!teaserSeen()) {
-    teaserTimer = setTimeout(showTeaser, TEASER_DELAY);
-    document.addEventListener('click', cancelTeaser, true);
-    document.addEventListener('input', cancelTeaser, true);
+
+  if (teaserAllowed()) {
+    // Already shown earlier this visit: bring it back quickly on the next page
+    const delay = flag(sessionStorage, SHOWN_KEY) ? 1500 : onHelpPage ? 4000 : 12000;
+    teaserTimer = setTimeout(showTeaser, delay);
   }
 
   if (state.open) setOpen(true, false);
