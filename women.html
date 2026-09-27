@@ -87,39 +87,42 @@
       </div>
     </section>
 
-    <!-- CATEGORY TABS -->
-    <div class="cat-tabs-wrapper" id="catTabsWrapper">
-      <div class="cat-tabs" id="catTabs">
-        <button class="cat-tab" data-cat="best-sellers">Best Sellers</button>
-        <button class="cat-tab is-active" data-cat="all">All</button>
-        <button class="cat-tab" data-cat="summer">Summer</button>
-        <button class="cat-tab" data-cat="tops">Tops</button>
-        <button class="cat-tab" data-cat="pants">Pants</button>
-        <button class="cat-tab" data-cat="accessories">Accessories</button>
-        <button class="cat-tab" data-cat="winter">Winter</button>
+    <!-- STICKY SHOP BAR (tabs + toolbar) -->
+    <div class="shop-bar" id="shopBar">
+      <!-- CATEGORY TABS -->
+      <div class="cat-tabs-wrapper" id="catTabsWrapper">
+        <div class="cat-tabs" id="catTabs">
+          <button class="cat-tab" data-cat="best-sellers">Best Sellers</button>
+          <button class="cat-tab is-active" data-cat="all">All</button>
+          <button class="cat-tab" data-cat="summer">Summer</button>
+          <button class="cat-tab" data-cat="tops">Tops</button>
+          <button class="cat-tab" data-cat="pants">Pants</button>
+          <button class="cat-tab" data-cat="accessories">Accessories</button>
+          <button class="cat-tab" data-cat="winter">Winter</button>
+        </div>
       </div>
-    </div>
 
-    <!-- TOOLBAR -->
-    <div class="toolbar" id="toolbar">
-      <div class="toolbar__filter-wrapper">
-        <button class="toolbar__filter-btn" id="filterBtn">
-          Filter <span class="toolbar__chevron">▾</span>
+      <!-- TOOLBAR -->
+      <div class="toolbar" id="toolbar">
+        <div class="toolbar__filter-wrapper">
+          <button class="toolbar__filter-btn" id="filterBtn">
+            Filter <span class="toolbar__chevron">▾</span>
+          </button>
+          <div class="toolbar__filter-dropdown" id="filterDropdown"></div>
+        </div>
+
+        <div class="toolbar__search-wrapper">
+          <svg class="toolbar__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input type="text" class="toolbar__search" id="searchInput" placeholder="Search…" maxlength="100" autocomplete="off">
+        </div>
+
+        <button class="toolbar__sort" id="sortBtn">
+          Price <span class="toolbar__sort-chevron">↕&#xFE0E;</span>
         </button>
-        <div class="toolbar__filter-dropdown" id="filterDropdown"></div>
       </div>
-
-      <div class="toolbar__search-wrapper">
-        <svg class="toolbar__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
-        <input type="text" class="toolbar__search" id="searchInput" placeholder="Search…" maxlength="100" autocomplete="off">
-      </div>
-
-      <button class="toolbar__sort" id="sortBtn">
-        Price <span class="toolbar__sort-chevron">↕&#xFE0E;</span>
-      </button>
     </div>
 
 

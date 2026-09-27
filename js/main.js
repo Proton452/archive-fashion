@@ -603,7 +603,19 @@ function applyFilters() {
     filtered = [...withPrice, ...noPrice];
   }
 
+  // Decide before re-rendering: emptying the grid briefly shortens the page and resets the scroll
+  const prevY = window.scrollY;
+  const stickAt = shopBarStickPoint();
   renderProducts(filtered);
+  const targetY = (stickAt !== null && prevY > stickAt) ? stickAt : prevY;
+  if (window.scrollY !== targetY) window.scrollTo({ top: targetY, behavior: 'instant' });
+}
+
+// Scroll position at which the shop bar sticks under the nav (start of the results)
+function shopBarStickPoint() {
+  const hero = document.getElementById('hero');
+  if (!hero) return null;
+  return hero.getBoundingClientRect().bottom + window.scrollY - nav.offsetHeight;
 }
 
 // ─── Display name: "PSG 2026 HOME JERSEY" → "PSG 2026 Home Jersey" ───

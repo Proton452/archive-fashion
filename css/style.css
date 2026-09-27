@@ -40,6 +40,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  overflow-x: clip; /* clip (not hidden) so position: sticky keeps working */
 }
 
 body {
@@ -48,6 +49,7 @@ body {
   font-family: var(--sans);
   font-weight: 400;
   overflow-x: hidden;
+  overflow-x: clip;
   font-size: 15px;
 }
 
@@ -521,10 +523,16 @@ a { text-decoration: none; color: inherit; }
 /* ================================================
    CATEGORY TABS
 ================================================ */
-.cat-tabs-wrapper {
+/* Tabs + search/filter bar stay under the nav while scrolling products */
+.shop-bar {
   position: sticky;
   top: var(--nav-h);
   z-index: 100;
+  background: var(--bg);
+}
+
+.cat-tabs-wrapper {
+  position: relative;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
