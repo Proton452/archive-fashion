@@ -1943,7 +1943,7 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 168, 107, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
   transition: transform 0.2s var(--ease-out), background-color 0.2s, opacity 0.2s;
 }
 .chat-bubble.is-hidden { opacity: 0; pointer-events: none; transform: scale(0.9); }
@@ -1969,14 +1969,17 @@ a { text-decoration: none; color: inherit; }
   border-radius: 18px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  animation: chat-in 0.22s var(--ease-out);
+  /* Opens from the bubble and closes back into it along the same path */
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  transform-origin: bottom right;
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
 }
+.chat-panel.is-open { opacity: 1; transform: none; }
 .chat-panel[hidden] { display: none; }
 
-@keyframes chat-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to   { opacity: 1; transform: none; }
-}
+/* Dimmed page behind the mobile sheet (hidden on desktop) */
+.chat-backdrop { display: none; }
 
 .chat-panel__header {
   display: flex;
@@ -2203,18 +2206,52 @@ a { text-decoration: none; color: inherit; }
   .chat-bubble { right: 1rem; bottom: 1rem; }
   .chat-teaser { right: calc(1rem + 56px + 8px); bottom: calc(1rem + 8px); }
   .back-to-top { bottom: calc(1rem + 56px + 12px); right: calc(1rem + 7px); }
-  .chat-panel {
-    inset: 0;
-    width: auto;
-    height: 100dvh;
-    border: none;
-    border-radius: 0;
-  }
   html.chat-open, html.chat-open body { overflow: hidden; }
+
+  /* Bottom sheet: slides up over a dimmed page, slides back down on close */
+  .chat-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 399;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .chat-backdrop.is-open { opacity: 1; }
+  .chat-backdrop[hidden] { display: none; }
+
+  .chat-panel {
+    inset: auto 0 0 0;
+    width: auto;
+    height: 85dvh;
+    border: none;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+    opacity: 1;
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .chat-panel.is-open { transform: none; }
+
+  .chat-panel__header { position: relative; padding-top: 1.4rem; }
+  .chat-panel__header::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 2px;
+    background: var(--border);
+  }
+  .chat-panel__form { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chat-panel { animation: none; }
+  .chat-panel,
+  .chat-backdrop { transition-duration: 0.01s; }
   .chat-typing span { animation: none; opacity: 0.6; }
 }
 

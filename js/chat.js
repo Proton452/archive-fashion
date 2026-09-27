@@ -128,7 +128,10 @@
   form.append(input, sendBtn);
 
   panel.append(header, list, form);
-  document.body.append(bubble, panel);
+  const backdrop = el('div', 'chat-backdrop');
+  backdrop.hidden = true;
+
+  document.body.append(bubble, backdrop, panel);
 
   // ─── Rendering ────────────────────────────────
   function productCard(p) {
@@ -248,17 +251,41 @@
   }
 
   // ─── Open / close ─────────────────────────────
-  function setOpen(open) {
+  // Open and close run the same transition in both directions (CSS .is-open).
+  // `animate: false` restores an open chat instantly after a page change.
+  const CLOSE_MS = 340;
+  let closeTimer = null;
+
+  function setOpen(open, animate = true) {
     state.open = open;
-    panel.hidden = !open;
+    save();
+    clearTimeout(closeTimer);
     bubble.classList.toggle('is-hidden', open);
     document.documentElement.classList.toggle('chat-open', open);
-    save();
+
     if (open) {
+      if (!animate) {                        // already in the open position before first paint
+        panel.classList.add('is-open');
+        backdrop.classList.add('is-open');
+      }
+      panel.hidden = false;
+      backdrop.hidden = false;
       render();
+      void panel.offsetWidth;                // start the transition from the closed position
+      panel.classList.add('is-open');
+      backdrop.classList.add('is-open');
       if (window.matchMedia('(hover: hover)').matches) input.focus();
+    } else {
+      panel.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
+      closeTimer = setTimeout(() => {
+        panel.hidden = true;
+        backdrop.hidden = true;
+      }, CLOSE_MS);
     }
   }
+
+  backdrop.addEventListener('click', () => setOpen(false));
 
   bubble.addEventListener('click', () => {
     setOpen(true);
@@ -367,5 +394,5 @@
   bubble.addEventListener('click', hideTeaser);
   if (!teaserSeen()) setTimeout(showTeaser, TEASER_DELAY);
 
-  if (state.open) setOpen(true);
+  if (state.open) setOpen(true, false);
 })();
