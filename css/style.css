@@ -92,8 +92,11 @@ a { text-decoration: none; color: inherit; }
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, transform 0.28s var(--ease-out);
 }
+
+/* Scrolling down hides the nav (js/scroll-nav.js); scrolling up brings it back */
+.nav-hidden .nav { transform: translateY(-100%); box-shadow: none; }
 
 .nav.is-scrolled {
   box-shadow: 0 2px 16px rgba(0,0,0,0.07);
@@ -529,7 +532,9 @@ a { text-decoration: none; color: inherit; }
   top: var(--nav-h);
   z-index: 100;
   background: var(--bg);
+  transition: top 0.28s var(--ease-out);
 }
+.nav-hidden .shop-bar { top: 0; }
 
 .cat-tabs-wrapper {
   position: relative;
