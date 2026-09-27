@@ -1,7 +1,7 @@
 /* ==============================================
    Chatbot — POST /api/chat
    Body: { messages: [{ role: 'user' | 'model', text }] }
-   Gemini (key in Vercel env var GEMINI_API_KEY) answers ordering
+   Gemini (key in Vercel env var Chatbot_gemini_key) answers ordering
    questions and can search the catalog / track a package.
    Product links only come from the catalog: the model refers to
    products as [[p:ID]] and the server turns them into cards.
@@ -15,6 +15,9 @@ const API_URL      = `https://generativelanguage.googleapis.com/v1beta/models/${
 const MAX_HISTORY  = 12;   // messages sent to the model
 const MAX_CHARS    = 500;  // per user message
 const MAX_TOOL_ROUNDS = 3;
+
+// The key was saved in Vercel as Chatbot_gemini_key; GEMINI_API_KEY also accepted
+const GEMINI_KEY = process.env.GEMINI_API_KEY || process.env.Chatbot_gemini_key;
 
 // Best-effort per-IP limit (per serverless instance)
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -117,7 +120,7 @@ async function runTool(call, found) {
 async function callGemini(contents) {
   const r = await fetch(API_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents,
@@ -161,7 +164,7 @@ function buildReply(text, found) {
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  if (!process.env.GEMINI_API_KEY) return res.status(500).json({ error: 'Chat is not configured yet.' });
+  if (!GEMINI_KEY) return res.status(500).json({ error: 'Chat is not configured yet.' });
 
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
   if (rateLimited(ip)) return res.status(429).json({ error: 'Too many messages. Please wait a few minutes.' });
