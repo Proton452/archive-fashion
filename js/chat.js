@@ -12,7 +12,7 @@
   const DISCORD_URL = 'https://discord.gg/5EhjDVZ2x7';
   const WELCOME = "Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.";
   // Big one-tap questions on the empty chat: the things people get stuck on
-  const SUGGESTIONS = ['How do I order?', 'How do the 500€ coupons work?', 'Is the quality good?'];
+  const SUGGESTIONS = ['How do I order?', 'How do I get the 500€ coupons?', 'Is the quality good?'];
   const PLACEHOLDER = 'Ask your question…';
   // The site is English for now; switch this to the site's language mode once it exists
   const isFrench = false;
