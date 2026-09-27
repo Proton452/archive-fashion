@@ -12,6 +12,7 @@
   const DISCORD_URL = 'https://discord.gg/5EhjDVZ2x7';
   const WELCOME = "Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.";
   const SUGGESTIONS = ['How do I order?', 'Find a PSG jersey', 'Track my package'];
+  const isFrench = /^fr\b/i.test(navigator.language || '');
 
   // ─── State ────────────────────────────────────
   let state = { open: false, messages: [] };
@@ -63,6 +64,8 @@
         const type = bullet ? 'ul' : 'ol';
         if (!list || listType !== type) {
           list = el(type, 'chat-list');
+          // Keep the model's numbering if a list resumes after a button or card
+          if (numbered && +numbered[0].match(/\d+/)[0] > 1) list.start = +numbered[0].match(/\d+/)[0];
           listType = type;
           frag.append(list);
         }
@@ -147,8 +150,24 @@
     return a;
   }
 
+  const BUTTON_LABELS = isFrench
+    ? { signup: 'Créer mon compte (500€ de coupons) →', discord: 'Poser la question sur Discord →', howto: 'Voir le guide de commande →', faq: 'Voir la FAQ →' }
+    : { signup: 'Sign up & get 500€ coupons →', discord: 'Ask on Discord →', howto: 'See the full ordering guide →', faq: 'Read the FAQ →' };
+
+  // Site pages keep the creator slug (/faq/football) like the rest of the site
+  function sitePath(page) {
+    let slug = null;
+    try { slug = sessionStorage.getItem('partnerSlug'); } catch (e) {}
+    return '/' + page + (slug ? '/' + slug : '');
+  }
+
   function actionButton(kind) {
-    const a = el('a', 'chat-action chat-action--' + kind, kind === 'signup' ? 'Sign up & get 500€ coupons →' : 'Ask on Discord →');
+    const a = el('a', 'chat-action chat-action--' + kind, BUTTON_LABELS[kind]);
+    if (kind === 'faq' || kind === 'howto') {
+      a.href = sitePath(kind === 'faq' ? 'faq' : 'how-to-order');
+      a.addEventListener('click', () => track('chat_page_link', { page: kind }));
+      return a;
+    }
     a.href = kind === 'signup' ? withPartnerCode(SIGNUP_URL) : DISCORD_URL;
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
@@ -181,7 +200,7 @@
         const wrap = el('div', 'chat-msg__products');
         b.items.forEach(p => wrap.append(productCard(p)));
         row.append(wrap);
-      } else if (b.type === 'button' && (b.kind === 'signup' || b.kind === 'discord')) {
+      } else if (b.type === 'button' && BUTTON_LABELS[b.kind]) {
         const wrap = el('div', 'chat-msg__actions');
         wrap.append(actionButton(b.kind));
         row.append(wrap);
@@ -302,7 +321,6 @@
   const TEASER_KEY   = 'lgf-chat-teaser';
   const TEASER_DELAY = 20000;
   const TEASER_TIME  = 15000;
-  const isFrench = /^fr\b/i.test(navigator.language || '');
   let teaser = null;
 
   function teaserSeen() {

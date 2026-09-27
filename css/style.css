@@ -2123,10 +2123,14 @@ a { text-decoration: none; color: inherit; }
 }
 .chat-action:active { transform: scale(0.98); }
 .chat-action--signup  { background: var(--accent); color: #fff; }
-.chat-action--discord { border: 1px solid var(--border); color: var(--text); }
+.chat-action--discord,
+.chat-action--faq,
+.chat-action--howto { border: 1px solid var(--border); color: var(--text); }
 @media (hover: hover) {
   .chat-action--signup:hover  { background: var(--accent-dark); }
-  .chat-action--discord:hover { border-color: var(--accent); color: var(--accent); }
+  .chat-action--discord:hover,
+  .chat-action--faq:hover,
+  .chat-action--howto:hover { border-color: var(--accent); color: var(--accent); }
 }
 
 .chat-suggestions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
