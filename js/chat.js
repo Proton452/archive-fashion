@@ -102,14 +102,14 @@
 
   const panel = el('section', 'chat-panel');
   panel.setAttribute('role', 'dialog');
-  panel.setAttribute('aria-label', 'LovegoFinds assistant');
+  panel.setAttribute('aria-label', 'LovegoFinds AI assistant');
   panel.hidden = true;
 
   const header = el('header', 'chat-panel__header');
   const avatar = el('span', 'chat-avatar chat-avatar--header');
   avatar.innerHTML = AVATAR;
   const titleWrap = el('div', 'chat-panel__titles');
-  titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds assistant'), el('p', 'chat-panel__subtitle', 'Online · replies instantly'));
+  titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds AI assistant'), el('p', 'chat-panel__subtitle', 'Online · replies instantly'));
   const resetBtn = el('button', 'chat-panel__reset', 'New chat');
   resetBtn.type = 'button';
   const closeBtn = el('button', 'chat-panel__close');
