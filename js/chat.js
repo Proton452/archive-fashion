@@ -560,18 +560,23 @@
     teaserTimer = setTimeout(showTeaser, delay, 'timer');
   }
 
-  // Back from Lovegobuy (product or sign-up links open it in a new tab) after a few seconds there
-  let leftForLovegobuy = 0;
+  // Back from Lovegobuy after a few seconds there. Links open it in a new tab, but in-app
+  // browsers (Instagram, TikTok) often open it in the same one and reload this page on the
+  // way back, so the departure time is kept in sessionStorage.
+  const LEFT_KEY = 'lgf-left-for-lovegobuy';
+  function backFromLovegobuy() {
+    let left = 0;
+    try { left = +sessionStorage.getItem(LEFT_KEY) || 0; sessionStorage.removeItem(LEFT_KEY); } catch (e) {}
+    const away = Date.now() - left;
+    if (left && away > 5000 && away < 2 * 3600 * 1000) setTimeout(showTeaser, 800, 'return');
+  }
   document.addEventListener('click', e => {
     const a = e.target.closest && e.target.closest('a[href*="lovegobuy.com"]');
-    if (a && a.target === '_blank') leftForLovegobuy = Date.now();
-  }, true);
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden || !leftForLovegobuy) return;
-    const away = Date.now() - leftForLovegobuy;
-    leftForLovegobuy = 0;
-    if (away > 5000) setTimeout(showTeaser, 800, 'return');
+    if (!a || e.defaultPrevented) return;
+    try { sessionStorage.setItem(LEFT_KEY, String(Date.now())); } catch (e) {}
   });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) backFromLovegobuy(); });
+  window.addEventListener('pageshow', backFromLovegobuy);   // reloaded or restored from the back cache
 
   if (state.open) setOpen(true, false);
 })();
