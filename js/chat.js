@@ -532,7 +532,7 @@
 
   if (teaserAllowed()) {
     // Already shown earlier this visit: bring it back quickly on the next page
-    const delay = flag(sessionStorage, SHOWN_KEY) ? 1500 : onHelpPage ? 4000 : 12000;
+    const delay = flag(sessionStorage, SHOWN_KEY) ? 1500 : onHelpPage ? 3000 : 8000;
     teaserTimer = setTimeout(showTeaser, delay);
   }
 
