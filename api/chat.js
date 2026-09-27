@@ -206,25 +206,6 @@ async function logQuestion(question, reply) {
 }
 
 module.exports = async (req, res) => {
-  // TEMP diagnostic for the question log (no secrets returned)
-  if (req.method === 'GET' && req.query && req.query.diag === 'log') {
-    const url = process.env.CHAT_LOG_URL || '';
-    let status = null, body = null;
-    if (url) {
-      try {
-        const r = await fetch(url.trim(), { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ question: 'TEST diag serveur (Claude), tu peux supprimer', products: '', reply: '' }) });
-        status = r.status;
-        body = (await r.text()).slice(0, 40);
-      } catch (e) { body = 'fetch error: ' + e.message; }
-    }
-    return res.status(200).json({
-      hasLogUrl: !!url,
-      host: url ? url.trim().split('/')[2] : null,
-      endsWithExec: /\/exec\?key=/.test(url),
-      hasSpaces: /\s/.test(url),
-      status, body,
-    });
-  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (!GEMINI_KEY) return res.status(500).json({ error: 'Chat is not configured yet.' });
 
