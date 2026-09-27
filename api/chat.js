@@ -205,7 +205,6 @@ module.exports = async (req, res) => {
     const busy = err.status === 429 || err.status === 503;
     return res.status(busy ? 503 : 502).json({
       error: busy ? 'The assistant is busy right now. Please try again in a minute.' : 'The assistant is unavailable right now. Please try again later.',
-      ...(req.query && req.query.debug === '1' ? { detail: err.message } : {}),
     });
   }
 };
