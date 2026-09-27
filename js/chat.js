@@ -258,12 +258,32 @@
   const CLOSE_MS = 340;
   let closeTimer = null;
 
+  // Freeze the page behind the mobile sheet (iOS scrolls it when the keyboard opens)
+  // and put it back exactly where it was on close.
+  let lockedY = null;
+  function lockPage(lock) {
+    const b = document.body.style;
+    if (lock && lockedY === null && window.matchMedia('(max-width: 480px)').matches) {
+      lockedY = window.scrollY;
+      b.position = 'fixed';
+      b.top = -lockedY + 'px';
+      b.left = '0';
+      b.right = '0';
+      b.width = '100%';
+    } else if (!lock && lockedY !== null) {
+      b.position = b.top = b.left = b.right = b.width = '';
+      window.scrollTo({ top: lockedY, behavior: 'instant' });
+      lockedY = null;
+    }
+  }
+
   function setOpen(open, animate = true) {
     state.open = open;
     save();
     clearTimeout(closeTimer);
     bubble.classList.toggle('is-hidden', open);
     document.documentElement.classList.toggle('chat-open', open);
+    lockPage(open);
 
     if (open) {
       if (!animate) {                        // already in the open position before first paint
@@ -402,6 +422,14 @@
       if (window.matchMedia('(hover: hover)').matches) input.focus();
     }
   }
+
+  // Tapping send must not take focus from the input, or the mobile keyboard closes and the sheet jumps
+  sendBtn.addEventListener('pointerdown', e => {
+    if (document.activeElement === input) e.preventDefault();
+  });
+  sendBtn.addEventListener('mousedown', e => {
+    if (document.activeElement === input) e.preventDefault();
+  });
 
   form.addEventListener('submit', e => {
     e.preventDefault();
