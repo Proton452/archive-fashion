@@ -240,7 +240,8 @@
     }
 
     const limitReached = userCount() >= MAX_USER_MESSAGES;
-    input.disabled = sending || limitReached;
+    // Keep the input enabled while sending: disabling it would close the mobile keyboard
+    input.disabled = limitReached;
     sendBtn.disabled = sending || limitReached;
     input.placeholder = limitReached ? 'Conversation limit reached, start a new chat' : 'Ask anything…';
 
@@ -279,9 +280,12 @@
     } else {
       panel.classList.remove('is-open');
       backdrop.classList.remove('is-open');
+      if (document.activeElement === input) input.blur();
       closeTimer = setTimeout(() => {
         panel.hidden = true;
         backdrop.hidden = true;
+        panel.style.bottom = '';
+        panel.style.height = '';
       }, CLOSE_MS);
     }
   }
@@ -290,6 +294,34 @@
 
   // ─── Mobile sheet: drag the handle/header down to close ───
   const isSheet = () => window.matchMedia('(max-width: 480px)').matches;
+
+  // ─── Mobile keyboard: keep the sheet inside the visible area ───
+  // When the keyboard opens, the visible viewport shrinks but the page (and 85dvh) don't,
+  // so the browser scrolls things around. Pin the sheet right above the keyboard instead.
+  function fitToViewport() {
+    const vv = window.visualViewport;
+    if (!vv || !state.open || !isSheet()) {
+      panel.style.bottom = '';
+      panel.style.height = '';
+      return;
+    }
+    const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    if (keyboard > 80) {
+      panel.style.bottom = keyboard + 'px';
+      panel.style.height = Math.round(vv.height - 8) + 'px';
+      list.scrollTop = list.scrollHeight;
+    } else {
+      panel.style.bottom = '';
+      panel.style.height = '';
+    }
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', fitToViewport);
+    window.visualViewport.addEventListener('scroll', fitToViewport);
+  }
+  input.addEventListener('focus', () => setTimeout(fitToViewport, 50));
+  input.addEventListener('blur', () => setTimeout(fitToViewport, 50));
   let drag = null;
 
   header.addEventListener('touchstart', e => {
