@@ -5,6 +5,8 @@
    questions and can search the catalog / track a package.
    Product links only come from the catalog: the model refers to
    products as [[p:ID]] and the server turns them into cards.
+   If CHAT_LOG_URL is set, questions are logged anonymously
+   (emails, phone and tracking numbers masked).
 ============================================== */
 
 const { getCatalog, searchProducts } = require('./_lib/catalog');
@@ -137,29 +139,70 @@ async function callGemini(contents) {
   return data;
 }
 
-// Turn the model text into { text, products, buttons } with only catalog links
-function buildReply(text, found) {
-  const products = [];
-  const buttons = [];
-  const clean = text
-    .replace(/\[\[p:([a-z0-9]+)\]\]/gi, (_, id) => {
-      const p = found.get(id);
-      if (p && !products.includes(p) && products.length < 4) products.push(p);
-      return '';
-    })
-    .replace(/\[\[(signup|discord)\]\]/gi, (_, b) => {
-      const key = b.toLowerCase();
-      if (!buttons.includes(key)) buttons.push(key);
-      return '';
-    })
-    .replace(/https?:\/\/\S+/g, '')           // never pass through raw URLs
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-  return {
-    text: clean,
-    products: products.map(p => ({ id: p.id, name: p.name, price: p.price, image: p.image, link: p.link })),
-    buttons,
+// Turn the model text into ordered blocks, keeping products and buttons where the
+// model placed them. Only catalog links survive: raw URLs are dropped.
+function buildReply(rawText, found) {
+  const blocks = [];
+  const shown = new Set();
+  let productCount = 0;
+
+  const pushText = t => {
+    t = t.replace(/https?:\/\/\S+/g, '').replace(/\n{3,}/g, '\n\n').trim();
+    if (t) blocks.push({ type: 'text', text: t });
   };
+
+  const re = /\[\[(p:[a-z0-9]+|signup|discord)\]\]/gi;
+  let last = 0, m;
+  while ((m = re.exec(rawText))) {
+    pushText(rawText.slice(last, m.index));
+    last = re.lastIndex;
+    const tag = m[1].toLowerCase();
+    if (tag.startsWith('p:')) {
+      const p = found.get(tag.slice(2));
+      if (!p || shown.has(p.id) || productCount >= 4) continue;
+      shown.add(p.id);
+      productCount++;
+      const item = { id: p.id, name: p.name, price: p.price, image: p.image, link: p.link };
+      const prev = blocks[blocks.length - 1];
+      if (prev && prev.type === 'products') prev.items.push(item);
+      else blocks.push({ type: 'products', items: [item] });
+    } else if (!blocks.some(b => b.type === 'button' && b.kind === tag)) {
+      blocks.push({ type: 'button', kind: tag });
+    }
+  }
+  pushText(rawText.slice(last));
+
+  const text = blocks.filter(b => b.type === 'text').map(b => b.text).join('\n\n');
+  const products = blocks.filter(b => b.type === 'products').flatMap(b => b.items);
+  return { blocks, text, products };
+}
+
+// ─── Anonymous question log (optional, Vercel env var CHAT_LOG_URL) ───
+function anonymize(str) {
+  return String(str || '')
+    .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '[email]')
+    .replace(/\b(?=[A-Z0-9]*\d)[A-Z0-9]{8,30}\b/gi, '[number]')
+    .replace(/\+?\d[\d\s.-]{7,}\d/g, '[phone]');
+}
+
+async function logQuestion(question, reply) {
+  const url = process.env.CHAT_LOG_URL;
+  if (!url) return;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 1500);
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        question: anonymize(question).slice(0, 500),
+        products: reply.products.map(p => p.name).join(', '),
+        reply: anonymize(reply.text).slice(0, 500),
+      }),
+      signal: controller.signal,
+    });
+  } catch (e) { /* logging must never break the chat */ }
+  clearTimeout(timer);
 }
 
 module.exports = async (req, res) => {
@@ -189,9 +232,10 @@ module.exports = async (req, res) => {
 
       if (!calls.length || round === MAX_TOOL_ROUNDS) {
         const text = parts.filter(p => typeof p.text === 'string' && !p.thought).map(p => p.text).join('').trim();
-        const reply = buildReply(text || "Sorry, I couldn't answer that. You can ask on our Discord.", found);
-        if (!reply.text && !reply.products.length) reply.text = "Sorry, I couldn't answer that. You can ask on our Discord.";
-        return res.status(200).json(reply);
+        let reply = buildReply(text, found);
+        if (!reply.blocks.length) reply = buildReply("Sorry, I couldn't answer that. You can ask on our Discord.\n[[discord]]", found);
+        await logQuestion(contents.filter(c => c.role === 'user' && c.parts[0].text).pop().parts[0].text, reply);
+        return res.status(200).json({ blocks: reply.blocks, text: reply.text });
       }
 
       // Keep the model turn as-is (it carries the thought signatures), then answer every call

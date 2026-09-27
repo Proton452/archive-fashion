@@ -39,15 +39,45 @@
     return n;
   }
 
-  // Plain text → safe nodes, with **bold** and line breaks
+  // Inline text → safe nodes, with **bold**
+  function inline(text) {
+    const frag = document.createDocumentFragment();
+    text.split(/(\*\*[^*]+\*\*)/).forEach(chunk => {
+      if (/^\*\*[^*]+\*\*$/.test(chunk)) frag.append(el('strong', '', chunk.slice(2, -2)));
+      else if (chunk) frag.append(document.createTextNode(chunk));
+    });
+    return frag;
+  }
+
+  // Plain text → paragraphs and real lists ("* item", "- item", "1. item")
   function richText(text) {
     const frag = document.createDocumentFragment();
-    text.split('\n').forEach((line, i) => {
-      if (i) frag.append(document.createElement('br'));
-      line.split(/(\*\*[^*]+\*\*)/).forEach(chunk => {
-        if (/^\*\*[^*]+\*\*$/.test(chunk)) frag.append(el('strong', '', chunk.slice(2, -2)));
-        else if (chunk) frag.append(document.createTextNode(chunk));
-      });
+    let list = null, listType = '', para = null;
+
+    text.split('\n').forEach(line => {
+      const bullet  = line.match(/^\s*[-*•]\s+(.*)$/);
+      const numbered = line.match(/^\s*\d+[.)]\s+(.*)$/);
+      const item = bullet || numbered;
+
+      if (item) {
+        const type = bullet ? 'ul' : 'ol';
+        if (!list || listType !== type) {
+          list = el(type, 'chat-list');
+          listType = type;
+          frag.append(list);
+        }
+        const li = el('li');
+        li.append(inline(item[1]));
+        list.append(li);
+        para = null;
+        return;
+      }
+
+      list = null;
+      if (!line.trim()) { para = null; return; }
+      if (para) para.append(document.createElement('br'));
+      else { para = el('p', 'chat-p'); frag.append(para); }
+      para.append(inline(line));
     });
     return frag;
   }
@@ -129,23 +159,34 @@
     return a;
   }
 
+  // Messages are rendered as ordered blocks so cards and buttons appear
+  // exactly where the assistant mentions them
+  function blocksOf(m) {
+    if (m.blocks) return m.blocks;
+    const blocks = [];                       // older saved messages
+    if (m.text) blocks.push({ type: 'text', text: m.text });
+    if (m.products && m.products.length) blocks.push({ type: 'products', items: m.products });
+    (m.buttons || []).forEach(kind => blocks.push({ type: 'button', kind }));
+    return blocks;
+  }
+
   function renderMessage(m) {
     const row = el('div', 'chat-msg chat-msg--' + (m.role === 'user' ? 'user' : 'bot') + (m.error ? ' chat-msg--error' : ''));
-    if (m.text) {
-      const b = el('div', 'chat-msg__bubble');
-      b.append(richText(m.text));
-      row.append(b);
-    }
-    if (m.products && m.products.length) {
-      const wrap = el('div', 'chat-msg__products');
-      m.products.forEach(p => wrap.append(productCard(p)));
-      row.append(wrap);
-    }
-    if (m.buttons && m.buttons.length) {
-      const wrap = el('div', 'chat-msg__actions');
-      m.buttons.forEach(b => wrap.append(actionButton(b)));
-      row.append(wrap);
-    }
+    blocksOf(m).forEach(b => {
+      if (b.type === 'text') {
+        const bubbleEl = el('div', 'chat-msg__bubble');
+        bubbleEl.append(m.role === 'user' ? document.createTextNode(b.text) : richText(b.text));
+        row.append(bubbleEl);
+      } else if (b.type === 'products' && b.items && b.items.length) {
+        const wrap = el('div', 'chat-msg__products');
+        b.items.forEach(p => wrap.append(productCard(p)));
+        row.append(wrap);
+      } else if (b.type === 'button' && (b.kind === 'signup' || b.kind === 'discord')) {
+        const wrap = el('div', 'chat-msg__actions');
+        wrap.append(actionButton(b.kind));
+        row.append(wrap);
+      }
+    });
     return row;
   }
 
@@ -238,7 +279,7 @@
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok || data.error) throw new Error(data.error || 'error');
-      state.messages.push({ role: 'model', text: data.text || '', products: data.products || [], buttons: data.buttons || [] });
+      state.messages.push({ role: 'model', text: data.text || '', blocks: data.blocks || [] });
     } catch (err) {
       const msg = err.message && err.message !== 'error' && err.message !== 'Failed to fetch'
         ? err.message
@@ -256,6 +297,52 @@
     e.preventDefault();
     send(input.value);
   });
+
+  // ─── Teaser: one-time nudge after 20s, left of the bubble ───
+  const TEASER_KEY   = 'lgf-chat-teaser';
+  const TEASER_DELAY = 20000;
+  const TEASER_TIME  = 15000;
+  const isFrench = /^fr\b/i.test(navigator.language || '');
+  let teaser = null;
+
+  function teaserSeen() {
+    try { return localStorage.getItem(TEASER_KEY) === '1'; } catch (e) { return true; }
+  }
+
+  function hideTeaser() {
+    if (!teaser) return;
+    teaser.classList.remove('is-visible');
+    const t = teaser;
+    teaser = null;
+    setTimeout(() => t.remove(), 250);
+  }
+
+  function showTeaser() {
+    if (state.open || state.messages.length || teaserSeen()) return;
+    try { localStorage.setItem(TEASER_KEY, '1'); } catch (e) {}
+
+    teaser = el('div', 'chat-teaser');
+    const open = el('button', 'chat-teaser__text', isFrench ? 'Besoin d’aide pour commander ? 👋' : 'Need help ordering? 👋');
+    open.type = 'button';
+    open.addEventListener('click', () => {
+      track('chat_teaser_click');
+      hideTeaser();
+      setOpen(true);
+      track('chat_open', { source: 'teaser' });
+    });
+    const close = el('button', 'chat-teaser__close');
+    close.type = 'button';
+    close.setAttribute('aria-label', isFrench ? 'Fermer' : 'Dismiss');
+    close.innerHTML = ICON_CLOSE;
+    close.addEventListener('click', hideTeaser);
+    teaser.append(open, close);
+    document.body.append(teaser);
+    requestAnimationFrame(() => teaser && teaser.classList.add('is-visible'));
+    setTimeout(hideTeaser, TEASER_TIME);
+  }
+
+  bubble.addEventListener('click', hideTeaser);
+  if (!teaserSeen()) setTimeout(showTeaser, TEASER_DELAY);
 
   if (state.open) setOpen(true);
 })();
