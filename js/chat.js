@@ -10,7 +10,7 @@
   const MAX_USER_MESSAGES = 20;
   const SIGNUP_URL  = 'https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED';
   const DISCORD_URL = 'https://discord.gg/5EhjDVZ2x7';
-  const WELCOME = "Hi! 👋 I'm an AI assistant, not a human. I can help you find items, explain how to order, or track your package. Ask me in any language. For a real person, ask on our Discord.";
+  const WELCOME = "Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.";
   const SUGGESTIONS = ['How do I order?', 'Find a PSG jersey', 'Track my package'];
   // The site is English for now; switch this to the site's language mode once it exists
   const isFrench = false;
@@ -93,17 +93,17 @@
   // ─── Build UI ─────────────────────────────────
   const bubble = el('button', 'chat-bubble');
   bubble.type = 'button';
-  bubble.setAttribute('aria-label', 'Open AI chat assistant');
+  bubble.setAttribute('aria-label', 'Open chat assistant');
   bubble.innerHTML = ICON_CHAT;
 
   const panel = el('section', 'chat-panel');
   panel.setAttribute('role', 'dialog');
-  panel.setAttribute('aria-label', 'LovegoFinds AI assistant');
+  panel.setAttribute('aria-label', 'LovegoFinds assistant');
   panel.hidden = true;
 
   const header = el('header', 'chat-panel__header');
   const titleWrap = el('div', 'chat-panel__titles');
-  titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds AI assistant'), el('p', 'chat-panel__subtitle', 'Automated bot · instant answers'));
+  titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds assistant'), el('p', 'chat-panel__subtitle', 'Answers in a few seconds'));
   const resetBtn = el('button', 'chat-panel__reset', 'New chat');
   resetBtn.type = 'button';
   const closeBtn = el('button', 'chat-panel__close');
@@ -464,7 +464,7 @@
     try { localStorage.setItem(TEASER_KEY, '1'); } catch (e) {}
 
     teaser = el('div', 'chat-teaser');
-    const open = el('button', 'chat-teaser__text', isFrench ? 'Besoin d’aide pour commander ? Demande à notre assistant IA 👋' : 'Need help ordering? Ask our AI assistant 👋');
+    const open = el('button', 'chat-teaser__text', isFrench ? 'Besoin d’aide pour commander ? 👋' : 'Need help ordering? 👋');
     open.type = 'button';
     open.addEventListener('click', () => {
       track('chat_teaser_click');
