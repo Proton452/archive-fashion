@@ -1,7 +1,8 @@
-/* Phones only: scrolling down hides the top nav and the sticky shop bar
-   (tabs + search) so products get the whole screen; any scroll up brings
-   both back. On larger screens everything stays visible (the nav holds the
-   sign-up button). Shared by every page. */
+/* Scrolling down frees space for products, any scroll up brings things back.
+   - Phones: the top nav and the sticky shop bar (tabs + search) both hide.
+   - Larger screens: only the shop bar hides; the nav (with the sign-up
+     button) always stays.
+   Shared by every page. */
 
 (function () {
   const root    = document.documentElement;
@@ -39,21 +40,22 @@
     ticking = false;
     const y = window.scrollY;
 
-    if (!phone.matches) {
-      root.classList.remove('nav-hidden');
-      lastY = y;
-      return;
-    }
+    // Phones hide everything; larger screens only the shop bar (and only where there is one)
+    const hideClass  = phone.matches ? 'nav-hidden' : 'bar-hidden';
+    const otherClass = phone.matches ? 'bar-hidden' : 'nav-hidden';
+    root.classList.remove(otherClass);
+    if (!phone.matches && !shopBar) { lastY = y; return; }
+
     // The page is frozen while the mobile chat sheet is open: ignore those jumps
     if (root.classList.contains('chat-open')) { lastY = y; return; }
 
     const delta = y - lastY;
     if (!canHide(y) || menuOpen()) {
-      root.classList.remove('nav-hidden');
+      root.classList.remove(hideClass);
     } else if (delta > MIN_DELTA) {
-      root.classList.add('nav-hidden');
+      root.classList.add(hideClass);
     } else if (delta < -MIN_DELTA) {
-      root.classList.remove('nav-hidden');
+      root.classList.remove(hideClass);
     }
     if (Math.abs(delta) > MIN_DELTA) lastY = y;
   }

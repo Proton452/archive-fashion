@@ -536,8 +536,11 @@ a { text-decoration: none; color: inherit; }
   background: var(--bg);
   transition: transform 0.38s var(--ease-slide);
 }
-/* js/scroll-nav.js only hides once the bar is stuck and its spot in the page is off screen */
-.nav-hidden .shop-bar { transform: translateY(calc(-1 * var(--header-h, 170px))); }
+/* js/scroll-nav.js only hides once the bar is stuck and its spot in the page is off screen.
+   Phones (.nav-hidden): nav + bar leave together. Larger screens (.bar-hidden): the bar slides
+   up behind the nav, which stays. Same distance in both cases so nothing lags behind. */
+.nav-hidden .shop-bar,
+.bar-hidden .shop-bar { transform: translateY(calc(-1 * var(--header-h, 170px))); }
 
 .cat-tabs-wrapper {
   position: relative;
