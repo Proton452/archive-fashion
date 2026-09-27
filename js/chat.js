@@ -19,7 +19,7 @@
     { icon: '👕', text: 'Find a football jersey' },
     { icon: '📦', text: 'Track my package' },
   ];
-  const PLACEHOLDER = 'How much is shipping to France?';
+  const PLACEHOLDER = 'Ask your question…';
   // The site is English for now; switch this to the site's language mode once it exists
   const isFrench = false;
 
