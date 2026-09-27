@@ -11,7 +11,15 @@
   const SIGNUP_URL  = 'https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED';
   const DISCORD_URL = 'https://discord.gg/5EhjDVZ2x7';
   const WELCOME = "Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.";
-  const SUGGESTIONS = ['How do I order?', 'Find a PSG jersey', 'Track my package'];
+  // Big one-tap questions on the empty chat: the things people get stuck on
+  const SUGGESTIONS = [
+    { icon: '🛒', text: 'How do I order?' },
+    { icon: '🎁', text: 'How do the 500€ coupons work?' },
+    { icon: '🚚', text: 'When will my order arrive?' },
+    { icon: '👕', text: 'Find a football jersey' },
+    { icon: '📦', text: 'Track my package' },
+  ];
+  const PLACEHOLDER = 'e.g. How much is shipping to France?';
   // The site is English for now; switch this to the site's language mode once it exists
   const isFrench = false;
 
@@ -88,6 +96,8 @@
 
   const ICON_CHAT  = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>';
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  // Brand mark (same as the nav logo)
+  const LOGO = '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="18.5" cy="13.5" r="8" stroke="#00A86B" stroke-width="2.5"/><path d="M14.5 10.5 Q16.5 8.2 19.5 9.2" stroke="#00A86B" stroke-width="1.7" stroke-linecap="round"/><path d="M12.8 19.2 Q9.5 23 5 27.5" stroke="#00A86B" stroke-width="3.2" stroke-linecap="round"/></svg>';
   const ICON_SEND  = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   // ─── Build UI ─────────────────────────────────
@@ -102,15 +112,17 @@
   panel.hidden = true;
 
   const header = el('header', 'chat-panel__header');
+  const avatar = el('span', 'chat-avatar chat-avatar--header');
+  avatar.innerHTML = LOGO;
   const titleWrap = el('div', 'chat-panel__titles');
-  titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds assistant'), el('p', 'chat-panel__subtitle', 'Answers in a few seconds'));
+  titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds assistant'), el('p', 'chat-panel__subtitle', 'Online · replies instantly'));
   const resetBtn = el('button', 'chat-panel__reset', 'New chat');
   resetBtn.type = 'button';
   const closeBtn = el('button', 'chat-panel__close');
   closeBtn.type = 'button';
   closeBtn.setAttribute('aria-label', 'Close chat');
   closeBtn.innerHTML = ICON_CLOSE;
-  header.append(titleWrap, resetBtn, closeBtn);
+  header.append(avatar, titleWrap, resetBtn, closeBtn);
 
   const list = el('div', 'chat-panel__messages');
   list.setAttribute('aria-live', 'polite');
@@ -118,7 +130,7 @@
   const form = el('form', 'chat-panel__form');
   const input = el('input', 'chat-panel__input');
   input.type = 'text';
-  input.placeholder = 'Ask anything…';
+  input.placeholder = PLACEHOLDER;
   input.maxLength = 500;
   input.autocomplete = 'off';
   input.setAttribute('aria-label', 'Your message');
@@ -215,17 +227,25 @@
 
   function render() {
     list.replaceChildren();
-    list.append(renderMessage({ role: 'model', text: WELCOME }));
-
-    if (!state.messages.length) {
-      const chips = el('div', 'chat-suggestions');
-      SUGGESTIONS.forEach(s => {
-        const c = el('button', 'chat-suggestion', s);
-        c.type = 'button';
-        c.addEventListener('click', () => send(s));
-        chips.append(c);
+    // Empty chat: a welcome screen with one-tap questions; once it starts, a short greeting on top
+    if (!state.messages.length && !sending) {
+      const welcome = el('div', 'chat-welcome');
+      welcome.append(
+        el('p', 'chat-welcome__title', 'Hi 👋 How can I help?'),
+        el('p', 'chat-welcome__sub', 'Instant answers, in any language.'),
+      );
+      const quick = el('div', 'chat-quick');
+      SUGGESTIONS.forEach(q => {
+        const b = el('button', 'chat-quick__btn');
+        b.type = 'button';
+        b.append(el('span', 'chat-quick__icon', q.icon), el('span', 'chat-quick__text', q.text), el('span', 'chat-quick__chevron', '›'));
+        b.addEventListener('click', () => send(q.text));
+        quick.append(b);
       });
-      list.append(chips);
+      welcome.append(quick);
+      list.append(welcome);
+    } else {
+      list.append(renderMessage({ role: 'model', text: WELCOME }));
     }
 
     state.messages.forEach(m => list.append(renderMessage(m)));
@@ -243,7 +263,7 @@
     // Keep the input enabled while sending: disabling it would close the mobile keyboard
     input.disabled = limitReached;
     sendBtn.disabled = sending || limitReached;
-    input.placeholder = limitReached ? 'Conversation limit reached, start a new chat' : 'Ask anything…';
+    input.placeholder = limitReached ? 'Conversation limit reached, start a new chat' : PLACEHOLDER;
 
     list.scrollTop = list.scrollHeight;
   }
