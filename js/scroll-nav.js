@@ -14,9 +14,18 @@
   let lastY = window.scrollY;
   let ticking = false;
 
-  // The shop bar hides by sticking at minus its own height
+  // Nav and shop bar both slide up by this distance, so they move as one block
   function measureBar() {
-    if (shopBar) root.style.setProperty('--shop-bar-h', shopBar.offsetHeight + 'px');
+    const h = nav.offsetHeight + (shopBar ? shopBar.offsetHeight : 0);
+    root.style.setProperty('--header-h', h + 'px');
+  }
+
+  // The shop bar may only slide away once it is stuck under the nav, i.e. once the
+  // block above it (the hero) has scrolled past; measured on the hero so the bar's
+  // own transform doesn't affect it
+  function barStuck() {
+    const above = shopBar && shopBar.previousElementSibling;
+    return !!above && above.getBoundingClientRect().bottom <= nav.offsetHeight + 1;
   }
 
   function menuOpen() {
@@ -29,10 +38,11 @@
     const y = window.scrollY;
 
     if (!phone.matches) {
-      root.classList.remove('nav-hidden');
+      root.classList.remove('nav-hidden', 'bar-stuck');
       lastY = y;
       return;
     }
+    root.classList.toggle('bar-stuck', barStuck());
     // The page is frozen while the mobile chat sheet is open: ignore those jumps
     if (root.classList.contains('chat-open')) { lastY = y; return; }
 

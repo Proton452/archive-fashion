@@ -96,8 +96,9 @@ a { text-decoration: none; color: inherit; }
   transition: box-shadow 0.3s, transform 0.38s var(--ease-slide);
 }
 
-/* Phones: scrolling down hides the nav and shop bar (js/scroll-nav.js), scrolling up brings them back */
-.nav-hidden .nav { transform: translateY(-100%); box-shadow: none; }
+/* Phones: scrolling down hides the nav and shop bar (js/scroll-nav.js), scrolling up brings them back.
+   Both move by the same distance (--header-h = nav + shop bar) so they travel as one block. */
+.nav-hidden .nav { transform: translateY(calc(-1 * var(--header-h, 100%))); box-shadow: none; }
 
 .nav.is-scrolled {
   box-shadow: 0 2px 16px rgba(0,0,0,0.07);
@@ -533,10 +534,10 @@ a { text-decoration: none; color: inherit; }
   top: var(--nav-h);
   z-index: 100;
   background: var(--bg);
-  transition: top 0.38s var(--ease-slide);
+  transition: transform 0.38s var(--ease-slide);
 }
-/* A negative sticky offset slides the bar out only once it is stuck, never while it sits under the hero */
-.nav-hidden .shop-bar { top: calc(-1 * var(--shop-bar-h, 110px)); }
+/* Only slide the bar once it is stuck under the nav, never while it still sits under the hero */
+.nav-hidden.bar-stuck .shop-bar { transform: translateY(calc(-1 * var(--header-h, 170px))); }
 
 .cat-tabs-wrapper {
   position: relative;
