@@ -19,7 +19,7 @@
     { icon: '👕', text: 'Find a football jersey' },
     { icon: '📦', text: 'Track my package' },
   ];
-  const PLACEHOLDER = 'e.g. How much is shipping to France?';
+  const PLACEHOLDER = 'How much is shipping to France?';
   // The site is English for now; switch this to the site's language mode once it exists
   const isFrench = false;
 
@@ -96,8 +96,8 @@
 
   const ICON_CHAT  = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>';
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-  // Brand mark (same as the nav logo)
-  const LOGO = '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="18.5" cy="13.5" r="8" stroke="#00A86B" stroke-width="2.5"/><path d="M14.5 10.5 Q16.5 8.2 19.5 9.2" stroke="#00A86B" stroke-width="1.7" stroke-linecap="round"/><path d="M12.8 19.2 Q9.5 23 5 27.5" stroke="#00A86B" stroke-width="3.2" stroke-linecap="round"/></svg>';
+  // Default profile picture (Instagram-style silhouette, tinted green in CSS)
+  const AVATAR = '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="12.5" r="6" fill="#fff"/><path d="M4 32c0-7 5.4-11.5 12-11.5S28 25 28 32z" fill="#fff"/></svg>';
   const ICON_SEND  = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   // ─── Build UI ─────────────────────────────────
@@ -113,7 +113,7 @@
 
   const header = el('header', 'chat-panel__header');
   const avatar = el('span', 'chat-avatar chat-avatar--header');
-  avatar.innerHTML = LOGO;
+  avatar.innerHTML = AVATAR;
   const titleWrap = el('div', 'chat-panel__titles');
   titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds assistant'), el('p', 'chat-panel__subtitle', 'Online · replies instantly'));
   const resetBtn = el('button', 'chat-panel__reset', 'New chat');
@@ -232,7 +232,7 @@
       const welcome = el('div', 'chat-welcome');
       welcome.append(
         el('p', 'chat-welcome__title', 'Hi 👋 How can I help?'),
-        el('p', 'chat-welcome__sub', 'Instant answers, in any language.'),
+        el('p', 'chat-welcome__sub', 'Instant answers.'),
       );
       const quick = el('div', 'chat-quick');
       SUGGESTIONS.forEach(q => {
