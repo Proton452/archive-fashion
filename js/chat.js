@@ -288,6 +288,37 @@
 
   backdrop.addEventListener('click', () => setOpen(false));
 
+  // ─── Mobile sheet: drag the handle/header down to close ───
+  const isSheet = () => window.matchMedia('(max-width: 480px)').matches;
+  let drag = null;
+
+  header.addEventListener('touchstart', e => {
+    if (!isSheet() || e.target.closest('button')) return;
+    drag = { startY: e.touches[0].clientY, startT: Date.now(), dy: 0 };
+    panel.style.transition = 'none';
+    backdrop.style.transition = 'none';
+  }, { passive: true });
+
+  header.addEventListener('touchmove', e => {
+    if (!drag) return;
+    drag.dy = Math.max(0, e.touches[0].clientY - drag.startY);   // only downwards
+    panel.style.transform = `translateY(${drag.dy}px)`;
+    backdrop.style.opacity = String(Math.max(0, 1 - drag.dy / panel.offsetHeight));
+  }, { passive: true });
+
+  header.addEventListener('touchend', () => {
+    if (!drag) return;
+    const velocity = drag.dy / Math.max(1, Date.now() - drag.startT);   // px per ms
+    const shouldClose = drag.dy > panel.offsetHeight * 0.25 || (drag.dy > 30 && velocity > 0.5);
+    drag = null;
+    // Clearing the inline styles lets the CSS transition run from the finger position
+    panel.style.transition = '';
+    backdrop.style.transition = '';
+    panel.style.transform = '';
+    backdrop.style.opacity = '';
+    if (shouldClose) setOpen(false);
+  });
+
   bubble.addEventListener('click', () => {
     setOpen(true);
     track('chat_open');
@@ -367,7 +398,7 @@
     if (state.open || state.messages.length || teaserSeen()) return;
     // Only show (and use up) the teaser when the visitor can actually see the tab
     if (document.hidden) {
-      document.addEventListener('visibilitychange', () => setTimeout(showTeaser, 1500), { once: true });
+      document.addEventListener('visibilitychange', () => { teaserTimer = setTimeout(showTeaser, 1500); }, { once: true });
       return;
     }
     try { localStorage.setItem(TEASER_KEY, '1'); } catch (e) {}
@@ -393,7 +424,21 @@
   }
 
   bubble.addEventListener('click', hideTeaser);
-  if (!teaserSeen()) setTimeout(showTeaser, TEASER_DELAY);
+
+  // Visitors who already click around (products, tabs, sign-up, search) don't need the nudge
+  // on this visit; it isn't marked as seen, so it can still show on a later visit.
+  let teaserTimer = null;
+  function cancelTeaser(e) {
+    if (e && e.target.closest && e.target.closest('.chat-teaser')) return;
+    clearTimeout(teaserTimer);
+    document.removeEventListener('click', cancelTeaser, true);
+    document.removeEventListener('input', cancelTeaser, true);
+  }
+  if (!teaserSeen()) {
+    teaserTimer = setTimeout(showTeaser, TEASER_DELAY);
+    document.addEventListener('click', cancelTeaser, true);
+    document.addEventListener('input', cancelTeaser, true);
+  }
 
   if (state.open) setOpen(true, false);
 })();
