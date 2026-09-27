@@ -2204,7 +2204,6 @@ a { text-decoration: none; color: inherit; }
   transition: border-color 0.2s, background-color 0.2s, transform 0.16s var(--ease-out);
 }
 .chat-quick__btn:active { transform: scale(0.98); }
-.chat-quick__icon { font-size: 1rem; line-height: 1; }
 .chat-quick__text { flex: 1; min-width: 0; }
 .chat-quick__chevron { color: var(--text-muted); font-size: 1.2rem; line-height: 1; }
 @media (hover: hover) {
