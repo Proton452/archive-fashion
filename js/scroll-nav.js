@@ -20,12 +20,14 @@
     root.style.setProperty('--header-h', h + 'px');
   }
 
-  // The shop bar may only slide away once it is stuck under the nav, i.e. once the
-  // block above it (the hero) has scrolled past; measured on the hero so the bar's
-  // own transform doesn't affect it
-  function barStuck() {
-    const above = shopBar && shopBar.previousElementSibling;
-    return !!above && above.getBoundingClientRect().bottom <= nav.offsetHeight + 1;
+  // Hiding is only allowed once the shop bar's own spot in the page has scrolled
+  // off screen; hiding earlier would leave that spot as a blank strip above the
+  // products. Pages without a shop bar just need to be past the nav.
+  function canHide(y) {
+    if (!shopBar) return y > nav.offsetHeight * 2;
+    const above = shopBar.previousElementSibling;   // the hero
+    if (!above) return false;
+    return above.getBoundingClientRect().bottom + shopBar.offsetHeight <= 0;
   }
 
   function menuOpen() {
@@ -38,16 +40,15 @@
     const y = window.scrollY;
 
     if (!phone.matches) {
-      root.classList.remove('nav-hidden', 'bar-stuck');
+      root.classList.remove('nav-hidden');
       lastY = y;
       return;
     }
-    root.classList.toggle('bar-stuck', barStuck());
     // The page is frozen while the mobile chat sheet is open: ignore those jumps
     if (root.classList.contains('chat-open')) { lastY = y; return; }
 
     const delta = y - lastY;
-    if (y <= nav.offsetHeight * 2 || menuOpen()) {
+    if (!canHide(y) || menuOpen()) {
       root.classList.remove('nav-hidden');
     } else if (delta > MIN_DELTA) {
       root.classList.add('nav-hidden');
