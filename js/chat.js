@@ -15,8 +15,6 @@
   const SUGGESTIONS = [
     { icon: '🛒', text: 'How do I order?' },
     { icon: '🎁', text: 'How do the 500€ coupons work?' },
-    { icon: '🚚', text: 'When will my order arrive?' },
-    { icon: '👕', text: 'Find a football jersey' },
     { icon: '📦', text: 'Track my package' },
   ];
   const PLACEHOLDER = 'Ask your question…';
