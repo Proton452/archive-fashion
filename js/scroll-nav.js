@@ -1,15 +1,23 @@
-/* Hide the top nav while scrolling down, bring it back on any scroll up.
-   The sticky shop bar (tabs + search) then slides up to the top of the screen.
-   Shared by every page. */
+/* Phones only: scrolling down hides the top nav and the sticky shop bar
+   (tabs + search) so products get the whole screen; any scroll up brings
+   both back. On larger screens everything stays visible (the nav holds the
+   sign-up button). Shared by every page. */
 
 (function () {
-  const root = document.documentElement;
-  const nav  = document.getElementById('nav');
+  const root    = document.documentElement;
+  const nav     = document.getElementById('nav');
+  const shopBar = document.getElementById('shopBar');
   if (!nav) return;
 
-  const MIN_DELTA = 6;   // ignore tiny jitters
+  const phone = window.matchMedia('(max-width: 600px)');
+  const MIN_DELTA = 6;   // ignore tiny finger jitters
   let lastY = window.scrollY;
   let ticking = false;
+
+  // The shop bar hides by sticking at minus its own height
+  function measureBar() {
+    if (shopBar) root.style.setProperty('--shop-bar-h', shopBar.offsetHeight + 'px');
+  }
 
   function menuOpen() {
     const menu = document.getElementById('navMobile');
@@ -20,6 +28,11 @@
     ticking = false;
     const y = window.scrollY;
 
+    if (!phone.matches) {
+      root.classList.remove('nav-hidden');
+      lastY = y;
+      return;
+    }
     // The page is frozen while the mobile chat sheet is open: ignore those jumps
     if (root.classList.contains('chat-open')) { lastY = y; return; }
 
@@ -40,4 +53,7 @@
       requestAnimationFrame(update);
     }
   }, { passive: true });
+
+  window.addEventListener('resize', () => { measureBar(); update(); }, { passive: true });
+  measureBar();
 })();

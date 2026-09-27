@@ -29,6 +29,7 @@
   --shadow-lg: 0 12px 48px rgba(0,0,0,0.6);
 
   --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-slide: cubic-bezier(0.4, 0, 0.2, 1);   /* smooth, even curve for large moving bars */
   --ease-inout: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
@@ -92,10 +93,10 @@ a { text-decoration: none; color: inherit; }
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  transition: box-shadow 0.3s, transform 0.28s var(--ease-out);
+  transition: box-shadow 0.3s, transform 0.38s var(--ease-slide);
 }
 
-/* Scrolling down hides the nav (js/scroll-nav.js); scrolling up brings it back */
+/* Phones: scrolling down hides the nav and shop bar (js/scroll-nav.js), scrolling up brings them back */
 .nav-hidden .nav { transform: translateY(-100%); box-shadow: none; }
 
 .nav.is-scrolled {
@@ -532,9 +533,10 @@ a { text-decoration: none; color: inherit; }
   top: var(--nav-h);
   z-index: 100;
   background: var(--bg);
-  transition: top 0.28s var(--ease-out);
+  transition: top 0.38s var(--ease-slide);
 }
-.nav-hidden .shop-bar { top: 0; }
+/* A negative sticky offset slides the bar out only once it is stuck, never while it sits under the hero */
+.nav-hidden .shop-bar { top: calc(-1 * var(--shop-bar-h, 110px)); }
 
 .cat-tabs-wrapper {
   position: relative;
