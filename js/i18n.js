@@ -228,6 +228,24 @@
     return sec;
   }
 
+  // Phones: keep the page behind still without locking its scroll (iPhone Safari shows solid
+  // bars when the page can't scroll). Swipes outside the window, or on parts of it that can't
+  // scroll in that direction, are cancelled.
+  function blockTouchScroll(overlay, scrollers) {
+    let y0 = 0, x0 = 0;
+    overlay.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; }, { passive: true });
+    overlay.addEventListener('touchmove', e => {
+      if (e.defaultPrevented) return;
+      const dy = e.touches[0].clientY - y0, dx = e.touches[0].clientX - x0;
+      for (let n = e.target; n && n !== overlay; n = n.parentElement) {
+        if (!scrollers.some(sel => n.matches(sel))) continue;
+        if (Math.abs(dx) > Math.abs(dy) ? n.scrollWidth > n.clientWidth
+            : (dy < 0 ? n.scrollTop + n.clientHeight < n.scrollHeight - 1 : n.scrollTop > 0)) return;
+      }
+      e.preventDefault();
+    }, { passive: false });
+  }
+
   // Built at each opening, so it always shows the current language and currency
   function buildModal() {
     if (modal) modal.remove();
@@ -261,6 +279,7 @@
     sheet.append(head, body);
     modal.append(sheet);
     modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    blockTouchScroll(modal, ['.locale-sheet__body']);
 
     // Phones: drag the sheet down by its header to close it
     let startY = null, dy = 0;

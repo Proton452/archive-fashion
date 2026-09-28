@@ -110,6 +110,7 @@
     }, { passive: true });
 
     enableDragToClose();
+    blockTouchScroll(modal, ['.photos-track', '.photos-sheet']);
     document.body.append(modal);
   }
 
@@ -197,6 +198,24 @@
     buy.textContent = t('Buy on Lovegobuy →');
     buy.href = buyLink(itemId);
     q('.photos-note').textContent = t('Size and colour are chosen on Lovegobuy.');
+  }
+
+  // Phones: keep the page behind still without locking its scroll (iPhone Safari shows solid
+  // bars when the page can't scroll). Swipes outside the window, or on parts of it that can't
+  // scroll in that direction, are cancelled.
+  function blockTouchScroll(overlay, scrollers) {
+    let y0 = 0, x0 = 0;
+    overlay.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; }, { passive: true });
+    overlay.addEventListener('touchmove', e => {
+      if (e.defaultPrevented) return;
+      const dy = e.touches[0].clientY - y0, dx = e.touches[0].clientX - x0;
+      for (let n = e.target; n && n !== overlay; n = n.parentElement) {
+        if (!scrollers.some(sel => n.matches(sel))) continue;
+        if (Math.abs(dx) > Math.abs(dy) ? n.scrollWidth > n.clientWidth
+            : (dy < 0 ? n.scrollTop + n.clientHeight < n.scrollHeight - 1 : n.scrollTop > 0)) return;
+      }
+      e.preventDefault();
+    }, { passive: false });
   }
 
   // ─── Phones: drag the window down to close it ──

@@ -250,7 +250,12 @@ a { text-decoration: none; color: inherit; }
 .locale__sep { color: var(--text-muted); font-weight: 400; }
 .locale__chevron { color: var(--text-muted); margin-inline-start: -2px; }
 
-.locale-open { overflow: hidden; }
+/* Page scroll lock on computers only. On phones the page must stay scrollable: iPhone Safari
+   shows solid bars (status bar, address bar) when it can't scroll. Touches outside the
+   window are blocked in JS instead (js/i18n.js, js/photos.js). */
+@media (min-width: 701px) {
+  .locale-open { overflow: hidden; }
+}
 /* Keep the scrollbar's room while the page is locked, so nothing shifts or grows */
 html { scrollbar-gutter: stable; }
 
@@ -2748,7 +2753,9 @@ a.reviews__tp-inline {
   .product-card:has(.product-card__photos:hover) .product-card__image img { transform: none; }
 }
 
-.photos-open { overflow: hidden; }
+@media (min-width: 701px) {
+  .photos-open { overflow: hidden; }   /* see .locale-open: computers only */
+}
 
 /* The green chat button stays out of the way while a window is open
    (phone browsers tint their address bar with what is under it) */
