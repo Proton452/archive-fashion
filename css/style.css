@@ -424,11 +424,15 @@ html { scrollbar-gutter: stable; }
     padding: 0;
   }
 
+  /* Same reason as the photos window: no dimming on phones, a shadow instead */
+  .locale-modal.is-open { background: transparent; }
+
   .locale-sheet {
     max-width: none;
     max-height: 88vh;
     max-height: 88dvh;
     border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
     padding-bottom: env(safe-area-inset-bottom);
     opacity: 1;
     transform: translateY(100%);
@@ -2994,8 +2998,11 @@ a.reviews__tp-inline {
 /* ─── Phones: sheet sized to its content, slides up from the bottom, drag it down to close.
        The catalog stays visible (dimmed) above it. ─── */
 @media (max-width: 700px) {
-  .photos-modal { padding: 0; align-items: flex-end; transition: background 0.25s ease-out; }
-  .photos-modal.is-open { background: rgba(13, 13, 13, 0.4); }
+  /* No dimming on phones: iPhone Safari paints the status bar and the address bar area
+     itself and can't dim them, so a dimmed page left two light bands. A shadow on the
+     sheet's top edge sets it apart instead. */
+  .photos-modal { padding: 0; align-items: flex-end; }
+  .photos-modal.is-open { background: transparent; }
 
   .photos-sheet {
     display: flex;
@@ -3004,6 +3011,7 @@ a.reviews__tp-inline {
     max-height: 92vh;
     max-height: 92dvh;
     border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
     overflow-y: auto;
     overscroll-behavior: contain;
     opacity: 1;
