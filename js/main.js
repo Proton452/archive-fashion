@@ -1,9 +1,12 @@
 /* ==============================================
    LOVEGOBUY FINDS — Main Script
    Data: /data/men.json (built from the partner CSV by scripts/build_catalog.py)
+         + the jerseys of the Google Sheet (JSONP, gviz/tq)
 ============================================== */
 
 const CATALOG_URL = '/data/men.json';
+// The Google Sheet still provides the football jerseys (with their best seller marks)
+const SHEET_ID_MEN = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
 
 // ─── Category Tab → partner categories (exact names, lowercase) ────────
 const CATEGORY_MAP = {
@@ -231,7 +234,7 @@ async function fetchCatalog(url) {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`Catalog HTTP ${r.status}`);
   const data = await r.json();
-  return data.items.map(([name, brand, article, priceCny, itemId, imageId]) => ({
+  const items = data.items.map(([name, brand, article, priceCny, itemId, imageId]) => ({
     name,
     brand,
     article,
@@ -240,7 +243,112 @@ async function fetchCatalog(url) {
     lien:  data.link.replace('{id}', itemId),
     isBestSeller: false,
   }));
+  return { items, end: data.end };
 }
+
+// ─── Fetch via JSONP (bypasses CORS) ─────────────
+function fetchSheetJSONP(sheetID) {
+  return new Promise((resolve, reject) => {
+    const cbName = '__gviz_cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq`
+      + `?tqx=out:json;responseHandler:${cbName}`;
+
+    const timeout = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, 15000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cbName] = data => { cleanup(); resolve(data); };
+
+    const script = document.createElement('script');
+    script.src = url;
+    script.onerror = () => { cleanup(); reject(new Error('Script error')); };
+    document.head.appendChild(script);
+  });
+}
+
+// ─── Parse gviz JSON → product objects ───────────
+function parseSheetData(data, category) {
+  if (!data?.table?.rows || !data?.table?.cols) return [];
+
+  const cols = data.table.cols.map(c => (c.label || '').toLowerCase().trim());
+
+  const find = (...keywords) => cols.findIndex(c => keywords.some(k => c.includes(k)));
+
+  const idx = {
+    name:          find('nom', 'name', 'titre', 'title', 'article'),
+    brand:         find('brand', 'marque'),
+    article:       find('type', 'catégor', 'categor'),
+    price:         find('prix', 'price'),
+    imageDetoured: find('détouré', 'detouré', 'detour', 'cloudinary'),
+    image:         cols.findIndex(c => (c.includes('photo') || c.includes('image') || c.includes('img')) && !c.includes('détouré') && !c.includes('detouré') && !c.includes('cloudinary')),
+    lien:          find('lien', 'link', 'url', 'produit'),
+    bestSeller:    find('best seller', 'bestseller', 'best-seller'),
+  };
+
+  if (idx.name    < 0) idx.name    = 0;
+  if (idx.article < 0) idx.article = 2;
+  if (idx.price   < 0) idx.price   = 3;
+  if (idx.image   < 0) idx.image   = 4;
+  if (idx.lien    < 0) idx.lien    = 5;
+
+  return data.table.rows
+    .filter(row => row?.c)
+    .map(row => {
+      const cell = i => {
+        const c = row.c[i];
+        if (!c) return '';
+        return String(c.f != null ? c.f : (c.v != null ? c.v : '')).trim();
+      };
+      return {
+        name:          cell(idx.name),
+        brand:         idx.brand >= 0 ? cell(idx.brand) : '',
+        article:       cell(idx.article),
+        price:         cell(idx.price),
+        image:         cell(idx.image),
+        imageDetoured: idx.imageDetoured >= 0 ? cell(idx.imageDetoured) : '',
+        lien:          cell(idx.lien),
+        isBestSeller:  idx.bestSeller >= 0 && cell(idx.bestSeller).toLowerCase().includes('best seller'),
+        category,
+      };
+    })
+    .filter(p => p.name);
+}
+
+// Sheet jerseys only; the site still loads if the sheet is unreachable
+function fetchSheetJerseys() {
+  return fetchSheetJSONP(SHEET_ID_MEN)
+    .then(data => parseSheetData(data, 'men').filter(p => CATEGORY_MAP.football.includes(p.article.toLowerCase().trim())))
+    .catch(err => { console.warn('[Lovegobuy Finds] Sheet jerseys not loaded:', err); return []; });
+}
+
+// Insert extra items at random (but fixed) positions before the non-fashion tail
+function mixIn(items, extra, end) {
+  const rng  = mulberry32(0xAF2025);
+  const head = items.slice(0, end);
+  extra.forEach(p => head.splice(Math.floor(rng() * (head.length + 1)), 0, p));
+  return head.concat(items.slice(end));
+}
+
+// Sheet prices are in €, catalog prices in ¥: compare them in ¥ (≈ 8 ¥ per €)
+function priceInYuan(priceStr) {
+  const val = parsePrice(priceStr);
+  return val !== null && priceStr.includes('€') ? val * 8 : val;
+}
+
+// ─── PRNG: mulberry32 (deterministic) ────────────
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
 
 // ─── Deduplication ───────────────────────────────
 function deduplicateProducts(products) {
@@ -340,8 +448,8 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    allProducts = deduplicateProducts(await fetchCatalog(CATALOG_URL));
-    hideEmptyTabs();
+    const [catalog, jerseys] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys()]);
+    allProducts = deduplicateProducts(mixIn(catalog.items, jerseys, catalog.end));
 
     loading.style.display = 'none';
     generateFilterDropdown();
@@ -355,17 +463,6 @@ async function loadProducts() {
     emptyState.hidden = false;
     countEl.textContent = '— Error loading items';
   }
-}
-
-// Hide tabs with nothing in them (e.g. Best Sellers until some are marked)
-function hideEmptyTabs() {
-  document.querySelectorAll('.cat-tab').forEach(tab => {
-    const cat = tab.dataset.cat;
-    if (cat === 'all') return;
-    tab.hidden = !allProducts.some(p => cat === 'best-sellers'
-      ? p.isBestSeller
-      : (CATEGORY_MAP[cat] || []).includes((p.article || '').toLowerCase().trim()));
-  });
 }
 
 // ─── Generate Filter Dropdown ────────────────────
@@ -491,8 +588,8 @@ function applyFilters() {
     });
 
     withPrice.sort((a, b) => {
-      const pa = parsePrice(a.price);
-      const pb = parsePrice(b.price);
+      const pa = priceInYuan(a.price);
+      const pb = priceInYuan(b.price);
       return sortOrder === 'asc' ? pa - pb : pb - pa;
     });
 

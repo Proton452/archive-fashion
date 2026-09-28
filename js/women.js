@@ -188,7 +188,7 @@ async function fetchCatalog(url) {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`Catalog HTTP ${r.status}`);
   const data = await r.json();
-  return data.items.map(([name, brand, article, priceCny, itemId, imageId]) => ({
+  const items = data.items.map(([name, brand, article, priceCny, itemId, imageId]) => ({
     name,
     brand,
     article,
@@ -197,6 +197,7 @@ async function fetchCatalog(url) {
     lien:  data.link.replace('{id}', itemId),
     isBestSeller: false,
   }));
+  return { items, end: data.end };
 }
 
 function parsePrice(priceStr) {
@@ -272,8 +273,7 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    allProducts = await fetchCatalog(CATALOG_URL);
-    hideEmptyTabs();
+    allProducts = (await fetchCatalog(CATALOG_URL)).items;
 
     loading.style.display = 'none';
     generateFilterDropdown();
@@ -287,17 +287,6 @@ async function loadProducts() {
     emptyState.hidden = false;
     countEl.textContent = '— Error loading items';
   }
-}
-
-// Hide tabs with nothing in them (e.g. Best Sellers until some are marked)
-function hideEmptyTabs() {
-  document.querySelectorAll('.cat-tab').forEach(tab => {
-    const cat = tab.dataset.cat;
-    if (cat === 'all') return;
-    tab.hidden = !allProducts.some(p => cat === 'best-sellers'
-      ? p.isBestSeller
-      : (CATEGORY_MAP[cat] || []).includes((p.article || '').toLowerCase().trim()));
-  });
 }
 
 function generateFilterDropdown() {

@@ -4,7 +4,7 @@ Build data/men.json and data/women.json from the partner CSV (My Little Shop / t
 Usage:  python scripts/build_catalog.py [path/to/my-little-shop-produits.csv]
 
 Output format (compact, ~8k items):
-  { "link": "...{id}...", "image": "...{id}...",
+  { "link": "...{id}...", "image": "...{id}...", "end": <index where non-fashion items start>,
     "items": [[name, brand, category, price_cny, item_id, image_id], ...] }
 """
 import csv, json, random, re, sys
@@ -79,7 +79,7 @@ def main():
         end_pool  = [i for i in items if i[2] in PUSH_TO_END]
         rng.shuffle(main_pool)
         rng.shuffle(end_pool)
-        payload = {'link': LINK_TPL, 'image': IMAGE_TPL, 'items': main_pool + end_pool}
+        payload = {'link': LINK_TPL, 'image': IMAGE_TPL, 'end': len(main_pool), 'items': main_pool + end_pool}
         path = ROOT / 'data' / f'{gender}.json'
         path.write_text(json.dumps(payload, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
         print(f'{gender}: {len(items)} items -> {path.relative_to(ROOT)} ({path.stat().st_size // 1024} KB)')

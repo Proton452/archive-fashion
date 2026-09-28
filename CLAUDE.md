@@ -8,7 +8,7 @@ Site : https://lovegofinds.com — hébergé sur Vercel, déployé automatiqueme
 
 - **HTML / CSS / JS vanilla** — zéro dépendance, zéro framework
 - **Polices** : Poppins (sans, tout le site) + DM Serif Display via Google Fonts
-- **Données produits** : CSV du partenaire (My Little Shop / theqcbook) → `scripts/build_catalog.py` → `data/men.json` + `data/women.json` (statiques, servis par Vercel). Pour mettre à jour : `python scripts/build_catalog.py <chemin du csv>` puis commit.
+- **Données produits** : CSV du partenaire (My Little Shop / theqcbook) → `scripts/build_catalog.py` → `data/men.json` + `data/women.json` (statiques, servis par Vercel) **+ les maillots (ARTICLE = jersey) de la 1re feuille du Google Sheet**, chargés en direct avec leurs marques best seller. Pour mettre à jour le CSV : `python scripts/build_catalog.py <chemin du csv>` puis commit.
 - **Images produits** : `img.theqcbook.com` (fournies par le CSV)
 - **Analytics** : GA4 (`G-H85B12JS2Y`) + Vercel Insights
 
@@ -60,22 +60,22 @@ archive-fashion/
 
 ## Logique JS (main.js / women.js)
 
-- **Chargement** : `fetchCatalog()` (JSON) → `deduplicateProducts()` ; l'ordre (mélange, non-mode à la fin) est fixé par le script de build
-- **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories du CSV pour chaque onglet ; un onglet vide (ex. Best Sellers) est masqué
-- **Prix** : en yuan (`¥`) pour l'instant
+- **Chargement** : `fetchCatalog()` (JSON) + `fetchSheetJerseys()` (Men seulement) → `mixIn()` (maillots insérés à des places aléatoires fixes) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
+- **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories (CSV + `jersey` du sheet) pour chaque onglet ; Best Sellers toujours affiché
+- **Prix** : CSV en yuan (`¥`), maillots du sheet en € ; le tri compare en ¥ (`priceInYuan`, 1 € ≈ 8 ¥)
 - **Filtres / recherche / tri** : en mémoire sur `allProducts[]` (`applyFilters()`), recherche multilingue via dictionnaire de synonymes
 - **Affichage** : scroll infini par lots de 30 (`PAGE_SIZE`)
 - **Fade-in** : `IntersectionObserver` ajoute `.is-visible` sur `.fade-in`
 - **Popup maillots** : rappel « minimum 4 jerseys » avant d'ouvrir un lien foot
 
-## Google Sheets — Configuration (seule la feuille `Codes` est encore lue)
+## Google Sheets — Configuration (1re feuille : maillots seulement ; `Codes`)
 
 Sheet ID : `1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M`
 
 | Feuille     | Utilisée par  |
 |-------------|---------------|
-| 1re feuille | Men (`main.js`) |
-| `Feuille 2` | Women (`women.js`) |
+| 1re feuille | Maillots Men (`main.js`, `api/_lib/catalog.js`) — seules les lignes ARTICLE = jersey |
+| `Feuille 2` | Plus utilisée |
 | `Codes`     | Slugs partenaires → codes d'invitation (`partner.js`) |
 
 Colonnes détectées par mot-clé (ordre libre) : NAME, BRAND, ARTICLE/TYPE, PRICE, IMAGE, LIEN, Best seller.
@@ -84,7 +84,7 @@ Le sheet doit être partagé en « Lecture pour tous avec le lien ».
 
 ## Ce qu'il NE FAUT PAS toucher sans discussion
 
-- `fetchCatalog()`, `loadProducts()` — branchés sur `data/*.json`
+- `fetchCatalog()`, `fetchSheetJSONP()`, `parseSheetData()`, `loadProducts()` — branchés sur `data/*.json` et le sheet
 - `partner.js` et les routes de `vercel.json` — les liens partenaires en dépendent
 - Le code Google Analytics (`gtag.js`, `G-H85B12JS2Y`) dans le `<head>` de chaque page — il sert aussi à valider le site dans Google Search Console
 - Les design tokens `:root` — toute modification impacte l'ensemble du site

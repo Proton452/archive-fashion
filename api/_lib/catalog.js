@@ -1,7 +1,8 @@
 /* ==============================================
    Product catalog for the chatbot.
    Reads the same catalog files as the site (data/men.json and
-   data/women.json, built from the partner CSV).
+   data/women.json, built from the partner CSV) plus the football
+   jerseys of the Google Sheet (cached a few minutes).
 ============================================== */
 
 const CATALOGS = [
@@ -9,7 +10,32 @@ const CATALOGS = [
   { gender: 'women', data: require('../../data/women.json') },
 ];
 
-let cache = null;
+const SHEET_ID  = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const CACHE_MS  = 5 * 60 * 1000;
+
+let fileProducts = null;
+let sheetCache   = { at: 0, products: [] };
+
+// ─── CSV ─────────────────────────────────────────
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (c === '"') inQuotes = false;
+      else field += c;
+    } else if (c === '"') inQuotes = true;
+    else if (c === ',') { row.push(field); field = ''; }
+    else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+    else if (c !== '\r') field += c;
+  }
+  if (field || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
 
 // ─── Helpers ─────────────────────────────────────
 const KEEP_UPPER = new Set(['ac','adv','amg','ap','bape','cp','dn','erd','fc','ig','jfk','led','lv','mcm','nyc','og','om','psg','rb','sb','sv','tn','uefa','ufc','ugg','uk','us','usa','ysl','wrld','nba','nfl','ii','iii','xl','xxl','xs']);
@@ -38,10 +64,55 @@ function shortId(str) {
   return h.toString(36);
 }
 
+function optimizeImage(url) {
+  if (!url) return '';
+  if (url.includes('b-cdn.net')) return url + (url.includes('?') ? '&' : '?') + 'width=300&quality=75&format=auto';
+  if (url.includes('res.cloudinary.com')) return url.replace('/upload/', '/upload/f_auto,q_auto,w_300/');
+  return url;
+}
+
 // ─── Load ────────────────────────────────────────
-async function getCatalog() {
-  if (cache) return cache;
-  cache = CATALOGS.flatMap(({ gender, data }) =>
+async function loadSheet({ gender, url }) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`Sheet HTTP ${r.status}`);
+  const rows = parseCSV(await r.text());
+  if (!rows.length) return [];
+
+  const cols = rows[0].map(c => normalize(c).trim());
+  const find = (...keys) => cols.findIndex(c => keys.some(k => c.includes(k)));
+  const idx = {
+    name:     find('name', 'nom'),
+    brand:    find('brand', 'marque'),
+    article:  find('article', 'type', 'categor'),
+    price:    find('price', 'prix'),
+    detoured: find('detour'),
+    image:    cols.findIndex(c => c.includes('image') && !c.includes('detour')),
+    link:     find('lien', 'link'),
+    best:     find('best'),
+  };
+
+  return rows.slice(1).map(r => {
+    const cell = i => (i >= 0 && r[i] ? r[i].trim() : '');
+    const link = cell(idx.link);
+    const name = cell(idx.name);
+    if (!name || !link) return null;
+    const detoured = cell(idx.detoured);
+    return {
+      id:       shortId(name + '|' + link),
+      gender,
+      name:     formatName(name),
+      brand:    cell(idx.brand),
+      type:     cell(idx.article).toLowerCase(),
+      price:    cell(idx.price),
+      image:    optimizeImage(detoured && detoured.toUpperCase() !== 'SKIP' ? detoured : cell(idx.image)),
+      link,
+      bestSeller: /best/i.test(cell(idx.best)),
+    };
+  }).filter(Boolean);
+}
+
+function loadFiles() {
+  return CATALOGS.flatMap(({ gender, data }) =>
     data.items.map(([name, brand, type, priceCny, itemId, imageId]) => {
       const link = data.link.replace('{id}', itemId);
       return {
@@ -56,7 +127,19 @@ async function getCatalog() {
         bestSeller: false,
       };
     }));
-  return cache;
+}
+
+async function getCatalog() {
+  if (!fileProducts) fileProducts = loadFiles();
+  if (Date.now() - sheetCache.at >= CACHE_MS) {
+    try {
+      const jerseys = (await loadSheet({ gender: 'men', url: SHEET_URL })).filter(p => p.type === 'jersey');
+      sheetCache = { at: Date.now(), products: jerseys };
+    } catch (err) {
+      console.warn('[catalog] sheet jerseys not loaded:', err.message);
+    }
+  }
+  return sheetCache.products.concat(fileProducts);
 }
 
 // ─── Search ──────────────────────────────────────
@@ -84,7 +167,7 @@ function searchProducts(products, { query = '', gender, maxPrice } = {}) {
   const scored = [];
   for (const p of products) {
     if (gender && gender !== 'any' && p.gender !== gender) continue;
-    const priceNum = parseFloat(String(p.price).replace(',', '.').replace(/[^\d.]/g, ''));
+    const priceNum = parseFloat(String(p.price).replace(',', '.').replace(/[^\d.]/g, '')) * (String(p.price).includes('€') ? 8 : 1);
     if (maxPrice && !isNaN(priceNum) && priceNum > maxPrice) continue;
 
     const fields = [[normalize(p.name), 3], [normalize(p.brand), 3], [normalize(p.type), 2]];
