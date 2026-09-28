@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # AI crawlers (training data) and AI assistants opening the site on demand (e.g. "copy this site"):
-# they may read the pages that explain LovegoFinds, not the homepage, catalog, CSS or JS.
+# they may read every page's text, but not the CSS, JS or catalog files needed to copy the site.
 User-agent: GPTBot
 User-agent: ClaudeBot
 User-agent: anthropic-ai
@@ -22,11 +22,11 @@ User-agent: Claude-Web
 User-agent: Perplexity-User
 User-agent: MistralAI-User
 User-agent: Meta-ExternalFetcher
-Allow: /llms.txt
-Allow: /faq
-Allow: /how-to-order
-Allow: /reviews
-Disallow: /
+Disallow: /css/
+Disallow: /js/
+Disallow: /data/
+Disallow: /api/
+Disallow: /scripts/
 
 # Search engines, including AI search indexes (OAI-SearchBot, Claude-SearchBot, PerplexityBot),
 # stay allowed so the site keeps showing up in Google and in AI answers.
