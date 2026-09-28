@@ -609,20 +609,13 @@ html { scrollbar-gutter: stable; }
   font-size: 0.78rem;
 }
 
-/* Trustpilot badges link to Lovegobuy's reviews (new tab) */
+/* Trustpilot badges link to Lovegobuy's reviews (new tab). No hover effect on purpose:
+   it stays a quiet proof and doesn't invite visitors to leave the site. */
 a.hero__tp-badge,
 a.reviews__tp-inline {
   color: inherit;
   text-decoration: none;
-  transition: border-color 0.2s, transform 0.16s var(--ease-out);
 }
-
-@media (hover: hover) {
-  a.hero__tp-badge:hover { border-color: rgba(0,182,122,0.5); }
-  a.reviews__tp-inline:hover { opacity: 0.8; }
-}
-
-a.hero__tp-badge:active { transform: scale(0.97); }
 
 .hero__tp-logo-star { display: block; flex-shrink: 0; }
 
