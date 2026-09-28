@@ -22,7 +22,13 @@
 
   // First visit: guess the currency from the device's time zone (more reliable than the
   // browser language for the country). Not saved: the visitor's own choice always wins.
+  let detected = null;   // computed once per page: Intl is slow and format() runs for every product
   function detect() {
+    if (detected) return detected;
+    return (detected = guessFromTimeZone());
+  }
+
+  function guessFromTimeZone() {
     let tz = '';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
     if (tz === 'Europe/Warsaw') return 'PLN';
@@ -32,15 +38,20 @@
     return DEFAULT;
   }
 
+  let chosen;   // the visitor's saved choice, read once
   function current() {
-    try {
-      const c = localStorage.getItem(STORE_KEY);
-      if (RATES[c]) return c;
-    } catch (e) {}
-    return typeof window !== 'undefined' ? detect() : DEFAULT;
+    if (chosen === undefined) {
+      chosen = null;
+      try {
+        const c = localStorage.getItem(STORE_KEY);
+        if (RATES[c]) chosen = c;
+      } catch (e) {}
+    }
+    return chosen || (typeof window !== 'undefined' ? detect() : DEFAULT);
   }
 
   function set(code) {
+    chosen = code;
     try { localStorage.setItem(STORE_KEY, code); } catch (e) {}
   }
 
