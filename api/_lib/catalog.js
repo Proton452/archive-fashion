@@ -97,6 +97,7 @@ async function loadSheet({ gender, url }) {
     const name = cell(idx.name);
     if (!name || !link) return null;
     const detoured = cell(idx.detoured);
+    const sourceImage = detoured && detoured.toUpperCase() !== 'SKIP' ? detoured : cell(idx.image);
     return {
       id:       shortId(name + '|' + link),
       gender,
@@ -104,7 +105,8 @@ async function loadSheet({ gender, url }) {
       brand:    cell(idx.brand),
       type:     cell(idx.article).toLowerCase(),
       price:    cell(idx.price),
-      image:    optimizeImage(detoured && detoured.toUpperCase() !== 'SKIP' ? detoured : cell(idx.image)),
+      image:    optimizeImage(sourceImage),
+      sourceImage,
       link,
       bestSeller: /best/i.test(cell(idx.best)),
     };
@@ -129,11 +131,16 @@ function loadFiles() {
     }));
 }
 
+// Football jerseys of the Men sheet (also served to the site by /api/jerseys)
+async function loadSheetJerseys() {
+  return (await loadSheet({ gender: 'men', url: SHEET_URL })).filter(p => p.type === 'jersey');
+}
+
 async function getCatalog() {
   if (!fileProducts) fileProducts = loadFiles();
   if (Date.now() - sheetCache.at >= CACHE_MS) {
     try {
-      const jerseys = (await loadSheet({ gender: 'men', url: SHEET_URL })).filter(p => p.type === 'jersey');
+      const jerseys = await loadSheetJerseys();
       sheetCache = { at: Date.now(), products: jerseys };
     } catch (err) {
       console.warn('[catalog] sheet jerseys not loaded:', err.message);
@@ -192,4 +199,4 @@ function searchProducts(products, { query = '', gender, maxPrice } = {}) {
   return scored.slice(0, 6).map(s => s.p);
 }
 
-module.exports = { getCatalog, searchProducts };
+module.exports = { getCatalog, searchProducts, loadSheetJerseys };

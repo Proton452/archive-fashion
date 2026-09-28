@@ -8,7 +8,7 @@ Site : https://lovegofinds.com — hébergé sur Vercel, déployé automatiqueme
 
 - **HTML / CSS / JS vanilla** — zéro dépendance, zéro framework
 - **Polices** : Poppins (sans, tout le site) + DM Serif Display via Google Fonts
-- **Données produits** : CSV du partenaire (My Little Shop / theqcbook) → `scripts/build_catalog.py` → `data/men.json` + `data/women.json` (statiques, servis par Vercel) **+ les maillots (ARTICLE = jersey) de la 1re feuille du Google Sheet**, chargés en direct avec leurs marques best seller. Pour mettre à jour le CSV : `python scripts/build_catalog.py <chemin du csv>` puis commit.
+- **Données produits** : CSV du partenaire (My Little Shop / theqcbook) → `scripts/build_catalog.py` → `data/men.json` + `data/women.json` (statiques, servis par Vercel) **+ les maillots (ARTICLE = jersey) de la 1re feuille du Google Sheet**, servis par `/api/jerseys` (mis en cache 5 min par Vercel, donc une modif du sheet apparaît en ≤ 5 min) avec leurs marques best seller. Pour mettre à jour le CSV : `python scripts/build_catalog.py <chemin du csv>` puis commit.
 - **Images produits** : `img.theqcbook.com` (fournies par le CSV)
 - **Analytics** : GA4 (`G-H85B12JS2Y`) + Vercel Insights
 
@@ -60,7 +60,7 @@ archive-fashion/
 
 ## Logique JS (main.js / women.js)
 
-- **Chargement** : `fetchCatalog()` (JSON) + `fetchSheetJerseys()` (Men seulement) → `mixIn()` (maillots insérés à des places aléatoires fixes) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
+- **Chargement** : `fetchCatalog()` (JSON, préchargé dans le `<head>`) + `fetchSheetJerseys()` (Men seulement, `/api/jerseys`, abandonné après 3 s) → `mixIn()` (maillots insérés à des places aléatoires fixes) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
 - **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories (CSV + `jersey` du sheet) pour chaque onglet ; Best Sellers toujours affiché ; « Running » du partenaire = vêtements de sport → onglet Sport
 - **Sous-catégories** : `generateFilterDropdown()` construit les pastilles sous les onglets (`#catChips`, masquées sur All ou s'il n'y a qu'une catégorie) et le menu « Category » ; les deux ne listent que les catégories de l'onglet en cours et partagent `selectedFilters`
 - **Prix** : CSV en yuan (`¥`), maillots du sheet en € ; le tri compare en ¥ (`priceInYuan`, 1 € ≈ 8 ¥)
@@ -85,7 +85,7 @@ Le sheet doit être partagé en « Lecture pour tous avec le lien ».
 
 ## Ce qu'il NE FAUT PAS toucher sans discussion
 
-- `fetchCatalog()`, `fetchSheetJSONP()`, `parseSheetData()`, `loadProducts()` — branchés sur `data/*.json` et le sheet
+- `fetchCatalog()`, `fetchSheetJerseys()`, `loadProducts()` — branchés sur `data/*.json` et `/api/jerseys`
 - `partner.js` et les routes de `vercel.json` — les liens partenaires en dépendent
 - Le code Google Analytics (`gtag.js`, `G-H85B12JS2Y`) dans le `<head>` de chaque page — il sert aussi à valider le site dans Google Search Console
 - Les design tokens `:root` — toute modification impacte l'ensemble du site

@@ -680,4 +680,4 @@ document.addEventListener('mouseout', e => {
   tooltip.style.opacity = '0';
 });
 
-setTimeout(loadProducts, 800);
+loadProducts();
