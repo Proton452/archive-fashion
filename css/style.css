@@ -69,9 +69,22 @@ a { text-decoration: none; color: inherit; }
 
 ::selection { background: rgba(0, 168, 107, 0.55); color: #fff; }
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+/* Page scrollbar: visible enough to grab on a long catalog, still discreet */
+/* Firefox only: in Chrome these standard properties would override the styles below */
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-color: #C2C2C2 transparent; }
+  .chat-panel__input { scrollbar-width: thin; }
+}
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: #C2C2C2;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background-color: #9A9A9A; }
+::-webkit-scrollbar-button { display: none; }
 
 /* ================================================
    TOP BANNER
@@ -2548,6 +2561,7 @@ a.reviews__tp-inline {
 
 .chat-panel__form {
   display: flex;
+  align-items: flex-end;
   gap: 0.5rem;
   padding: 0.75rem;
   border-top: 1px solid var(--border);
@@ -2555,18 +2569,31 @@ a.reviews__tp-inline {
 .chat-panel__input {
   flex: 1;
   min-width: 0;
+  height: 42px;
+  max-height: 120px;
   padding: 10px 14px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 21px;
   background: var(--bg-card);
   color: var(--text);
   font-family: var(--sans);
-  font-size: 16px;
+  font-size: 16px;   /* smaller makes iOS zoom in on focus */
+  line-height: 20px;
+  resize: none;
+  overflow-y: hidden;
   transition: border-color 0.2s;
 }
+/* Computers: no zoom issue, so text and placeholder share a smaller size */
+@media (hover: hover) and (pointer: fine) {
+  .chat-panel__input { font-size: 0.9rem; }
+}
 .chat-panel__input:focus { outline: none; border-color: var(--accent); }
-/* The input stays at 16px (smaller makes iOS zoom in on focus); only the placeholder is smaller */
-.chat-panel__input::placeholder { font-size: 0.84rem; color: var(--text-muted); }
+/* Long messages: a thin scrollbar inside the input, not the page one */
+.chat-panel__input::-webkit-scrollbar { width: 6px; }
+.chat-panel__input::-webkit-scrollbar-thumb { border-width: 1px; }
+.chat-panel__input::-webkit-scrollbar-button { display: none; }
+/* Placeholder: same size as the typed text */
+.chat-panel__input::placeholder { color: var(--text-muted); }
 .chat-panel__input:disabled { background: var(--bg-hover); }
 .chat-panel__send {
   width: 42px;

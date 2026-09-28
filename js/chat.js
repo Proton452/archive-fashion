@@ -124,10 +124,25 @@
   list.setAttribute('aria-live', 'polite');
 
   const form = el('form', 'chat-panel__form');
-  const input = el('input', 'chat-panel__input');
-  input.type = 'text';
+  // Grows with the text (up to a few lines, then scrolls) so a long message stays readable
+  const input = el('textarea', 'chat-panel__input');
+  input.rows = 1;
   input.maxLength = 500;
   input.autocomplete = 'off';
+  const INPUT_MAX_H = 120;
+  function fitInput() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight + 2, INPUT_MAX_H) + 'px';
+    input.style.overflowY = input.scrollHeight + 2 > INPUT_MAX_H ? 'auto' : 'hidden';
+  }
+  input.addEventListener('input', fitInput);
+  // Enter sends, Shift+Enter goes to a new line
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      form.requestSubmit ? form.requestSubmit() : send(input.value);
+    }
+  });
   const sendBtn = el('button', 'chat-panel__send');
   sendBtn.type = 'submit';
   sendBtn.innerHTML = ICON_SEND;
@@ -424,6 +439,7 @@
 
     state.messages.push({ role: 'user', text });
     input.value = '';
+    fitInput();
     sending = true;
     save();
     render();
