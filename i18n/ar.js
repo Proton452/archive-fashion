@@ -226,5 +226,11 @@ window.I18N_DICT = {
  "\"The QC photos before shipping are a nice touch, gives you confidence before it even arrives. PSG kit is exactly what I wanted. Can't complain for the price honestly.\"": "«صور الفحص (QC) قبل الشحن لمسة رائعة، تمنحك الثقة حتى قبل وصول الطرد. طقم باريس سان جيرمان هو بالضبط ما أردته. بصراحة لا يمكنني الشكوى بهذا السعر.»",
  "\"8 jerseys, everything arrived perfect. The Discord community is actually helpful if you have questions. No issues with customs, smooth from start to finish.\"": "«8 قمصان ووصل كل شيء بشكل مثالي. مجتمع Discord مفيد فعلًا إذا كانت لديك أسئلة. لا مشاكل مع الجمارك، وكل شيء سار بسلاسة من البداية إلى النهاية.»",
  "Ready to join them?": "مستعد للانضمام إليهم؟",
- "See how it works": "شاهد كيف يعمل"
+ "See how it works": "شاهد كيف يعمل",
+ "Close": "إغلاق",
+ "Euro": "يورو",
+ "Dollar": "دولار",
+ "Pound": "جنيه",
+ "Złoty": "زلوتي",
+ "Yuan": "يوان"
 };

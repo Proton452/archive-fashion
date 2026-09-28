@@ -131,6 +131,8 @@ SERVER_KEYS = [
     'Chat is not configured yet.',
     'Missing message.',
     'Something went wrong. Please try again.',
+    # Currency names in the language / currency picker (js/i18n.js CURRENCY_NAMES)
+    'Euro', 'Dollar', 'Pound', 'Złoty', 'Yuan',
 ]
 
 # Never translated: brand names, sizes, weights, heights, reviewer names/initials

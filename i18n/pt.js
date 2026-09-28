@@ -226,5 +226,11 @@ window.I18N_DICT = {
  "\"The QC photos before shipping are a nice touch, gives you confidence before it even arrives. PSG kit is exactly what I wanted. Can't complain for the price honestly.\"": "«As fotos QC antes do envio são um ótimo detalhe, dão confiança antes de a encomenda chegar. O equipamento do PSG é exatamente o que queria. Pelo preço, não me posso queixar.»",
  "\"8 jerseys, everything arrived perfect. The Discord community is actually helpful if you have questions. No issues with customs, smooth from start to finish.\"": "«8 camisolas, chegou tudo perfeito. A comunidade do Discord ajuda mesmo se tiveres dúvidas. Nenhum problema com a alfândega, tudo tranquilo do início ao fim.»",
  "Ready to join them?": "Pronto para te juntares a eles?",
- "See how it works": "Ver como funciona"
+ "See how it works": "Ver como funciona",
+ "Close": "Fechar",
+ "Euro": "Euro",
+ "Dollar": "Dólar",
+ "Pound": "Libra",
+ "Złoty": "Zlóti",
+ "Yuan": "Yuan"
 };

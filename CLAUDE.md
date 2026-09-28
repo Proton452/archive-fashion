@@ -56,7 +56,7 @@ archive-fashion/
 - Anglais = langue source. Traductions : `i18n/<lang>.js` (`window.I18N_DICT = { "texte anglais": "traduction" }`), chargées seulement si une autre langue est choisie. Langues : fr, es, pt, de, it, nl, ar (arabe en RTL, correctifs `[dir="rtl"]` en fin de `style.css`).
 - Le texte des pages est traduit automatiquement en retrouvant son texte anglais (aucun attribut à ajouter dans le HTML). Un élément qui mélange texte et balises inline (`<strong>`…) peut être traduit en bloc : clé = son texte, valeur = HTML.
 - Dans le JS : `t('English text')` (les noms de catégories passent aussi par `t()`).
-- Bouton 🌐 (langue + devise) ajouté dans `.nav__right` ; un choix est gardé dans `localStorage` (`lang`, `currency`) et recharge la page.
+- Bouton drapeau + symbole de devise ajouté dans `.nav__right`, qui ouvre une fenêtre de cartes (panneau qui monte du bas sur mobile, fermeture par ✕, Échap, clic à côté ou glissement vers le bas). Drapeaux = classes `.flag--xx` de `style.css` (pas d'emojis : invisibles sur Windows) ; l'arabe a un badge « ع ». Un choix est gardé dans `localStorage` (`lang`, `currency`) et recharge la page.
 - **Après avoir modifié un texte du site** : `python scripts/i18n_check.py` liste les traductions manquantes par langue (`--source` exporte tous les textes).
 - Les noms de produits (titres du partenaire) ne sont pas traduits.
 
