@@ -266,6 +266,7 @@ function fetchSheetJerseys() {
       image: p.image,
       lien:  p.lien,
       isBestSeller: !!p.best,
+      fromSheet: true,   // shown in Football (and Best Sellers) only, not in All
     })))
     .catch(err => { console.warn('[Lovegobuy Finds] Sheet jerseys not loaded:', err); return []; })
     .finally(() => clearTimeout(timer));
@@ -395,7 +396,7 @@ async function loadProducts() {
 // Is this product in the selected tab?
 function inCurrentTab(p) {
   if (currentCategoryTab === 'best-sellers') return p.isBestSeller;
-  if (currentCategoryTab === 'all') return true;
+  if (currentCategoryTab === 'all') return !p.fromSheet;
   return (CATEGORY_MAP[currentCategoryTab] || []).includes((p.article || '').toLowerCase().trim());
 }
 
@@ -496,7 +497,7 @@ function applyFilters() {
   let filtered = allProducts;
 
   // 1. Category tab filter
-  if (currentCategoryTab !== 'all') filtered = filtered.filter(inCurrentTab);
+  filtered = filtered.filter(inCurrentTab);
 
   // 2. Sub-type filter (dropdown)
   if (selectedFilters.size > 0) {

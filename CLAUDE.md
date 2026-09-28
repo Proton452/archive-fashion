@@ -70,7 +70,7 @@ archive-fashion/
 
 ## Logique JS (main.js / women.js)
 
-- **Chargement** : `fetchCatalog()` (JSON, préchargé dans le `<head>`) + `fetchSheetJerseys()` (Men seulement, `/api/jerseys`, abandonné après 3 s) → `mixIn()` (maillots insérés à des places aléatoires fixes) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
+- **Chargement** : `fetchCatalog()` (JSON, préchargé dans le `<head>`) + `fetchSheetJerseys()` (Men seulement, `/api/jerseys`, abandonné après 3 s) → `mixIn()` (maillots insérés à des places aléatoires fixes ; marqués `fromSheet`, ils n'apparaissent **que dans Football et Best Sellers, jamais dans All**) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
 - **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories (CSV + `jersey` du sheet) pour chaque onglet ; Best Sellers toujours affiché ; « Running » du partenaire = vêtements de sport → onglet Sport
 - **Sous-catégories** : `generateFilterDropdown()` construit les pastilles sous les onglets (`#catChips`, masquées sur All ou s'il n'y a qu'une catégorie) et le menu « Category » ; les deux ne listent que les catégories de l'onglet en cours et partagent `selectedFilters`
 - **Prix** : chaque produit a `cny` (prix en yuan ; maillots du sheet en € convertis) et `price` (texte affiché). `js/prices.js` (partagé avec `/api/chat`) convertit au taux Lovegobuy (`RATES`, marge incluse) dans la devise choisie (EUR par défaut, USD, GBP, PLN, CNY = prix d'origine sans conversion) et **arrondit toujours à l'unité inférieure**. Si Lovegobuy change ses taux, mettre à jour `RATES`. Le tri compare `cny`
