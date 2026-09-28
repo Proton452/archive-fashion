@@ -8,8 +8,8 @@ Site : https://lovegofinds.com — hébergé sur Vercel, déployé automatiqueme
 
 - **HTML / CSS / JS vanilla** — zéro dépendance, zéro framework
 - **Polices** : Poppins (sans, tout le site) + DM Serif Display via Google Fonts
-- **Données produits** : Google Sheets → `gviz/tq` en JSONP (contourne CORS)
-- **Images produits** : Bunny CDN (`archivefashion.b-cdn.net`), redimensionnées via `?width=400&quality=75&format=auto`
+- **Données produits** : CSV du partenaire (My Little Shop / theqcbook) → `scripts/build_catalog.py` → `data/men.json` + `data/women.json` (statiques, servis par Vercel). Pour mettre à jour : `python scripts/build_catalog.py <chemin du csv>` puis commit.
+- **Images produits** : `img.theqcbook.com` (fournies par le CSV)
 - **Analytics** : GA4 (`G-H85B12JS2Y`) + Vercel Insights
 
 ## Structure
@@ -24,7 +24,7 @@ archive-fashion/
 ├── 404.html            Redirige vers /
 ├── css/style.css       Tous les styles (tokens, composants, responsive)
 ├── js/
-│   ├── main.js         Page Men : chargement Sheet, onglets, filtres, recherche, tri, scroll infini
+│   ├── main.js         Page Men : chargement catalogue, onglets, filtres, recherche, tri, scroll infini
 │   ├── women.js        Même logique pour la page Women
 │   ├── nav.js          Navbar + FAQ pour les pages secondaires
 │   └── partner.js      Liens partenaires (/slug → code d'invitation, feuille "Codes")
@@ -60,14 +60,15 @@ archive-fashion/
 
 ## Logique JS (main.js / women.js)
 
-- **Chargement** : `fetchSheetJSONP()` → `parseSheetData()` → `deduplicateProducts()` → `deterministicShuffle()`
-- **Onglets catégories** : `CATEGORY_MAP` associe chaque onglet à des mots-clés de la colonne ARTICLE
+- **Chargement** : `fetchCatalog()` (JSON) → `deduplicateProducts()` ; l'ordre (mélange, non-mode à la fin) est fixé par le script de build
+- **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories du CSV pour chaque onglet ; un onglet vide (ex. Best Sellers) est masqué
+- **Prix** : en yuan (`¥`) pour l'instant
 - **Filtres / recherche / tri** : en mémoire sur `allProducts[]` (`applyFilters()`), recherche multilingue via dictionnaire de synonymes
 - **Affichage** : scroll infini par lots de 30 (`PAGE_SIZE`)
 - **Fade-in** : `IntersectionObserver` ajoute `.is-visible` sur `.fade-in`
 - **Popup maillots** : rappel « minimum 4 jerseys » avant d'ouvrir un lien foot
 
-## Google Sheets — Configuration
+## Google Sheets — Configuration (seule la feuille `Codes` est encore lue)
 
 Sheet ID : `1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M`
 
@@ -83,7 +84,7 @@ Le sheet doit être partagé en « Lecture pour tous avec le lien ».
 
 ## Ce qu'il NE FAUT PAS toucher sans discussion
 
-- `fetchSheetJSONP()`, `parseSheetData()`, `loadProducts()` — fonctionnels, branchés sur le vrai sheet
+- `fetchCatalog()`, `loadProducts()` — branchés sur `data/*.json`
 - `partner.js` et les routes de `vercel.json` — les liens partenaires en dépendent
 - Le code Google Analytics (`gtag.js`, `G-H85B12JS2Y`) dans le `<head>` de chaque page — il sert aussi à valider le site dans Google Search Console
 - Les design tokens `:root` — toute modification impacte l'ensemble du site

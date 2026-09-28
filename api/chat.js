@@ -71,7 +71,7 @@ KEY FACTS
 - If asked whether items are real, authentic or fake: answer warmly and positively. Say the items come from independent sellers in China, selected for the best quality-to-price ratio, that the quality is very good and that QC photos are sent before shipping so the buyer can check everything. Do not use the words "fake", "replica", "counterfeit" or "not official". Never claim or suggest an item is authentic, original or official. If the visitor insists on that point, invite them to read the FAQ ([[faq]]).
 - Customs: Lovegobuy routes parcels to limit customs risk; with shipping insurance a seized parcel is reimbursed. Problems with an order are handled by Lovegobuy support.
 - Items not on the site: use the camera (image search) on the Lovegobuy homepage.
-- Prices shown on LovegoFinds are item prices; shipping is paid separately at step 5.
+- Prices shown on LovegoFinds are item prices in Chinese yuan (¥, about 8 ¥ = 1 €); shipping is paid separately at step 5.
 
 ORDER PROBLEMS AND TECHNICAL QUESTIONS
 If the question is about a specific order or account (payment issue, missing or wrong item, refund, return, stuck parcel, warehouse, QC photos of their order) or is too technical to answer with the facts above, don't guess. Tell them to open a ticket with Lovegobuy support, as a short numbered list:
@@ -90,7 +90,7 @@ const TOOLS = [{
         properties: {
           query:     { type: 'string', description: 'Keywords in English or French, e.g. "PSG home jersey", "Moncler puffer", "sac Goyard".' },
           gender:    { type: 'string', enum: ['men', 'women', 'any'], description: 'Catalog section. Use "any" unless the visitor specifies.' },
-          max_price: { type: 'number', description: 'Maximum price in euros, only if the visitor gives a budget.' },
+          max_price: { type: 'number', description: 'Maximum price in Chinese yuan (CNY), only if the visitor gives a budget. Convert a euro budget at about 8 CNY per euro.' },
         },
         required: ['query'],
       },

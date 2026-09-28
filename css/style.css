@@ -591,6 +591,8 @@ a { text-decoration: none; color: inherit; }
   .cat-tab:hover { color: var(--text); }
 }
 
+.cat-tab[hidden] { display: none; }
+
 .cat-tab.is-active {
   color: var(--accent);
   border-bottom-color: var(--accent);

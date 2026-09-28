@@ -1,19 +1,19 @@
 /* ==============================================
    LOVEGOBUY FINDS — Women Script
-   Data: Google Sheets via JSONP (gviz/tq)
-   Sheet columns: NAME | BRAND | ARTICLE | PRICE | IMAGE | LIEN
+   Data: /data/women.json (built from the partner CSV by scripts/build_catalog.py)
 ============================================== */
 
-const SHEET_ID_WOMEN = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
-const SHEET_NAME_WOMEN = 'Feuille 2';
+const CATALOG_URL = '/data/women.json';
 
 const CATEGORY_MAP = {
-  'best-sellers': ['best seller', 'bestseller', 'best-seller'],
-  summer:      ['cap', 'casquette', 'hat', 'short', 'shorts', 'slide', 'slides', 'claquette', 'claquettes'],
-  tops:        ['hoodie', 'sweatshirt', 't-shirt', 'tshirt', 'shirt', 'polo', 'top', 'sweater', 'pull', 'crop', 'blouse', 'chemise'],
-  winter:      ['puffer', 'jacket', 'coat', 'veste', 'manteau', 'doudoune', 'blouson', 'bomber', 'windbreaker'],
-  pants:       ['jean', 'jeans', 'pantalon', 'cargo', 'jogger', 'jogging', 'legging', 'pants', 'skirt', 'jupe'],
-  accessories: ['bag', 'sac', 'belt', 'beanie', 'wallet', 'sock', 'accessoire'],
+  dresses:     ['dresses', 'skirts'],
+  summer:      ['shorts', 'denim shorts', 'skirts', 'slides & sandals', 'hats & caps', 'sunglasses'],
+  tops:        ['t-shirts', 'shirts', 'hoodies & sweats', 'long sleeves', 'polo', 'sweater', 'tracksuits & sets'],
+  winter:      ['coats & puffers', 'jackets'],
+  pants:       ['pants', 'jeans', 'sweatpants', 'shorts', 'denim shorts', 'skirts'],
+  shoes:       ['sneakers', 'running', 'boots', 'slides & sandals', 'dress shoes'],
+  bags:        ['backpacks', 'crossbody & shoulder', 'handbags', 'duffels', 'cosmetic bags'],
+  accessories: ['belts', 'wallets', 'socks', 'scarves', 'ties', 'hats & caps', 'sunglasses', 'jewelry', 'bracelets', 'necklaces', 'rings', 'earrings', 'watches', 'accessories', 'underwear'],
 };
 
 let allProducts        = [];
@@ -183,73 +183,20 @@ const infiniteScrollObserver = new IntersectionObserver(entries => {
   }
 }, { rootMargin: '400px 0px' });
 
-function fetchSheetJSONP(sheetID, sheetName) {
-  return new Promise((resolve, reject) => {
-    const cbName = '__gviz_cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    const sheetParam = sheetName ? `&sheet=${encodeURIComponent(sheetName)}` : '';
-    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq`
-      + `?tqx=out:json;responseHandler:${cbName}${sheetParam}`;
-
-    const timeout = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, 15000);
-
-    function cleanup() {
-      clearTimeout(timeout);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    window[cbName] = data => { cleanup(); resolve(data); };
-
-    const script = document.createElement('script');
-    script.src = url;
-    script.onerror = () => { cleanup(); reject(new Error('Script error')); };
-    document.head.appendChild(script);
-  });
-}
-
-function parseSheetData(data) {
-  if (!data?.table?.rows || !data?.table?.cols) return [];
-
-  const cols = data.table.cols.map(c => (c.label || '').toLowerCase().trim());
-  const find = (...keywords) => cols.findIndex(c => keywords.some(k => c.includes(k)));
-
-  const idx = {
-    name:          find('nom', 'name', 'titre', 'title', 'article'),
-    brand:         find('brand', 'marque'),
-    article:       find('type', 'catégor', 'categor'),
-    price:         find('prix', 'price'),
-    imageDetoured: find('détouré', 'detouré', 'detour', 'cloudinary'),
-    image:         cols.findIndex(c => (c.includes('photo') || c.includes('image') || c.includes('img')) && !c.includes('détouré') && !c.includes('detouré') && !c.includes('cloudinary')),
-    lien:          find('lien', 'link', 'url', 'produit'),
-    bestSeller:    find('best seller', 'bestseller', 'best-seller'),
-  };
-
-  if (idx.name    < 0) idx.name    = 0;
-  if (idx.article < 0) idx.article = 2;
-  if (idx.price   < 0) idx.price   = 3;
-  if (idx.image   < 0) idx.image   = 4;
-  if (idx.lien    < 0) idx.lien    = 5;
-
-  return data.table.rows
-    .filter(row => row?.c)
-    .map(row => {
-      const cell = i => {
-        const c = row.c[i];
-        if (!c) return '';
-        return String(c.f != null ? c.f : (c.v != null ? c.v : '')).trim();
-      };
-      return {
-        name:          cell(idx.name),
-        brand:         idx.brand >= 0 ? cell(idx.brand) : '',
-        article:       cell(idx.article),
-        price:         cell(idx.price),
-        image:         cell(idx.image),
-        imageDetoured: idx.imageDetoured >= 0 ? cell(idx.imageDetoured) : '',
-        lien:          cell(idx.lien),
-        isBestSeller:  idx.bestSeller >= 0 && cell(idx.bestSeller).toLowerCase().includes('best seller'),
-      };
-    })
-    .filter(p => p.name);
+// ─── Load the catalog JSON → product objects ─────
+async function fetchCatalog(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`Catalog HTTP ${r.status}`);
+  const data = await r.json();
+  return data.items.map(([name, brand, article, priceCny, itemId, imageId]) => ({
+    name,
+    brand,
+    article,
+    price: `¥${priceCny}`,
+    image: data.image.replace('{id}', imageId),
+    lien:  data.link.replace('{id}', itemId),
+    isBestSeller: false,
+  }));
 }
 
 function parsePrice(priceStr) {
@@ -325,8 +272,8 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    const womenData = await fetchSheetJSONP(SHEET_ID_WOMEN, SHEET_NAME_WOMEN);
-    allProducts = parseSheetData(womenData);
+    allProducts = await fetchCatalog(CATALOG_URL);
+    hideEmptyTabs();
 
     loading.style.display = 'none';
     generateFilterDropdown();
@@ -340,6 +287,17 @@ async function loadProducts() {
     emptyState.hidden = false;
     countEl.textContent = '— Error loading items';
   }
+}
+
+// Hide tabs with nothing in them (e.g. Best Sellers until some are marked)
+function hideEmptyTabs() {
+  document.querySelectorAll('.cat-tab').forEach(tab => {
+    const cat = tab.dataset.cat;
+    if (cat === 'all') return;
+    tab.hidden = !allProducts.some(p => cat === 'best-sellers'
+      ? p.isBestSeller
+      : (CATEGORY_MAP[cat] || []).includes((p.article || '').toLowerCase().trim()));
+  });
 }
 
 function generateFilterDropdown() {
@@ -417,8 +375,7 @@ function applyFilters() {
   } else if (currentCategoryTab !== 'all') {
     const keywords = CATEGORY_MAP[currentCategoryTab] || [];
     filtered = filtered.filter(p => {
-      const art = (p.article || '').toLowerCase().trim();
-      return keywords.some(k => art.includes(k));
+      return keywords.includes((p.article || '').toLowerCase().trim());
     });
   }
 
