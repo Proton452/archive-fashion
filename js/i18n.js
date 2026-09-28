@@ -127,6 +127,15 @@
     if (dict[norm(originalTitle)]) document.title = dict[norm(originalTitle)];
   }
 
+  // Trustpilot links (Lovegobuy's reviews) open in the visitor's language
+  const TRUSTPILOT_HOSTS = { fr: 'fr', es: 'es', pt: 'pt', de: 'de', it: 'it', nl: 'nl' };
+  function localizeLinks() {
+    const host = (TRUSTPILOT_HOSTS[lang] || 'www') + '.trustpilot.com';
+    document.querySelectorAll('a[data-trustpilot]').forEach(a => {
+      a.href = 'https://' + host + '/review/lovegobuy.com';
+    });
+  }
+
   function loadDict(code) {
     if (code in DICTS) return Promise.resolve(DICTS[code]);
     return new Promise((resolve, reject) => {
@@ -157,6 +166,7 @@
     window.I18N_DICT = dict;
     setDocLang();
     translatePage();
+    localizeLinks();
     try { localStorage.setItem(STORE_KEY, code); } catch (e) {}
     if (typeof gtag === 'function') gtag('event', 'change_language', { language: code });
     updateButton();
@@ -315,6 +325,10 @@
   document.addEventListener('DOMContentLoaded', () => {
     DICTS[lang] = window.I18N_DICT || null;
     translatePage();
+    localizeLinks();
     buildPicker();
+    document.querySelectorAll('a[data-trustpilot]').forEach(a => a.addEventListener('click', () => {
+      if (typeof gtag === 'function') gtag('event', 'click_trustpilot', { transport_type: 'beacon' });
+    }));
   });
 })();
