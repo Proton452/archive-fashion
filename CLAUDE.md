@@ -57,7 +57,7 @@ archive-fashion/
 - Les photos QC du CSV (`qc_photos`) sont écrites par `build_catalog.py` dans `data/qc/<2 derniers chiffres de l'id>.json` (chargé seulement à l'ouverture) ; le catalogue ne garde que le nombre de photos (7e champ) pour la pastille.
 - Carte : le clic reste direct vers Lovegobuy ; la pastille appareil photo (sans nombre) ouvre la fenêtre (pas de page séparée : `partner.js` prendrait `/p/...` pour un code créateur).
 - Lien partageable : `/#p=<id Lovegobuy>` (ou `/women#p=...`) ; Retour/✕/Échap ferment la fenêtre sans bouger la page.
-- Photos lourdes (400–800 Ko, pas de redimensionnement chez le partenaire) : seules la photo affichée et ses voisines sont chargées. Défilement au doigt = scroll-snap natif (`.photos-track`) ; la même photo floutée remplit les bords. Pas de double-tap zoom (`touch-action: manipulation`).
+- Photos lourdes (400–800 Ko, pas de redimensionnement chez le partenaire) : seules la photo affichée et ses voisines sont chargées. Défilement au doigt = scroll-snap natif (`.photos-track`) ; la photo est zoomée pour remplir le cadre quand sa forme est proche (écart ≤ 30 %), sinon elle reste entière avec sa copie floutée autour. Pas de double-tap zoom (`touch-action: manipulation`).
 - Mobile : fenêtre à la hauteur de son contenu (max 92 %) qui monte du bas, catalogue visible au-dessus ; se ferme en la tirant vers le bas (poignée en haut). Ordinateur : simple fondu court, fond peu assombri (animations volontairement calmes, demandé par l'utilisateur).
 - Photos des modèles (`model_images`) : pas encore utilisées.
 

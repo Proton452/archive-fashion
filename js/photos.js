@@ -126,7 +126,8 @@
       img.dataset.src = url;
       img.addEventListener('load', () => {
         slide.classList.remove('is-loading');
-        bg.src = img.src;   // the same photo, blurred, fills the space around it
+        fitPhoto(slide, img);
+        bg.src = img.src;   // for photos too different from the frame: blurred copy around them
       });
       img.addEventListener('error', () => {
         slide.classList.remove('is-loading');
@@ -136,6 +137,16 @@
       slide.dataset.i = i;
       return slide;
     }));
+  }
+
+  // Fill the frame (zoom) when the photo's shape is close to it, so there are no bands;
+  // a very different shape keeps the whole photo (with the blurred copy around it)
+  const MAX_ZOOM = 1.3;
+  function fitPhoto(slide, img) {
+    if (!img.naturalWidth || !slide.clientHeight) return;
+    const photo = img.naturalWidth / img.naturalHeight;
+    const frame = slide.clientWidth / slide.clientHeight;
+    slide.classList.toggle('is-cover', Math.max(photo / frame, frame / photo) <= MAX_ZOOM);
   }
 
   // Load the photo shown and its neighbours only
@@ -290,7 +301,11 @@
   });
 
   // Keep the current photo in place if the window is resized (phone rotation)
-  window.addEventListener('resize', () => { if (item) goTo(index, false); });
+  window.addEventListener('resize', () => {
+    if (!item) return;
+    goTo(index, false);
+    [...track.children].forEach(sl => fitPhoto(sl, sl.querySelector('.photos-slide__img')));
+  });
 
   document.addEventListener('localechange', () => {
     if (!item) return;

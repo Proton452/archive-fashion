@@ -2852,6 +2852,7 @@ a.reviews__tp-inline {
 }
 
 .photos-slide.is-loading .photos-slide__img { opacity: 0; }
+.photos-slide.is-cover .photos-slide__img { object-fit: cover; }
 
 /* Heavy photos: a small quiet spinner while one loads */
 .photos-slide__spinner {
