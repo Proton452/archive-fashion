@@ -1,4 +1,32 @@
 User-agent: *
 Allow: /
 
+# AI crawlers that collect training data
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: meta-externalagent
+User-agent: cohere-ai
+User-agent: cohere-training-data-crawler
+User-agent: Diffbot
+User-agent: Timpibot
+User-agent: omgili
+Disallow: /
+
+# AI assistants opening the site when a user asks them to (e.g. "copy this site")
+User-agent: ChatGPT-User
+User-agent: Claude-User
+User-agent: Claude-Web
+User-agent: Perplexity-User
+User-agent: MistralAI-User
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+# Search engines, including AI search indexes (OAI-SearchBot, Claude-SearchBot, PerplexityBot),
+# stay allowed so the site keeps showing up in Google and in AI answers.
+
 Sitemap: https://lovegofinds.com/sitemap.xml
