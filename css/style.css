@@ -2738,6 +2738,11 @@ a.reviews__tp-inline {
 /* Small press, like the site's other buttons */
 .product-card__photos { transition: border-color 0.2s, background-color 0.2s, transform 0.12s var(--ease-out); }
 .product-card__photos:active { transform: scale(0.92); }
+/* Pressing the camera must not press the whole card (the card links to Lovegobuy) */
+.product-card:has(.product-card__photos:active) { scale: 1; }
+@media (hover: hover) {
+  .product-card:has(.product-card__photos:hover) .product-card__image img { transform: none; }
+}
 
 .photos-open { overflow: hidden; }
 
