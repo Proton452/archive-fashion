@@ -305,7 +305,8 @@
     html.classList.add('locale-open');
     requestAnimationFrame(() => requestAnimationFrame(() => modal && modal.classList.add('is-open')));
     const active = modal.querySelector('.locale-card.is-active');
-    if (active) active.focus({ preventScroll: true });
+    // Computers only: on phones a focus makes iPhone Safari expand its address bar
+    if (active && window.matchMedia('(hover: hover)').matches) active.focus({ preventScroll: true });
     if (typeof gtag === 'function') gtag('event', 'open_locale_picker');
   }
 

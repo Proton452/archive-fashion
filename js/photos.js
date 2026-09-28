@@ -3,7 +3,8 @@
    (Men / Women pages). Photos taken at Lovegobuy's warehouse on previous
    orders, from data/qc/<last 2 digits of the item id>.json.
    - Opens above the catalog, so closing it leaves the page exactly as it was.
-   - Link to share: /#p=<item id> (also works on /women and creator links).
+   - Shared links /#p=<item id> open it (also on /women and creator links). Opening it from
+     a card doesn't change the address (iPhone Safari would expand its bar), but Back closes it.
    - Photos slide under the finger (native scroll-snap). They are heavy
      (400-800 KB): only the one shown and its neighbours are loaded.
    - Phones: full screen, slides up from the bottom, drag it down to close.
@@ -272,11 +273,13 @@
     document.documentElement.classList.add('photos-open');
     goTo(0, false);
     requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
-    // Focus the window itself (keyboard users land inside it) without a ring on the ✕
-    sheet.focus({ preventScroll: true });
-    if (!fromHash && location.hash !== '#p=' + itemId) {
-      // Full path: the pages have <base href="/">, a bare "#p=" would point to the home page
-      history.pushState({ realPhotos: itemId }, '', location.pathname + location.search + '#p=' + itemId);
+    // Computers: focus the window (keyboard users land inside it). Not on phones: like the
+    // chat, so iPhone Safari doesn't expand its address bar
+    if (window.matchMedia('(hover: hover)').matches) sheet.focus({ preventScroll: true });
+    // A history entry so the phone's Back button closes the window, but the address stays
+    // the same: a changing URL makes iPhone Safari expand its address bar (and a band under it)
+    if (!fromHash) {
+      history.pushState({ realPhotos: itemId }, '');
       pushedHash = true;
     }
     gaEvent('open_real_photos', { item_name: item.n, photos: item.q.length });
@@ -306,9 +309,11 @@
     else { hide(); if (HASH_RE.test(location.hash)) clearHash(); }
   }
 
-  window.addEventListener('popstate', () => {
+  window.addEventListener('popstate', e => {
+    const again = e.state && e.state.realPhotos;   // Forward after closing
     const m = location.hash.match(HASH_RE);
-    if (m) open(m[1], { fromHash: true });
+    if (again) { pushedHash = true; open(again, { fromHash: true }); }
+    else if (m) open(m[1], { fromHash: true });
     else { pushedHash = false; hide(); }
   });
 
