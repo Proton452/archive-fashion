@@ -251,6 +251,8 @@ a { text-decoration: none; color: inherit; }
 .locale__chevron { color: var(--text-muted); margin-inline-start: -2px; }
 
 .locale-open { overflow: hidden; }
+/* Keep the scrollbar's room while the page is locked, so nothing shifts or grows */
+html { scrollbar-gutter: stable; }
 
 .locale-modal {
   position: fixed;
@@ -279,8 +281,8 @@ a { text-decoration: none; color: inherit; }
   border-radius: 16px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
   opacity: 0;
-  transform: translateY(12px) scale(0.98);
-  transition: opacity 0.25s var(--ease-out), transform 0.3s var(--ease-out);
+  transform: translateY(10px);
+  transition: opacity 0.22s var(--ease-out), transform 0.28s var(--ease-out);
 }
 
 .locale-modal.is-open .locale-sheet {
