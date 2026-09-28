@@ -532,6 +532,7 @@ function appendNextBatch() {
 
     const card = link ? document.createElement('a') : document.createElement('article');
     card.className = 'product-card fade-in';
+    card._product = p;   // for price updates on a currency switch
     card.style.transitionDelay = `${((batchStart + i) % numColumns) * 60}ms`;
 
     if (link) {
@@ -632,6 +633,17 @@ grid.addEventListener('transitionend', e => {
   if (e.propertyName === 'opacity' && e.target.classList.contains('product-card')) {
     e.target.style.transitionDelay = '';
   }
+});
+
+// ─── Language / currency switch (no reload) ─────
+document.addEventListener('localechange', () => {
+  allProducts.forEach(p => { p.price = Prices.format(p.cny); });
+  grid.querySelectorAll('.product-card').forEach(card => {
+    const priceEl = card.querySelector('.product-card__price');
+    if (priceEl && card._product) priceEl.textContent = card._product.price;
+  });
+  generateFilterDropdown();   // chips + Category menu labels
+  if (!emptyState.hidden && allProducts.length) showEmptyState();
 });
 
 // ─── Tooltip ─────────────────────────────────────

@@ -20,12 +20,24 @@
   const DEFAULT = 'EUR';
   const STORE_KEY = 'currency';
 
+  // First visit: guess the currency from the device's time zone (more reliable than the
+  // browser language for the country). Not saved: the visitor's own choice always wins.
+  function detect() {
+    let tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    if (tz === 'Europe/Warsaw') return 'PLN';
+    if (/^Europe\/(London|Belfast|Guernsey|Isle_of_Man|Jersey)$/.test(tz)) return 'GBP';
+    if (/^(America|US|Canada)\//.test(tz) || tz === 'Pacific/Honolulu') return 'USD';
+    if (/^Asia\/(Shanghai|Chongqing|Chungking|Harbin|Urumqi)$/.test(tz) || tz === 'PRC') return 'CNY';
+    return DEFAULT;
+  }
+
   function current() {
     try {
       const c = localStorage.getItem(STORE_KEY);
       if (RATES[c]) return c;
     } catch (e) {}
-    return DEFAULT;
+    return typeof window !== 'undefined' ? detect() : DEFAULT;
   }
 
   function set(code) {
@@ -60,7 +72,7 @@
     return val / RATES[cur];
   }
 
-  const api = { RATES, CURRENCIES, DEFAULT, current, set, fromCny, toCny, format, parseToCny };
+  const api = { RATES, CURRENCIES, DEFAULT, current, detect, set, fromCny, toCny, format, parseToCny };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Prices = api;
 })(typeof window !== 'undefined' ? window : globalThis);

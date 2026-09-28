@@ -6,16 +6,16 @@
   const result = document.getElementById('trackResult');
   if (!form) return;
 
-  const STATUS = {
-    NotFound:           { label: t('No info yet'),       tone: 'muted' },
-    InfoReceived:       { label: t('Info received'),     tone: 'muted' },
-    InTransit:          { label: t('In transit'),        tone: 'accent' },
-    AvailableForPickup: { label: t('Ready for pickup'),  tone: 'accent' },
-    OutForDelivery:     { label: t('Out for delivery'),  tone: 'accent' },
-    Delivered:          { label: t('Delivered'),         tone: 'success' },
-    DeliveryFailure:    { label: t('Delivery failed'),   tone: 'warn' },
-    Exception:          { label: t('Alert'),             tone: 'warn' },
-    Expired:            { label: t('Expired'),           tone: 'muted' },
+  const STATUS = {   // English labels, shown through t()
+    NotFound:           { label: 'No info yet',       tone: 'muted' },
+    InfoReceived:       { label: 'Info received',     tone: 'muted' },
+    InTransit:          { label: 'In transit',        tone: 'accent' },
+    AvailableForPickup: { label: 'Ready for pickup',  tone: 'accent' },
+    OutForDelivery:     { label: 'Out for delivery',  tone: 'accent' },
+    Delivered:          { label: 'Delivered',         tone: 'success' },
+    DeliveryFailure:    { label: 'Delivery failed',   tone: 'warn' },
+    Exception:          { label: 'Alert',             tone: 'warn' },
+    Expired:            { label: 'Expired',           tone: 'muted' },
   };
 
   const EVENTS_PREVIEW = 5;
@@ -34,14 +34,18 @@
   }
 
   function showMessage(text, tone) {
+    lastTracking = null;
     result.replaceChildren(el('p', 'track-box__msg' + (tone ? ' track-box__msg--' + tone : ''), text));
     result.hidden = false;
   }
 
+  let lastTracking = null;
+
   function renderTracking(data) {
+    lastTracking = data;
     const s = STATUS[data.status] || STATUS.NotFound;
     const head = el('div', 'track-box__head');
-    head.append(el('span', 'track-box__status track-box__status--' + s.tone, s.label));
+    head.append(el('span', 'track-box__status track-box__status--' + s.tone, t(s.label)));
     if (data.carrier) head.append(el('span', 'track-box__carrier', data.carrier));
 
     const nodes = [head];
@@ -99,4 +103,7 @@
       form.classList.remove('is-loading');
     }
   });
+
+  // Language switch: redraw the tracking result in the new language
+  document.addEventListener('localechange', () => { if (lastTracking) renderTracking(lastTracking); });
 })();

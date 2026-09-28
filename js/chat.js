@@ -10,11 +10,12 @@
   const MAX_USER_MESSAGES = 20;
   const SIGNUP_URL  = 'https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED';
   const DISCORD_URL = 'https://discord.gg/5EhjDVZ2x7';
-  // Texts follow the site language (js/i18n.js)
-  const WELCOME = t("Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.");
+  // Texts follow the site language (js/i18n.js) and are re-read on each render,
+  // so a language switch updates the open chat without a reload
+  const welcomeText = () => t("Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.");
   // Big one-tap questions on the empty chat: the things people get stuck on
-  const SUGGESTIONS = [t('How do I order?'), t('How do I get the 500€ coupons?'), t('Is the quality good?')];
-  const PLACEHOLDER = t('Ask your question…');
+  const suggestions = () => [t('How do I order?'), t('How do I get the 500€ coupons?'), t('Is the quality good?')];
+  const placeholder = () => t('Ask your question…');
 
   // ─── State ────────────────────────────────────
   let state = { open: false, messages: [] };
@@ -97,28 +98,25 @@
   // ─── Build UI ─────────────────────────────────
   const bubble = el('button', 'chat-bubble');
   bubble.type = 'button';
-  bubble.setAttribute('aria-label', t('Open chat assistant'));
-  bubble.innerHTML = ICON_CHAT + '<span class="chat-bubble__label">' + t('AI assistant') + '</span>';
+  bubble.innerHTML = ICON_CHAT + '<span class="chat-bubble__label"></span>';
 
   const panel = el('section', 'chat-panel');
   panel.setAttribute('role', 'dialog');
-  panel.setAttribute('aria-label', t('LovegoFinds AI assistant'));
   panel.hidden = true;
 
   const header = el('header', 'chat-panel__header');
   const avatar = el('span', 'chat-avatar chat-avatar--header');
   avatar.innerHTML = AVATAR;
   const titleWrap = el('div', 'chat-panel__titles');
-  titleWrap.append(el('p', 'chat-panel__title', t('LovegoFinds AI assistant')), el('p', 'chat-panel__subtitle', t('Online · replies instantly')));
+  const titleEl = el('p', 'chat-panel__title');
+  const subtitleEl = el('p', 'chat-panel__subtitle');
+  titleWrap.append(titleEl, subtitleEl);
   // Icon only, so the title fits on one line
   const resetBtn = el('button', 'chat-panel__reset');
   resetBtn.type = 'button';
-  resetBtn.title = t('New chat');
-  resetBtn.setAttribute('aria-label', t('New chat'));
   resetBtn.innerHTML = ICON_RESET;
   const closeBtn = el('button', 'chat-panel__close');
   closeBtn.type = 'button';
-  closeBtn.setAttribute('aria-label', t('Close chat'));
   closeBtn.innerHTML = ICON_CLOSE;
   header.append(avatar, titleWrap, resetBtn, closeBtn);
 
@@ -128,14 +126,26 @@
   const form = el('form', 'chat-panel__form');
   const input = el('input', 'chat-panel__input');
   input.type = 'text';
-  input.placeholder = PLACEHOLDER;
   input.maxLength = 500;
   input.autocomplete = 'off';
-  input.setAttribute('aria-label', t('Your message'));
   const sendBtn = el('button', 'chat-panel__send');
   sendBtn.type = 'submit';
-  sendBtn.setAttribute('aria-label', t('Send'));
   sendBtn.innerHTML = ICON_SEND;
+
+  // Fixed labels of the chat UI, in the site language
+  function applyTexts() {
+    bubble.setAttribute('aria-label', t('Open chat assistant'));
+    bubble.querySelector('.chat-bubble__label').textContent = t('AI assistant');
+    panel.setAttribute('aria-label', t('LovegoFinds AI assistant'));
+    titleEl.textContent = t('LovegoFinds AI assistant');
+    subtitleEl.textContent = t('Online · replies instantly');
+    resetBtn.title = t('New chat');
+    resetBtn.setAttribute('aria-label', t('New chat'));
+    closeBtn.setAttribute('aria-label', t('Close chat'));
+    input.setAttribute('aria-label', t('Your message'));
+    sendBtn.setAttribute('aria-label', t('Send'));
+  }
+  applyTexts();
   form.append(input, sendBtn);
 
   panel.append(header, list, form);
@@ -164,11 +174,11 @@
     return a;
   }
 
-  const BUTTON_LABELS = {
-    signup:  t('Sign up & get 500€ coupons →'),
-    discord: t('Ask on Discord →'),
-    howto:   t('See the full ordering guide →'),
-    faq:     t('Read the FAQ →'),
+  const BUTTON_LABELS = {   // English; shown through t()
+    signup:  'Sign up & get 500€ coupons →',
+    discord: 'Ask on Discord →',
+    howto:   'See the full ordering guide →',
+    faq:     'Read the FAQ →',
   };
 
   // Site pages keep the creator slug (/faq/football) like the rest of the site
@@ -179,7 +189,7 @@
   }
 
   function actionButton(kind) {
-    const a = el('a', 'chat-action chat-action--' + kind, BUTTON_LABELS[kind]);
+    const a = el('a', 'chat-action chat-action--' + kind, t(BUTTON_LABELS[kind]));
     if (kind === 'faq' || kind === 'howto') {
       a.href = sitePath(kind === 'faq' ? 'faq' : 'how-to-order');
       a.addEventListener('click', () => track('chat_page_link', { page: kind }));
@@ -236,7 +246,7 @@
         el('p', 'chat-welcome__sub', t('Instant answers.')),
       );
       const quick = el('div', 'chat-quick');
-      SUGGESTIONS.forEach(q => {
+      suggestions().forEach(q => {
         const b = el('button', 'chat-quick__btn');
         b.type = 'button';
         b.append(el('span', 'chat-quick__text', q), el('span', 'chat-quick__chevron', '›'));
@@ -246,7 +256,7 @@
       welcome.append(quick);
       list.append(welcome);
     } else {
-      list.append(renderMessage({ role: 'model', text: WELCOME }));
+      list.append(renderMessage({ role: 'model', text: welcomeText() }));
     }
 
     state.messages.forEach(m => list.append(renderMessage(m)));
@@ -264,7 +274,7 @@
     // Keep the input enabled while sending: disabling it would close the mobile keyboard
     input.disabled = limitReached;
     sendBtn.disabled = sending || limitReached;
-    input.placeholder = limitReached ? t('Conversation limit reached, start a new chat') : PLACEHOLDER;
+    input.placeholder = limitReached ? t('Conversation limit reached, start a new chat') : placeholder();
 
     list.scrollTop = list.scrollHeight;
   }
@@ -467,11 +477,9 @@
   const SHOWN_KEY     = 'lgf-chat-teaser-shown';  // sessionStorage: already shown this visit
   const RETURN_KEY    = 'lgf-chat-teaser-return'; // sessionStorage: "back from Lovegobuy" shown
   const onHelpPage = /^\/(how-to-order|faq)(\/|\.html|$)/.test(location.pathname);
-  const TEASER_TEXT = {
-    timer:  onHelpPage
-      ? t('Stuck? Ask me, I reply instantly 👋')
-      : t('Need help ordering? 👋'),
-    return: t('Stuck on Lovegobuy? Ask me 👋'),
+  const TEASER_TEXT = {   // English; shown through t()
+    timer:  onHelpPage ? 'Stuck? Ask me, I reply instantly 👋' : 'Need help ordering? 👋',
+    return: 'Stuck on Lovegobuy? Ask me 👋',
   };
   let teaser = null;
   let teaserTimer = null;
@@ -521,7 +529,7 @@
 
     teaser = el('div', 'chat-teaser');
     teaser.dataset.trigger = trigger;
-    const open = el('button', 'chat-teaser__text', TEASER_TEXT[trigger]);
+    const open = el('button', 'chat-teaser__text', t(TEASER_TEXT[trigger]));
     open.type = 'button';
     open.addEventListener('click', () => {
       track('chat_teaser_click', { trigger });
@@ -549,6 +557,16 @@
     bubble.classList.add('is-pulsing');
   }
   bubble.addEventListener('animationend', () => bubble.classList.remove('is-pulsing'));
+
+  document.addEventListener('localechange', () => {
+    applyTexts();
+    render();
+    if (teaser) {
+      teaser.querySelector('.chat-teaser__text').textContent = t(TEASER_TEXT[teaser.dataset.trigger]);
+      teaser.querySelector('.chat-teaser__close').setAttribute('aria-label', t('Dismiss'));
+      placeTeaser();
+    }
+  });
 
   // Opening the chat (bubble or teaser) retires the teaser for good; called from setOpen
   function markOpened() {

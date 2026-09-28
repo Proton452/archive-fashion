@@ -5,36 +5,45 @@
      when another language is chosen.
    - Static page text is translated by matching its English text; JS
      strings go through t() with the English text. Missing entries stay English.
-   - The 🌐 button in the nav picks the language and the currency
-     (see js/prices.js); a choice reloads the page.
+   - The "EN · €" button in the nav opens a picker (dialog of cards, bottom
+     sheet on phones). A choice applies on the spot, without a reload: the page
+     text is swapped and a `localechange` event lets the scripts redraw their
+     own parts (prices, category chips, chat, tracking).
 ============================================== */
 
 (function () {
   const LANGS = [
-    { code: 'en', name: 'English',    flag: 'gb' },
-    { code: 'fr', name: 'Français',   flag: 'fr' },
-    { code: 'es', name: 'Español',    flag: 'es' },
-    { code: 'pt', name: 'Português',  flag: 'pt' },
-    { code: 'de', name: 'Deutsch',    flag: 'de' },
-    { code: 'it', name: 'Italiano',   flag: 'it' },
-    { code: 'nl', name: 'Nederlands', flag: 'nl' },
-    { code: 'ar', name: 'العربية', rtl: true },   // no single country: a letter badge instead of a flag
+    { code: 'en', name: 'English' },
+    { code: 'fr', name: 'Français' },
+    { code: 'es', name: 'Español' },
+    { code: 'pt', name: 'Português' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'it', name: 'Italiano' },
+    { code: 'nl', name: 'Nederlands' },
+    { code: 'ar', name: 'العربية', rtl: true },
   ];
   const STORE_KEY = 'lang';
+  const html = document.documentElement;
 
   let lang = 'en';
   try {
     const saved = localStorage.getItem(STORE_KEY);
     if (LANGS.some(l => l.code === saved)) lang = saved;
   } catch (e) {}
-  const langInfo = LANGS.find(l => l.code === lang);
+  const info = code => LANGS.find(l => l.code === code);
 
-  const html = document.documentElement;
-  html.lang = lang;
-  if (langInfo.rtl) html.dir = 'rtl';
+  function setDocLang() {
+    html.lang = lang;
+    if (info(lang).rtl) html.dir = 'rtl';
+    else html.removeAttribute('dir');
+  }
+  setDocLang();
 
-  // Parser-blocking on purpose: the dictionary must be there before the page is shown
+  // Parser-blocking on purpose: the saved language's dictionary must be there
+  // before the page is shown (no flash of English)
   if (lang !== 'en') document.write('<script src="/i18n/' + lang + '.js"><\/script>');
+
+  const DICTS = { en: null };   // loaded dictionaries, by language
 
   const norm = s => String(s).replace(/\s+/g, ' ').trim();
 
@@ -47,26 +56,40 @@
   // Text nodes are matched one by one. An element mixing text with inline tags
   // ("<strong>Minimum 4 jerseys</strong> required…") can also be translated as a
   // whole: its key is its text content and the translation is HTML.
+  // The English originals are kept so another language can be applied later.
   const INLINE = new Set(['STRONG', 'EM', 'B', 'I', 'A', 'BR', 'SPAN', 'SMALL', 'U']);
   const SKIP = new Set(['SCRIPT', 'STYLE', 'SVG', 'NOSCRIPT']);
-  const FIELDS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);   // attributes only
+  const FIELDS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);          // attributes only
+  const SKIP_IDS = new Set(['productsGrid', 'catChips', 'filterDropdown']);   // drawn by main.js / women.js
   const ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
+
+  const originalText = new Map();   // text node → English text
+  const originalHTML = new Map();   // element translated as a whole → English HTML
+  const originalAttr = new Map();   // element → { attribute: English value }
+  let originalTitle = null;
 
   function translateNode(node, dict) {
     if (node.nodeType === 3) {
       const key = norm(node.data);
       if (key && dict[key]) {
+        if (!originalText.has(node)) originalText.set(node, node.data);
         const lead = node.data.match(/^\s*/)[0], trail = node.data.match(/\s*$/)[0];
         node.data = lead + dict[key] + trail;
       }
       return;
     }
     if (node.nodeType !== 1 || SKIP.has(node.tagName.toUpperCase())) return;
-    if (node.getAttribute('translate') === 'no' || node.id === 'productsGrid' || /(^|\s)chat-/.test(node.getAttribute('class') || '')) return;
+    if (node.getAttribute('translate') === 'no' || SKIP_IDS.has(node.id) ||
+        /(^|\s)(chat-|locale)/.test(node.getAttribute('class') || '')) return;
 
     ATTRS.forEach(a => {
       const v = node.getAttribute(a);
-      if (v && dict[norm(v)]) node.setAttribute(a, dict[norm(v)]);
+      if (v && dict[norm(v)]) {
+        const saved = originalAttr.get(node) || {};
+        if (!(a in saved)) saved[a] = v;
+        originalAttr.set(node, saved);
+        node.setAttribute(a, dict[norm(v)]);
+      }
     });
     if (FIELDS.has(node.tagName)) return;
 
@@ -76,30 +99,85 @@
                   kids.every(k => k.nodeType !== 1 || (INLINE.has(k.tagName) && !k.id));
     if (mixed) {
       const whole = dict[norm(node.textContent)];
-      if (whole) { node.innerHTML = whole; return; }
+      if (whole) {
+        originalHTML.set(node, node.innerHTML);
+        node.innerHTML = whole;
+        return;
+      }
     }
     kids.forEach(k => translateNode(k, dict));
   }
 
+  // Back to the English page, before applying another language
+  function restorePage() {
+    originalHTML.forEach((h, el) => { el.innerHTML = h; });
+    originalText.forEach((text, node) => { node.data = text; });
+    originalAttr.forEach((attrs, el) => Object.keys(attrs).forEach(a => el.setAttribute(a, attrs[a])));
+    originalHTML.clear();
+    originalText.clear();
+    originalAttr.clear();
+    if (originalTitle !== null) document.title = originalTitle;
+  }
+
   function translatePage() {
     const dict = window.I18N_DICT;
+    if (originalTitle === null) originalTitle = document.title;
     if (!dict) return;
     translateNode(document.body, dict);
-    if (dict[norm(document.title)]) document.title = dict[norm(document.title)];
+    if (dict[norm(originalTitle)]) document.title = dict[norm(originalTitle)];
+  }
+
+  function loadDict(code) {
+    if (code in DICTS) return Promise.resolve(DICTS[code]);
+    return new Promise((resolve, reject) => {
+      const prev = window.I18N_DICT;
+      const s = document.createElement('script');
+      s.src = '/i18n/' + code + '.js';
+      s.onload = () => {
+        DICTS[code] = window.I18N_DICT;
+        window.I18N_DICT = prev;
+        resolve(DICTS[code]);
+      };
+      s.onerror = () => reject(new Error('Could not load ' + code));
+      document.head.append(s);
+    });
+  }
+
+  function announce(changed) {
+    document.dispatchEvent(new CustomEvent('localechange', { detail: { changed, lang, currency: window.Prices && Prices.current() } }));
+    window.dispatchEvent(new Event('resize'));   // the nav, tabs and sticky bar may have changed size
+  }
+
+  async function setLanguage(code) {
+    if (code === lang || !info(code)) return;
+    let dict;
+    try { dict = await loadDict(code); } catch (e) { return; }
+    restorePage();
+    lang = code;
+    window.I18N_DICT = dict;
+    setDocLang();
+    translatePage();
+    try { localStorage.setItem(STORE_KEY, code); } catch (e) {}
+    if (typeof gtag === 'function') gtag('event', 'change_language', { language: code });
+    updateButton();
+    announce('lang');
+  }
+
+  function setCurrency(code) {
+    if (!window.Prices || !Prices.RATES[code] || code === Prices.current()) return;
+    Prices.set(code);
+    if (typeof gtag === 'function') gtag('event', 'change_currency', { currency: code });
+    updateButton();
+    announce('currency');
   }
 
   // ─── Language / currency picker ───────────────
-  // Nav button (flag + currency symbol) opening a dialog of cards;
-  // a bottom sheet on phones. A choice reloads the page.
   const CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const CLOSE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const CHEVRON = '<svg class="locale__chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
   const CURRENCY_NAMES = { EUR: 'Euro', USD: 'Dollar', GBP: 'Pound', PLN: 'Złoty', CNY: 'Yuan' };   // short: the code is shown below
 
-  function flagHTML(l) {
-    return l.flag
-      ? '<span class="flag locale__flag flag--' + l.flag + '" aria-hidden="true"></span>'
-      : '<span class="locale__flag locale__flag--letter" aria-hidden="true">ع</span>';
-  }
+  let btn = null, modal = null, lastFocus = null;
 
   function el(tag, cls, htmlContent) {
     const n = document.createElement(tag);
@@ -108,126 +186,134 @@
     return n;
   }
 
+  function updateButton() {
+    if (!btn) return;
+    const cur = Prices.current();
+    btn.innerHTML = '<span class="locale__code">' + lang.toUpperCase() + '</span>' +
+      '<span class="locale__sep" aria-hidden="true">·</span>' +
+      '<span class="locale__symbol">' + Prices.CURRENCIES[cur].symbol + '</span>' + CHEVRON;
+    btn.setAttribute('aria-label', t('Language and currency') + ': ' + info(lang).name + ', ' + cur);
+  }
+
+  function card(name, sub, lead, active, onPick) {
+    const b = el('button', 'locale-card' + (active ? ' is-active' : ''),
+      (lead || '') +
+      '<span class="locale-card__text"><span class="locale-card__name"></span><span class="locale-card__code"></span></span>' +
+      (active ? '<span class="locale-card__check">' + CHECK + '</span>' : ''));
+    b.querySelector('.locale-card__name').textContent = name;
+    b.querySelector('.locale-card__code').textContent = sub;
+    b.type = 'button';
+    if (active) b.setAttribute('aria-current', 'true');
+    b.addEventListener('click', () => { close(); if (!active) onPick(); });
+    return b;
+  }
+
+  function section(title, cards) {
+    const sec = el('section', 'locale-sheet__section');
+    sec.append(el('h3', 'locale-sheet__label'));
+    sec.firstChild.textContent = title;
+    const grid = el('div', 'locale-sheet__grid');
+    cards.forEach(c => grid.append(c));
+    sec.append(grid);
+    return sec;
+  }
+
+  // Built at each opening, so it always shows the current language and currency
+  function buildModal() {
+    if (modal) modal.remove();
+    const cur = Prices.current();
+    modal = el('div', 'locale-modal');
+    const sheet = el('div', 'locale-sheet');
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-modal', 'true');
+    sheet.setAttribute('aria-labelledby', 'localeTitle');
+
+    const head = el('div', 'locale-sheet__head');
+    head.append(el('span', 'locale-sheet__grip'));
+    const title = el('h2', 'locale-sheet__title');
+    title.id = 'localeTitle';
+    title.textContent = t('Language and currency');
+    const x = el('button', 'locale-sheet__close', CLOSE);
+    x.type = 'button';
+    x.setAttribute('aria-label', t('Close'));
+    x.addEventListener('click', close);
+    head.append(title, x);
+
+    const body = el('div', 'locale-sheet__body');
+    body.append(
+      section(t('Language'), LANGS.map(l =>
+        card(l.name, l.code.toUpperCase(), '', l.code === lang, () => setLanguage(l.code)))),
+      section(t('Currency'), Object.keys(Prices.CURRENCIES).map(code =>
+        card(t(CURRENCY_NAMES[code]), code, '<span class="locale-card__symbol">' + Prices.CURRENCIES[code].symbol + '</span>',
+          code === cur, () => setCurrency(code)))),
+    );
+
+    sheet.append(head, body);
+    modal.append(sheet);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+
+    // Phones: drag the sheet down by its header to close it
+    let startY = null, dy = 0;
+    head.addEventListener('touchstart', e => { startY = e.touches[0].clientY; dy = 0; sheet.style.transition = 'none'; }, { passive: true });
+    head.addEventListener('touchmove', e => {
+      if (startY === null) return;
+      dy = Math.max(0, e.touches[0].clientY - startY);
+      sheet.style.transform = 'translateY(' + dy + 'px)';
+    }, { passive: true });
+    head.addEventListener('touchend', () => {
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+      if (dy > 80) close();
+      startY = null;
+    });
+
+    document.body.append(modal);
+  }
+
+  function open() {
+    buildModal();
+    lastFocus = document.activeElement;
+    html.classList.add('locale-open');
+    requestAnimationFrame(() => requestAnimationFrame(() => modal && modal.classList.add('is-open')));
+    const active = modal.querySelector('.locale-card.is-active');
+    if (active) active.focus({ preventScroll: true });
+    if (typeof gtag === 'function') gtag('event', 'open_locale_picker');
+  }
+
+  function close() {
+    if (!modal) return;
+    const m = modal;
+    modal = null;
+    m.classList.remove('is-open');
+    html.classList.remove('locale-open');
+    setTimeout(() => m.remove(), 250);
+    if (lastFocus) lastFocus.focus({ preventScroll: true });
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
   function buildPicker() {
     const right = document.querySelector('.nav__right');
     if (!right || !window.Prices) return;
-    const cur = Prices.current();
-
-    const btn = el('button', 'locale__btn', flagHTML(langInfo) + '<span class="locale__symbol">' + Prices.CURRENCIES[cur].symbol + '</span>');
+    btn = el('button', 'locale__btn');
     btn.type = 'button';
     btn.setAttribute('aria-haspopup', 'dialog');
-    btn.setAttribute('aria-label', t('Language and currency') + ': ' + langInfo.name + ', ' + cur);
-    right.prepend(btn);
-
-    let modal = null, lastFocus = null;
-
-    function card(inner, active, onPick) {
-      const b = el('button', 'locale-card' + (active ? ' is-active' : ''), inner + (active ? '<span class="locale-card__check">' + CHECK + '</span>' : ''));
-      b.type = 'button';
-      if (active) b.setAttribute('aria-current', 'true');
-      b.addEventListener('click', () => { if (active) close(); else onPick(); });
-      return b;
-    }
-
-    function section(title, cards) {
-      const sec = el('section', 'locale-sheet__section');
-      sec.append(el('h3', 'locale-sheet__label', title));
-      const grid = el('div', 'locale-sheet__grid');
-      cards.forEach(c => grid.append(c));
-      sec.append(grid);
-      return sec;
-    }
-
-    function build() {
-      modal = el('div', 'locale-modal');
-      modal.hidden = true;
-      const sheet = el('div', 'locale-sheet');
-      sheet.setAttribute('role', 'dialog');
-      sheet.setAttribute('aria-modal', 'true');
-      sheet.setAttribute('aria-labelledby', 'localeTitle');
-
-      const head = el('div', 'locale-sheet__head');
-      head.append(el('span', 'locale-sheet__grip'));
-      const title = el('h2', 'locale-sheet__title');
-      title.id = 'localeTitle';
-      title.textContent = t('Language and currency');
-      const x = el('button', 'locale-sheet__close', CLOSE);
-      x.type = 'button';
-      x.setAttribute('aria-label', t('Close'));
-      x.addEventListener('click', close);
-      head.append(title, x);
-
-      const body = el('div', 'locale-sheet__body');
-      body.append(
-        section(t('Language'), LANGS.map(l => card(
-          flagHTML(l) + '<span class="locale-card__name">' + l.name + '</span>',
-          l.code === lang,
-          () => {
-            try { localStorage.setItem(STORE_KEY, l.code); } catch (e) {}
-            if (typeof gtag === 'function') gtag('event', 'change_language', { language: l.code });
-            location.reload();
-          }))),
-        section(t('Currency'), Object.keys(Prices.CURRENCIES).map(code => card(
-          '<span class="locale-card__symbol">' + Prices.CURRENCIES[code].symbol + '</span>' +
-          '<span class="locale-card__text"><span class="locale-card__name">' + t(CURRENCY_NAMES[code]) + '</span>' +
-          '<span class="locale-card__code">' + code + '</span></span>',
-          code === cur,
-          () => {
-            Prices.set(code);
-            if (typeof gtag === 'function') gtag('event', 'change_currency', { currency: code });
-            location.reload();
-          }))),
-      );
-
-      sheet.append(head, body);
-      modal.append(sheet);
-      modal.addEventListener('click', e => { if (e.target === modal) close(); });
-      document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal && !modal.hidden) close(); });
-
-      // Phones: drag the sheet down by its header to close it
-      let startY = null, dy = 0;
-      head.addEventListener('touchstart', e => { startY = e.touches[0].clientY; dy = 0; sheet.style.transition = 'none'; }, { passive: true });
-      head.addEventListener('touchmove', e => {
-        if (startY === null) return;
-        dy = Math.max(0, e.touches[0].clientY - startY);
-        sheet.style.transform = 'translateY(' + dy + 'px)';
-      }, { passive: true });
-      head.addEventListener('touchend', () => {
-        sheet.style.transition = '';
-        sheet.style.transform = '';
-        if (dy > 80) close();
-        startY = null;
-      });
-
-      document.body.append(modal);
-    }
-
-    function open() {
-      if (!modal) build();
-      lastFocus = document.activeElement;
-      modal.hidden = false;
-      document.documentElement.classList.add('locale-open');
-      requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
-      const active = modal.querySelector('.locale-card.is-active');
-      if (active) active.focus({ preventScroll: true });
-      if (typeof gtag === 'function') gtag('event', 'open_locale_picker');
-    }
-
-    function close() {
-      if (!modal || modal.hidden) return;
-      modal.classList.remove('is-open');
-      document.documentElement.classList.remove('locale-open');
-      setTimeout(() => { modal.hidden = true; }, 250);
-      if (lastFocus) lastFocus.focus({ preventScroll: true });
-    }
-
     btn.addEventListener('click', open);
+    updateButton();
+    right.prepend(btn);
   }
 
-  window.I18N = { lang, langs: LANGS, t, translatePage };
+  window.I18N = {
+    get lang() { return lang; },
+    langs: LANGS,
+    t,
+    setLanguage,
+    setCurrency,
+  };
   window.t = t;
 
   document.addEventListener('DOMContentLoaded', () => {
+    DICTS[lang] = window.I18N_DICT || null;
     translatePage();
     buildPicker();
   });

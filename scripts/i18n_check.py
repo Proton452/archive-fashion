@@ -117,7 +117,7 @@ def js_keys(keys):
             keys.setdefault(norm(m.group(2).replace("\\'", "'").replace('\\"', '"')), None)
 
 
-# Texts that reach the page from the server (shown through t(...) on a variable)
+# Texts shown through t() on a variable: server messages and English label tables
 SERVER_KEYS = [
     'Tracking is not configured yet.',
     'This tracking number could not be found.',
@@ -131,6 +131,11 @@ SERVER_KEYS = [
     'Chat is not configured yet.',
     'Missing message.',
     'Something went wrong. Please try again.',
+    # English labels kept in tables and shown through t(variable)
+    'Sign up & get 500€ coupons →', 'Ask on Discord →', 'See the full ordering guide →', 'Read the FAQ →',   # chat.js BUTTON_LABELS
+    'Stuck? Ask me, I reply instantly 👋', 'Need help ordering? 👋', 'Stuck on Lovegobuy? Ask me 👋',          # chat.js TEASER_TEXT
+    'No info yet', 'Info received', 'In transit', 'Ready for pickup', 'Out for delivery', 'Delivered',       # track.js STATUS
+    'Delivery failed', 'Alert', 'Expired',
     # Currency names in the language / currency picker (js/i18n.js CURRENCY_NAMES)
     'Euro', 'Dollar', 'Pound', 'Złoty', 'Yuan',
 ]
