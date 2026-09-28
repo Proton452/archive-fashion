@@ -2747,11 +2747,11 @@ a.reviews__tp-inline {
   justify-content: center;
   padding: 24px;
   background: rgba(13, 13, 13, 0);
-  transition: background 0.25s;
+  transition: background 0.15s ease-out;
 }
 
 .photos-modal[hidden] { display: none; }
-.photos-modal.is-open { background: rgba(13, 13, 13, 0.55); }
+.photos-modal.is-open { background: rgba(13, 13, 13, 0.5); }
 
 .photos-sheet {
   position: relative;
@@ -2766,11 +2766,11 @@ a.reviews__tp-inline {
   border-radius: 16px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.22s var(--ease-out), transform 0.28s var(--ease-out);
+  transition: opacity 0.15s ease-out;
 }
 
-.photos-modal.is-open .photos-sheet { opacity: 1; transform: none; }
+.photos-modal.is-open .photos-sheet { opacity: 1; }
+.photos-sheet:focus { outline: none; }
 
 .photos-sheet__close {
   position: absolute;
@@ -2790,8 +2790,9 @@ a.reviews__tp-inline {
 
 .photos-gallery {
   position: relative;
-  background: #F4F4F4;
+  background: #E9E9E9;
   min-height: 0;
+  overflow: hidden;
 }
 
 .photos-stage {
@@ -2802,27 +2803,45 @@ a.reviews__tp-inline {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+/* The same photo, blurred, fills the space around it: no white borders, nothing cropped */
+.photos-stage__bg {
+  position: absolute;
+  inset: -24px;
+  width: calc(100% + 48px);
+  height: calc(100% + 48px);
+  object-fit: cover;
+  filter: blur(22px) brightness(0.92);
 }
 
 .photos-stage__img {
+  position: relative;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: opacity 0.2s;
+  transition: opacity 0.15s;
 }
 
-/* Heavy photos: a soft shimmer while the next one loads */
+/* Heavy photos: a small quiet spinner while one loads */
 .photos-stage.is-loading .photos-stage__img { opacity: 0; }
-.photos-stage.is-loading::after {
-  content: '';
+
+.photos-stage__spinner {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #F4F4F4 0%, #EAEAEA 50%, #F4F4F4 100%);
-  background-size: 200% 100%;
-  animation: photos-shimmer 1.2s linear infinite;
+  width: 26px;
+  height: 26px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-top-color: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: photos-spin 0.9s linear infinite;
+  transition: opacity 0.15s;
 }
 
-@keyframes photos-shimmer { to { background-position: -200% 0; } }
+.photos-stage.is-loading .photos-stage__spinner { opacity: 1; }
+
+@keyframes photos-spin { to { transform: rotate(360deg); } }
 
 .photos-stage__error {
   position: absolute;
@@ -2949,7 +2968,7 @@ a.reviews__tp-inline {
   .photos-stage {
     height: auto;
     min-height: 0;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 3;
   }
 
   .photos-info { padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); overflow: visible; }
@@ -2963,5 +2982,5 @@ a.reviews__tp-inline {
 
 @media (prefers-reduced-motion: reduce) {
   .photos-modal, .photos-sheet { transition: none; }
-  .photos-stage.is-loading::after { animation: none; }
+  .photos-stage__spinner { animation-duration: 2s; }
 }

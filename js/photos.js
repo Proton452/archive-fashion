@@ -54,11 +54,13 @@
   function build() {
     modal = el('div', 'photos-modal');
     modal.innerHTML = `
-      <div class="photos-sheet" role="dialog" aria-modal="true" aria-labelledby="photosTitle">
+      <div class="photos-sheet" role="dialog" aria-modal="true" aria-labelledby="photosTitle" tabindex="-1">
         <button type="button" class="photos-sheet__close">${ICON_CLOSE}</button>
         <div class="photos-gallery">
           <div class="photos-stage is-loading">
+            <img class="photos-stage__bg" alt="" aria-hidden="true" decoding="async">
             <img class="photos-stage__img" alt="" decoding="async">
+            <span class="photos-stage__spinner" aria-hidden="true"></span>
             <span class="photos-stage__error" hidden></span>
           </div>
           <button type="button" class="photos-nav photos-nav--prev">${ICON_PREV}</button>
@@ -147,6 +149,10 @@
       stage.classList.add('is-loading');
       img.src = item.q[index];
     }
+    // Same photo, blurred, fills the space around it (no white borders, nothing cropped)
+    const bg = modal.querySelector('.photos-stage__bg');
+    const loaded = () => { bg.src = img.src; };
+    if (img.complete && img.naturalWidth) loaded(); else img.addEventListener('load', loaded, { once: true });
     img.alt = t('Real photos') + ' ' + (index + 1) + '/' + n;
     modal.querySelector('.photos-counter').textContent = (index + 1) + ' / ' + n;
     modal.querySelectorAll('.photos-nav').forEach(b => { b.hidden = n < 2; });
@@ -164,11 +170,14 @@
     lastFocus = document.activeElement;
     renderTexts();
     modal.querySelector('.photos-stage__img').removeAttribute('src');
+    // Until the first real photo arrives, the (already cached) catalog picture fills the frame
+    modal.querySelector('.photos-stage__bg').src = IMAGE_TPL.replace('{id}', item.i);
     show(0);
     modal.hidden = false;
     document.documentElement.classList.add('photos-open');
     requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
-    modal.querySelector('.photos-sheet__close').focus({ preventScroll: true });
+    // Focus the window itself (keyboard users land inside it) without a ring on the ✕
+    modal.querySelector('.photos-sheet').focus({ preventScroll: true });
     if (!fromHash && location.hash !== '#p=' + itemId) {
       // Full path: the pages have <base href="/">, a bare "#p=" would point to the home page
       history.pushState({ realPhotos: itemId }, '', location.pathname + location.search + '#p=' + itemId);
