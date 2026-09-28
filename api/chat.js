@@ -10,6 +10,7 @@
 ============================================== */
 
 const { getCatalog, searchProducts } = require('./_lib/catalog');
+const Prices = require('../js/prices.js');
 const { lookup, cleanNumber, isValidNumber } = require('./_lib/track17');
 
 const MODEL        = 'gemini-3.8-flash';
@@ -71,7 +72,7 @@ KEY FACTS
 - If asked whether items are real, authentic or fake: answer warmly and positively. Say the items come from independent sellers in China, selected for the best quality-to-price ratio, that the quality is very good and that QC photos are sent before shipping so the buyer can check everything. Do not use the words "fake", "replica", "counterfeit" or "not official". Never claim or suggest an item is authentic, original or official. If the visitor insists on that point, invite them to read the FAQ ([[faq]]).
 - Customs: Lovegobuy routes parcels to limit customs risk; with shipping insurance a seized parcel is reimbursed. Problems with an order are handled by Lovegobuy support.
 - Items not on the site: use the camera (image search) on the Lovegobuy homepage.
-- Prices shown on LovegoFinds are item prices in Chinese yuan (¥, about 8 ¥ = 1 €); shipping is paid separately at step 5.
+- Prices shown on LovegoFinds are item prices in the visitor's currency (Lovegobuy's own conversion rate, rounded down); shipping is paid separately at step 5.
 
 ORDER PROBLEMS AND TECHNICAL QUESTIONS
 If the question is about a specific order or account (payment issue, missing or wrong item, refund, return, stuck parcel, warehouse, QC photos of their order) or is too technical to answer with the facts above, don't guess. Tell them to open a ticket with Lovegobuy support, as a short numbered list:
@@ -90,7 +91,7 @@ const TOOLS = [{
         properties: {
           query:     { type: 'string', description: 'Keywords in English or French, e.g. "PSG home jersey", "Moncler puffer", "sac Goyard".' },
           gender:    { type: 'string', enum: ['men', 'women', 'any'], description: 'Catalog section. Use "any" unless the visitor specifies.' },
-          max_price: { type: 'number', description: 'Maximum price in Chinese yuan (CNY), only if the visitor gives a budget. Convert a euro budget at about 8 CNY per euro.' },
+          max_price: { type: 'number', description: "Maximum price in the visitor's currency (see VISITOR), only if the visitor gives a budget." },
         },
         required: ['query'],
       },
@@ -109,16 +110,16 @@ const TOOLS = [{
   ],
 }];
 
-async function runTool(call, found) {
+async function runTool(call, found, currency) {
   const args = call.args || {};
   if (call.name === 'search_products') {
     const products = searchProducts(await getCatalog(), {
       query: String(args.query || '').slice(0, 100),
       gender: args.gender,
-      maxPrice: Number(args.max_price) || undefined,
+      maxCny: Number(args.max_price) ? Prices.toCny(Number(args.max_price), currency) : undefined,
     });
     products.forEach(p => found.set(p.id, p));
-    return { results: products.map(p => ({ id: p.id, name: p.name, brand: p.brand, price: p.price, section: p.gender, best_seller: p.bestSeller })) };
+    return { results: products.map(p => ({ id: p.id, name: p.name, brand: p.brand, price: Prices.format(p.cny, currency), section: p.gender, best_seller: p.bestSeller })) };
   }
   if (call.name === 'track_package') {
     const number = cleanNumber(args.tracking_number);
@@ -130,12 +131,12 @@ async function runTool(call, found) {
   return { error: 'Unknown tool.' };
 }
 
-async function callGemini(contents) {
+async function callGemini(contents, systemText) {
   const r = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      systemInstruction: { parts: [{ text: systemText }] },
       contents,
       tools: TOOLS,
       generationConfig: { maxOutputTokens: 800, thinkingConfig: { thinkingLevel: 'low' } },
@@ -173,7 +174,7 @@ function buildReply(rawText, found) {
       if (!p || shown.has(p.id) || productCount >= 4) continue;
       shown.add(p.id);
       productCount++;
-      const item = { id: p.id, name: p.name, price: p.price, image: p.image, link: p.link };
+      const item = { id: p.id, name: p.name, cny: p.cny, image: p.image, link: p.link };
       const prev = blocks[blocks.length - 1];
       if (prev && prev.type === 'products') prev.items.push(item);
       else blocks.push({ type: 'products', items: [item] });
@@ -233,10 +234,20 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Missing message.' });
   }
 
+  // Site settings of the visitor (language + currency picker)
+  const currency = Prices.RATES[body.currency] ? body.currency : Prices.DEFAULT;
+  const LANG_NAMES = { en: 'English', fr: 'French', es: 'Spanish', pt: 'Portuguese', de: 'German', it: 'Italian', nl: 'Dutch', ar: 'Arabic' };
+  const siteLang = LANG_NAMES[body.lang] || 'English';
+  const systemText = SYSTEM_PROMPT + `
+
+VISITOR
+- Site language: ${siteLang}. Reply in the language the visitor writes in; if unclear, use ${siteLang}.
+- Currency: ${currency} (${Prices.CURRENCIES[currency].symbol}). search_products returns prices in ${currency}: quote them as given, never convert them. max_price is in ${currency}.`;
+
   const found = new Map();
   try {
     for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
-      const data = await callGemini(contents);
+      const data = await callGemini(contents, systemText);
       const content = data.candidates && data.candidates[0] && data.candidates[0].content;
       const parts = (content && content.parts) || [];
       const calls = parts.filter(p => p.functionCall).map(p => p.functionCall);
@@ -252,7 +263,7 @@ module.exports = async (req, res) => {
       // Keep the model turn as-is (it carries the thought signatures), then answer every call
       contents.push(content);
       const responses = await Promise.all(calls.map(async call => ({
-        functionResponse: { name: call.name, response: await runTool(call, found).catch(() => ({ error: 'Tool failed.' })) },
+        functionResponse: { name: call.name, response: await runTool(call, found, currency).catch(() => ({ error: 'Tool failed.' })) },
       })));
       contents.push({ role: 'user', parts: responses });
     }

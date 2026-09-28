@@ -10,12 +10,11 @@
   const MAX_USER_MESSAGES = 20;
   const SIGNUP_URL  = 'https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED';
   const DISCORD_URL = 'https://discord.gg/5EhjDVZ2x7';
-  const WELCOME = "Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.";
+  // Texts follow the site language (js/i18n.js)
+  const WELCOME = t("Hi! 👋 I can help you find items, explain how to order, or track your package. Ask me in any language.");
   // Big one-tap questions on the empty chat: the things people get stuck on
-  const SUGGESTIONS = ['How do I order?', 'How do I get the 500€ coupons?', 'Is the quality good?'];
-  const PLACEHOLDER = 'Ask your question…';
-  // The site is English for now; switch this to the site's language mode once it exists
-  const isFrench = false;
+  const SUGGESTIONS = [t('How do I order?'), t('How do I get the 500€ coupons?'), t('Is the quality good?')];
+  const PLACEHOLDER = t('Ask your question…');
 
   // ─── State ────────────────────────────────────
   let state = { open: false, messages: [] };
@@ -98,28 +97,28 @@
   // ─── Build UI ─────────────────────────────────
   const bubble = el('button', 'chat-bubble');
   bubble.type = 'button';
-  bubble.setAttribute('aria-label', 'Open chat assistant');
-  bubble.innerHTML = ICON_CHAT + '<span class="chat-bubble__label">' + (isFrench ? 'Assistant IA' : 'AI assistant') + '</span>';
+  bubble.setAttribute('aria-label', t('Open chat assistant'));
+  bubble.innerHTML = ICON_CHAT + '<span class="chat-bubble__label">' + t('AI assistant') + '</span>';
 
   const panel = el('section', 'chat-panel');
   panel.setAttribute('role', 'dialog');
-  panel.setAttribute('aria-label', 'LovegoFinds AI assistant');
+  panel.setAttribute('aria-label', t('LovegoFinds AI assistant'));
   panel.hidden = true;
 
   const header = el('header', 'chat-panel__header');
   const avatar = el('span', 'chat-avatar chat-avatar--header');
   avatar.innerHTML = AVATAR;
   const titleWrap = el('div', 'chat-panel__titles');
-  titleWrap.append(el('p', 'chat-panel__title', 'LovegoFinds AI assistant'), el('p', 'chat-panel__subtitle', 'Online · replies instantly'));
+  titleWrap.append(el('p', 'chat-panel__title', t('LovegoFinds AI assistant')), el('p', 'chat-panel__subtitle', t('Online · replies instantly')));
   // Icon only, so the title fits on one line
   const resetBtn = el('button', 'chat-panel__reset');
   resetBtn.type = 'button';
-  resetBtn.title = 'New chat';
-  resetBtn.setAttribute('aria-label', 'New chat');
+  resetBtn.title = t('New chat');
+  resetBtn.setAttribute('aria-label', t('New chat'));
   resetBtn.innerHTML = ICON_RESET;
   const closeBtn = el('button', 'chat-panel__close');
   closeBtn.type = 'button';
-  closeBtn.setAttribute('aria-label', 'Close chat');
+  closeBtn.setAttribute('aria-label', t('Close chat'));
   closeBtn.innerHTML = ICON_CLOSE;
   header.append(avatar, titleWrap, resetBtn, closeBtn);
 
@@ -132,10 +131,10 @@
   input.placeholder = PLACEHOLDER;
   input.maxLength = 500;
   input.autocomplete = 'off';
-  input.setAttribute('aria-label', 'Your message');
+  input.setAttribute('aria-label', t('Your message'));
   const sendBtn = el('button', 'chat-panel__send');
   sendBtn.type = 'submit';
-  sendBtn.setAttribute('aria-label', 'Send');
+  sendBtn.setAttribute('aria-label', t('Send'));
   sendBtn.innerHTML = ICON_SEND;
   form.append(input, sendBtn);
 
@@ -156,7 +155,7 @@
     img.alt = '';
     img.loading = 'lazy';
     const info = el('span', 'chat-product__info');
-    info.append(el('span', 'chat-product__name', p.name), el('span', 'chat-product__price', p.price));
+    info.append(el('span', 'chat-product__name', p.name), el('span', 'chat-product__price', p.cny != null ? Prices.format(p.cny) : p.price));
     a.append(img, info, el('span', 'chat-product__arrow', '→'));
     a.addEventListener('click', () => {
       a.href = withPartnerCode(p.link);
@@ -165,9 +164,12 @@
     return a;
   }
 
-  const BUTTON_LABELS = isFrench
-    ? { signup: 'Créer mon compte (500€ de coupons) →', discord: 'Poser la question sur Discord →', howto: 'Voir le guide de commande →', faq: 'Voir la FAQ →' }
-    : { signup: 'Sign up & get 500€ coupons →', discord: 'Ask on Discord →', howto: 'See the full ordering guide →', faq: 'Read the FAQ →' };
+  const BUTTON_LABELS = {
+    signup:  t('Sign up & get 500€ coupons →'),
+    discord: t('Ask on Discord →'),
+    howto:   t('See the full ordering guide →'),
+    faq:     t('Read the FAQ →'),
+  };
 
   // Site pages keep the creator slug (/faq/football) like the rest of the site
   function sitePath(page) {
@@ -230,8 +232,8 @@
     if (!state.messages.length && !sending) {
       const welcome = el('div', 'chat-welcome');
       welcome.append(
-        el('p', 'chat-welcome__title', 'Hi 👋 How can I help?'),
-        el('p', 'chat-welcome__sub', 'Instant answers.'),
+        el('p', 'chat-welcome__title', t('Hi 👋 How can I help?')),
+        el('p', 'chat-welcome__sub', t('Instant answers.')),
       );
       const quick = el('div', 'chat-quick');
       SUGGESTIONS.forEach(q => {
@@ -262,7 +264,7 @@
     // Keep the input enabled while sending: disabling it would close the mobile keyboard
     input.disabled = limitReached;
     sendBtn.disabled = sending || limitReached;
-    input.placeholder = limitReached ? 'Conversation limit reached, start a new chat' : PLACEHOLDER;
+    input.placeholder = limitReached ? t('Conversation limit reached, start a new chat') : PLACEHOLDER;
 
     list.scrollTop = list.scrollHeight;
   }
@@ -425,15 +427,15 @@
       const r = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({ messages: history, currency: Prices.current(), lang: I18N.lang }),
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok || data.error) throw new Error(data.error || 'error');
       state.messages.push({ role: 'model', text: data.text || '', blocks: data.blocks || [] });
     } catch (err) {
       const msg = err.message && err.message !== 'error' && err.message !== 'Failed to fetch'
-        ? err.message
-        : 'Connection failed. Please try again.';
+        ? t(err.message)
+        : t('Connection failed. Please try again.');
       state.messages.push({ role: 'model', text: msg, error: true });
     } finally {
       sending = false;
@@ -467,9 +469,9 @@
   const onHelpPage = /^\/(how-to-order|faq)(\/|\.html|$)/.test(location.pathname);
   const TEASER_TEXT = {
     timer:  onHelpPage
-      ? (isFrench ? 'Bloqué ? Pose-moi ta question 👋' : 'Stuck? Ask me, I reply instantly 👋')
-      : (isFrench ? 'Besoin d’aide pour commander ? 👋' : 'Need help ordering? 👋'),
-    return: isFrench ? 'Bloqué sur Lovegobuy ? Demande-moi 👋' : 'Stuck on Lovegobuy? Ask me 👋',
+      ? t('Stuck? Ask me, I reply instantly 👋')
+      : t('Need help ordering? 👋'),
+    return: t('Stuck on Lovegobuy? Ask me 👋'),
   };
   let teaser = null;
   let teaserTimer = null;
@@ -528,7 +530,7 @@
     });
     const close = el('button', 'chat-teaser__close');
     close.type = 'button';
-    close.setAttribute('aria-label', isFrench ? 'Fermer' : 'Dismiss');
+    close.setAttribute('aria-label', t('Dismiss'));
     close.innerHTML = ICON_CLOSE;
     close.addEventListener('click', () => {
       flag(sessionStorage, DISMISSED_KEY, true);

@@ -7,15 +7,15 @@
   if (!form) return;
 
   const STATUS = {
-    NotFound:           { label: 'No info yet',       tone: 'muted' },
-    InfoReceived:       { label: 'Info received',     tone: 'muted' },
-    InTransit:          { label: 'In transit',        tone: 'accent' },
-    AvailableForPickup: { label: 'Ready for pickup',  tone: 'accent' },
-    OutForDelivery:     { label: 'Out for delivery',  tone: 'accent' },
-    Delivered:          { label: 'Delivered',         tone: 'success' },
-    DeliveryFailure:    { label: 'Delivery failed',   tone: 'warn' },
-    Exception:          { label: 'Alert',             tone: 'warn' },
-    Expired:            { label: 'Expired',           tone: 'muted' },
+    NotFound:           { label: t('No info yet'),       tone: 'muted' },
+    InfoReceived:       { label: t('Info received'),     tone: 'muted' },
+    InTransit:          { label: t('In transit'),        tone: 'accent' },
+    AvailableForPickup: { label: t('Ready for pickup'),  tone: 'accent' },
+    OutForDelivery:     { label: t('Out for delivery'),  tone: 'accent' },
+    Delivered:          { label: t('Delivered'),         tone: 'success' },
+    DeliveryFailure:    { label: t('Delivery failed'),   tone: 'warn' },
+    Exception:          { label: t('Alert'),             tone: 'warn' },
+    Expired:            { label: t('Expired'),           tone: 'muted' },
   };
 
   const EVENTS_PREVIEW = 5;
@@ -30,7 +30,7 @@
   function formatTime(iso) {
     const d = new Date(iso);
     if (isNaN(d)) return iso;
-    return d.toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleString(I18N.lang, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   }
 
   function showMessage(text, tone) {
@@ -47,7 +47,7 @@
     const nodes = [head];
 
     if (!data.events.length) {
-      nodes.push(el('p', 'track-box__msg', 'No scan yet. Updates usually appear once the carrier picks up the package.'));
+      nodes.push(el('p', 'track-box__msg', t('No scan yet. Updates usually appear once the carrier picks up the package.')));
     } else {
       const list = el('ol', 'track-box__events');
       data.events.forEach((e, i) => {
@@ -60,7 +60,7 @@
       nodes.push(list);
 
       if (data.events.length > EVENTS_PREVIEW) {
-        const more = el('button', 'track-box__more', `Show all ${data.events.length} updates`);
+        const more = el('button', 'track-box__more', t('Show all {n} updates').replace('{n}', data.events.length));
         more.type = 'button';
         more.addEventListener('click', () => {
           list.classList.add('is-expanded');
@@ -82,7 +82,7 @@
     const btn = form.querySelector('button');
     btn.disabled = true;
     form.classList.add('is-loading');
-    showMessage('Looking up your package…');
+    showMessage(t('Looking up your package…'));
 
     if (typeof gtag === 'function') gtag('event', 'track_package');
 
@@ -90,10 +90,10 @@
       const r = await fetch('/api/track?number=' + encodeURIComponent(number));
       const data = await r.json();
       if (data.state === 'tracking') renderTracking(data);
-      else if (data.state === 'registered') showMessage(data.message, 'accent');
-      else showMessage(data.message || 'Something went wrong. Please try again.', 'warn');
+      else if (data.state === 'registered') showMessage(t(data.message), 'accent');
+      else showMessage(t(data.message || 'Something went wrong. Please try again.'), 'warn');
     } catch (err) {
-      showMessage('Connection failed. Please try again.', 'warn');
+      showMessage(t('Connection failed. Please try again.'), 'warn');
     } finally {
       btn.disabled = false;
       form.classList.remove('is-loading');

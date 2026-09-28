@@ -195,25 +195,13 @@ async function fetchCatalog(url) {
     name,
     brand,
     article,
-    price: `¥${priceCny}`,
+    cny:   priceCny,
+    price: Prices.format(priceCny),
     image: data.image.replace('{id}', imageId),
     lien:  data.link.replace('{id}', itemId),
     isBestSeller: false,
   }));
   return { items, end: data.end };
-}
-
-function parsePrice(priceStr) {
-  if (!priceStr) return null;
-  let s = priceStr.replace(/[€$£¥₹]|EUR|USD|GBP/gi, '').trim();
-  if (s.includes(',') && s.includes('.')) {
-    s = s.replace(/\./g, '').replace(',', '.');
-  } else {
-    s = s.replace(',', '.');
-  }
-  s = s.replace(/[^\d.]/g, '');
-  const val = parseFloat(s);
-  return isNaN(val) ? null : val;
 }
 
 const SYNONYM_GROUPS = [
@@ -285,7 +273,7 @@ async function loadProducts() {
   } catch (err) {
     console.error('[Lovegobuy Finds] Failed to load products:', err);
     loading.style.display = 'none';
-    emptyText.textContent = "Couldn't load the items. Please refresh the page.";
+    emptyText.textContent = t("Couldn't load the items. Please refresh the page.");
     emptyReset.hidden = true;
     emptyState.hidden = false;
     countEl.textContent = '— Error loading items';
@@ -315,7 +303,7 @@ function generateFilterDropdown() {
     .filter(([, count]) => count >= minCount)
     .map(([cat]) => cat)
     .sort();
-  const label = cat => cat.charAt(0).toUpperCase() + cat.slice(1);
+  const label = cat => t(cat.charAt(0).toUpperCase() + cat.slice(1));
 
   function toggle(cat) {
     if (cat === null) selectedFilters.clear();
@@ -330,7 +318,7 @@ function generateFilterDropdown() {
   filterDropdown.innerHTML = '';
   const allItem = document.createElement('div');
   allItem.className = 'toolbar__filter-item toolbar__filter-item--all' + (selectedFilters.size === 0 ? ' is-active' : '');
-  allItem.textContent = 'ALL';
+  allItem.textContent = t('ALL');
   // stopPropagation: the item is re-rendered, so the outside-click handler would close the menu
   allItem.addEventListener('click', e => { e.stopPropagation(); toggle(null); });
   filterDropdown.appendChild(allItem);
@@ -363,7 +351,7 @@ function generateFilterDropdown() {
         btn.addEventListener('click', () => toggle(cat));
         chips.appendChild(btn);
       };
-      make(null, 'All');
+      make(null, t('All'));
       categories.forEach(cat => make(cat, label(cat)));
     }
     chips.scrollLeft = scrollLeft;
@@ -430,14 +418,10 @@ function applyFilters() {
     const noPrice   = [];
 
     filtered.forEach(p => {
-      parsePrice(p.price) !== null ? withPrice.push(p) : noPrice.push(p);
+      p.cny != null ? withPrice.push(p) : noPrice.push(p);
     });
 
-    withPrice.sort((a, b) => {
-      const pa = parsePrice(a.price);
-      const pb = parsePrice(b.price);
-      return sortOrder === 'asc' ? pa - pb : pb - pa;
-    });
+    withPrice.sort((a, b) => sortOrder === 'asc' ? a.cny - b.cny : b.cny - a.cny);
 
     filtered = [...withPrice, ...noPrice];
   }
@@ -486,9 +470,8 @@ function showEmptyState() {
   const raw = searchInput.value.trim();
   const isFiltered = raw || selectedFilters.size > 0 || currentCategoryTab !== 'all';
   emptyText.textContent = raw
-    ? `Nothing found for "${raw}".
-Try another word or browse all items.`
-    : 'Nothing here yet. Browse all items instead.';
+    ? t('Nothing found for "{query}".').replace('{query}', raw) + '\n' + t('Try another word or browse all items.')
+    : t('Nothing here yet. Browse all items instead.');
   emptyReset.hidden = !isFiltered;
   emptyState.hidden = false;
 }
@@ -638,7 +621,7 @@ document.querySelectorAll('.nav__cta, .btn--primary').forEach(el => {
   const tabs = document.getElementById('catTabs');
   if (!wrapper || !tabs) return;
   const update = () => wrapper.classList.toggle('has-more',
-    tabs.scrollLeft + tabs.clientWidth < tabs.scrollWidth - 4);
+    Math.abs(tabs.scrollLeft) + tabs.clientWidth < tabs.scrollWidth - 4);   // scrollLeft is negative in RTL (Arabic)
   tabs.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update, { passive: true });
   update();

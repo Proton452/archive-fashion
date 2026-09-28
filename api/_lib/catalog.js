@@ -5,6 +5,8 @@
    jerseys of the Google Sheet (cached a few minutes).
 ============================================== */
 
+const Prices = require('../../js/prices.js');
+
 const CATALOGS = [
   { gender: 'men',   data: require('../../data/men.json') },
   { gender: 'women', data: require('../../data/women.json') },
@@ -105,6 +107,7 @@ async function loadSheet({ gender, url }) {
       brand:    cell(idx.brand),
       type:     cell(idx.article).toLowerCase(),
       price:    cell(idx.price),
+      cny:      Prices.parseToCny(cell(idx.price)),
       image:    optimizeImage(sourceImage),
       sourceImage,
       link,
@@ -123,7 +126,7 @@ function loadFiles() {
         name:     formatName(name),
         brand,
         type:     type.toLowerCase(),
-        price:    `¥${priceCny}`,
+        cny:      priceCny,
         image:    data.image.replace('{id}', imageId),
         link,
         bestSeller: false,
@@ -167,15 +170,15 @@ function hasWord(text, w) {
   return text.split(/[^a-z0-9]+/).some(x => x === w || x === w + 's' || x === w + 'es' || x + 's' === w || x + 'es' === w);
 }
 
-function searchProducts(products, { query = '', gender, maxPrice } = {}) {
+// maxCny: budget already converted to CNY
+function searchProducts(products, { query = '', gender, maxCny } = {}) {
   const terms = normalize(query).split(/[^a-z0-9]+/).filter(t => t.length >= 2 && !STOP.has(t));
   const groups = terms.map(t => [t, ...(SYNONYMS[t] || [])]);
 
   const scored = [];
   for (const p of products) {
     if (gender && gender !== 'any' && p.gender !== gender) continue;
-    const priceNum = parseFloat(String(p.price).replace(',', '.').replace(/[^\d.]/g, '')) * (String(p.price).includes('€') ? 8 : 1);
-    if (maxPrice && !isNaN(priceNum) && priceNum > maxPrice) continue;
+    if (maxCny && p.cny != null && p.cny > maxCny) continue;
 
     const fields = [[normalize(p.name), 3], [normalize(p.brand), 3], [normalize(p.type), 2]];
     let score = 0, matched = 0;

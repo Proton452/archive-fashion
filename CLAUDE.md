@@ -51,19 +51,28 @@ archive-fashion/
 | `--display`    | DM Serif Display | Titres display      |
 | `--sans`       | Poppins   | Tout le reste              |
 
+## Langues (js/i18n.js)
+
+- Anglais = langue source. Traductions : `i18n/<lang>.js` (`window.I18N_DICT = { "texte anglais": "traduction" }`), chargées seulement si une autre langue est choisie. Langues : fr, es, pt, de, it, nl, ar (arabe en RTL, correctifs `[dir="rtl"]` en fin de `style.css`).
+- Le texte des pages est traduit automatiquement en retrouvant son texte anglais (aucun attribut à ajouter dans le HTML). Un élément qui mélange texte et balises inline (`<strong>`…) peut être traduit en bloc : clé = son texte, valeur = HTML.
+- Dans le JS : `t('English text')` (les noms de catégories passent aussi par `t()`).
+- Bouton 🌐 (langue + devise) ajouté dans `.nav__right` ; un choix est gardé dans `localStorage` (`lang`, `currency`) et recharge la page.
+- **Après avoir modifié un texte du site** : `python scripts/i18n_check.py` liste les traductions manquantes par langue (`--source` exporte tous les textes).
+- Les noms de produits (titres du partenaire) ne sont pas traduits.
+
 ## Conventions CSS
 
 - BEM : `.block__element--modifier`
 - État actif : `.is-active`, `.is-visible`, `.is-scrolled`, `.has-more`
 - Animations : CSS pur uniquement (`transition`, `@keyframes`)
-- Responsive : breakpoints `768px` et `1200px`
+- Responsive : breakpoints `768px` et `1200px` ; sous `1279px` les liens du menu passent dans le burger (place pour le bouton langue + le CTA dans les langues longues)
 
 ## Logique JS (main.js / women.js)
 
 - **Chargement** : `fetchCatalog()` (JSON, préchargé dans le `<head>`) + `fetchSheetJerseys()` (Men seulement, `/api/jerseys`, abandonné après 3 s) → `mixIn()` (maillots insérés à des places aléatoires fixes) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
 - **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories (CSV + `jersey` du sheet) pour chaque onglet ; Best Sellers toujours affiché ; « Running » du partenaire = vêtements de sport → onglet Sport
 - **Sous-catégories** : `generateFilterDropdown()` construit les pastilles sous les onglets (`#catChips`, masquées sur All ou s'il n'y a qu'une catégorie) et le menu « Category » ; les deux ne listent que les catégories de l'onglet en cours et partagent `selectedFilters`
-- **Prix** : CSV en yuan (`¥`), maillots du sheet en € ; le tri compare en ¥ (`priceInYuan`, 1 € ≈ 8 ¥)
+- **Prix** : chaque produit a `cny` (prix en yuan ; maillots du sheet en € convertis) et `price` (texte affiché). `js/prices.js` (partagé avec `/api/chat`) convertit au taux Lovegobuy (`RATES`, marge incluse) dans la devise choisie (EUR par défaut, USD, GBP) et **arrondit toujours à l'unité inférieure**. Si Lovegobuy change ses taux, mettre à jour `RATES`. Le tri compare `cny`
 - **Filtres / recherche / tri** : en mémoire sur `allProducts[]` (`applyFilters()`), recherche multilingue via dictionnaire de synonymes
 - **Affichage** : scroll infini par lots de 30 (`PAGE_SIZE`)
 - **Fade-in** : `IntersectionObserver` ajoute `.is-visible` sur `.fade-in`

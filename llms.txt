@@ -6,7 +6,8 @@
 
 - A catalog split into Men (about 6,500 items) and Women (about 1,500 items), with tabs: Best Sellers, Football, Summer, Tops, Pants, Sport, Shoes, Bags, Accessories, Winter (and Dresses for women). Each tab has sub-category filters (e.g. Sneakers, Boots, Hoodies & Sweats, Coats & Puffers).
 - Search by brand or item type, in several languages, and sorting by price.
-- Prices are item prices in Chinese yuan (¥, about 8 ¥ = 1 €); shipping is paid separately.
+- Prices are shown in euros by default (US dollars and British pounds also available), converted at Lovegobuy's own rate and rounded down; shipping is paid separately.
+- The site is available in English, French, Spanish, Portuguese, German, Italian, Dutch and Arabic.
 - Football jerseys from current and past seasons, clubs and national teams, customisable with name, number and patches on Lovegobuy.
 - An AI shopping assistant on the site that finds items and explains how to order.
 - A step-by-step ordering guide, a FAQ, customer reviews and a Discord community.
