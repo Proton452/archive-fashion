@@ -222,28 +222,27 @@ a { text-decoration: none; color: inherit; }
   gap: 1rem;
 }
 
-/* Language / currency picker (built by js/i18n.js): "EN · € ▾" nav button + dialog
-   of cards, a bottom sheet on phones. Plain black and grey, like the rest of the nav. */
+/* Language / currency picker (built by js/i18n.js): "EN · € ▾" text button (no frame,
+   so the black Sign up button keeps the attention) + dialog of cards, a bottom sheet on phones. */
 .locale__btn {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
   height: 36px;
-  padding: 0 12px 0 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--bg);
+  padding: 0 10px;
+  border-radius: 8px;
+  background: transparent;
   color: var(--text);
   font-family: var(--sans);
   font-size: 0.85rem;
   font-weight: 600;
   white-space: nowrap;
-  transition: border-color 0.2s, transform 0.16s var(--ease-out);
+  transition: background-color 0.2s, transform 0.16s var(--ease-out);
 }
 
 @media (hover: hover) {
-  .locale__btn:hover { border-color: var(--text-muted); }
+  .locale__btn:hover { background: var(--bg-hover); }
 }
 
 .locale__btn:active { transform: scale(0.96); }

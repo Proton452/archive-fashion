@@ -5,7 +5,7 @@
      when another language is chosen.
    - Static page text is translated by matching its English text; JS
      strings go through t() with the English text. Missing entries stay English.
-   - The "EN · €" button in the nav opens a picker (dialog of cards, bottom
+   - The "EN · €" text button in the nav opens a picker (dialog of cards, bottom
      sheet on phones). A choice applies on the spot, without a reload: the page
      text is swapped and a `localechange` event lets the scripts redraw their
      own parts (prices, category chips, chat, tracking).
@@ -198,10 +198,10 @@
   function card(name, sub, lead, active, onPick) {
     const b = el('button', 'locale-card' + (active ? ' is-active' : ''),
       (lead || '') +
-      '<span class="locale-card__text"><span class="locale-card__name"></span><span class="locale-card__code"></span></span>' +
+      '<span class="locale-card__text"><span class="locale-card__name"></span>' + (sub ? '<span class="locale-card__code"></span>' : '') + '</span>' +
       (active ? '<span class="locale-card__check">' + CHECK + '</span>' : ''));
     b.querySelector('.locale-card__name').textContent = name;
-    b.querySelector('.locale-card__code').textContent = sub;
+    if (sub) b.querySelector('.locale-card__code').textContent = sub;
     b.type = 'button';
     if (active) b.setAttribute('aria-current', 'true');
     b.addEventListener('click', () => { close(); if (!active) onPick(); });
@@ -242,7 +242,7 @@
     const body = el('div', 'locale-sheet__body');
     body.append(
       section(t('Language'), LANGS.map(l =>
-        card(l.name, l.code.toUpperCase(), '', l.code === lang, () => setLanguage(l.code)))),
+        card(l.name, '', '', l.code === lang, () => setLanguage(l.code)))),   // native name is enough
       section(t('Currency'), Object.keys(Prices.CURRENCIES).map(code =>
         card(t(CURRENCY_NAMES[code]), code, '<span class="locale-card__symbol">' + Prices.CURRENCIES[code].symbol + '</span>',
           code === cur, () => setCurrency(code)))),
