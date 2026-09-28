@@ -24,6 +24,15 @@ let searchQuery        = '';
 let sortOrder          = null;
 const MIN_CATEGORY_COUNT = 3;   // smallest category listed in "All"
 const PAGE_SIZE        = 30;
+
+// Loading placeholders: as many as the first batch, so the page (and its scrollbar)
+// doesn't jump when the products arrive
+(function () {
+  const skel = document.querySelector('#loading .skeleton-card');
+  if (!skel) return;
+  const box = skel.parentNode;
+  while (box.children.length < PAGE_SIZE) box.append(skel.cloneNode(true));
+})();
 let visibleProducts    = [];
 let displayedCount     = 0;
 

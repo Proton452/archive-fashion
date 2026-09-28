@@ -235,11 +235,11 @@ window.I18N_DICT = {
  "Yuan": "Yuan",
  "See real photos": "Echte Fotos ansehen",
  "Real photos": "Echte Fotos",
- "Real photos of this item, taken at Lovegobuy's warehouse on previous orders.": "Echte Fotos dieses Artikels, aufgenommen im Lovegobuy-Lager bei früheren Bestellungen.",
  "Minimum 4 jerseys per order.": "Mindestens 4 Trikots pro Bestellung.",
  "Buy on Lovegobuy →": "Bei Lovegobuy kaufen →",
  "Size and colour are chosen on Lovegobuy.": "Größe und Farbe wählst du bei Lovegobuy.",
  "Previous photo": "Vorheriges Foto",
  "Next photo": "Nächstes Foto",
- "This photo couldn't be loaded.": "Dieses Foto konnte nicht geladen werden."
+ "This photo couldn't be loaded.": "Dieses Foto konnte nicht geladen werden.",
+ "Real photos of this item, taken at the warehouse on previous orders.": "Echte Fotos dieses Artikels, im Lager bei früheren Bestellungen aufgenommen."
 };

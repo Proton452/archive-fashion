@@ -235,11 +235,11 @@ window.I18N_DICT = {
  "Yuan": "يوان",
  "See real photos": "عرض الصور الحقيقية",
  "Real photos": "صور حقيقية",
- "Real photos of this item, taken at Lovegobuy's warehouse on previous orders.": "صور حقيقية لهذا المنتج، التُقطت في مستودع Lovegobuy خلال طلبات سابقة.",
  "Minimum 4 jerseys per order.": "4 قمصان على الأقل في كل طلب.",
  "Buy on Lovegobuy →": "اشترِ من Lovegobuy ←",
  "Size and colour are chosen on Lovegobuy.": "يتم اختيار المقاس واللون على Lovegobuy.",
  "Previous photo": "الصورة السابقة",
  "Next photo": "الصورة التالية",
- "This photo couldn't be loaded.": "تعذّر تحميل هذه الصورة."
+ "This photo couldn't be loaded.": "تعذّر تحميل هذه الصورة.",
+ "Real photos of this item, taken at the warehouse on previous orders.": "صور حقيقية لهذا المنتج، التُقطت في المستودع خلال طلبات سابقة."
 };

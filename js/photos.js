@@ -1,7 +1,7 @@
 /* ==============================================
    Real photos (QC) — window opened from the camera badge on product cards
-   (Men / Women pages). Photos taken at Lovegobuy's warehouse on previous
-   orders, from data/qc/<last 2 digits of the item id>.json.
+   (Men / Women pages). Photos taken in agents' warehouses on previous orders
+   (some carry a Hipobuy watermark), from data/qc/<last 2 digits of the item id>.json.
    - Opens above the catalog, so closing it leaves the page exactly as it was.
    - Shared links /#p=<item id> open it (also on /women and creator links). Opening it from
      a card doesn't change the address (iPhone Safari would expand its bar), but Back closes it.
@@ -187,7 +187,8 @@
     q('.photos-nav--prev').setAttribute('aria-label', t('Previous photo'));
     q('.photos-nav--next').setAttribute('aria-label', t('Next photo'));
     q('.photos-label__main').textContent = t('Real photos');
-    q('.photos-caption').textContent = t("Real photos of this item, taken at Lovegobuy's warehouse on previous orders.");
+    // No agent name: some photos come from other agents' warehouses (Hipobuy watermark)
+    q('.photos-caption').textContent = t('Real photos of this item, taken at the warehouse on previous orders.');
     q('.photos-product__img').src = IMAGE_TPL.replace('{id}', item.i);
     q('.photos-product__name').textContent = niceName(item.n);
     q('.photos-product__meta').textContent = [item.b, catLabel(item.c)].filter(Boolean).join(' · ');
