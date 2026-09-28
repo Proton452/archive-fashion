@@ -1,0 +1,30 @@
+# LovegoFinds
+
+> LovegoFinds (https://lovegofinds.com) is a free, curated catalog of more than 8,000 finds from Chinese marketplaces (Weidian, Taobao, 1688): football jerseys, sneakers, hoodies, t-shirts, jackets, bags, accessories and more, for men and women. Every item links straight to its product page on Lovegobuy, the purchasing agent that buys it, checks it in its warehouse and ships it worldwide. New Lovegobuy accounts created with the LovegoFinds sign-up link get 500€ in shipping coupons.
+
+## What the site offers
+
+- A catalog split into Men (about 6,500 items) and Women (about 1,500 items), with tabs: Best Sellers, Football, Summer, Tops, Pants, Sport, Shoes, Bags, Accessories, Winter (and Dresses for women). Each tab has sub-category filters (e.g. Sneakers, Boots, Hoodies & Sweats, Coats & Puffers).
+- Search by brand or item type, in several languages, and sorting by price.
+- Prices are item prices in Chinese yuan (¥, about 8 ¥ = 1 €); shipping is paid separately.
+- Football jerseys from current and past seasons, clubs and national teams, customisable with name, number and patches on Lovegobuy.
+- An AI shopping assistant on the site that finds items and explains how to order.
+- A step-by-step ordering guide, a FAQ, customer reviews and a Discord community.
+
+## How ordering works
+
+1. Create a Lovegobuy account with the LovegoFinds sign-up link to unlock 500€ in shipping coupons (the bonus only applies through this link).
+2. Find an item on LovegoFinds and click it: it opens the item's page on Lovegobuy.
+3. Choose size, colour and quantity, add to cart and pay for the item.
+4. The seller ships it to the Lovegobuy warehouse, usually in 2 to 5 days; photos of the item (QC photos) are available before international shipping.
+5. Choose a shipping line and apply the coupons. Shipping is charged by weight (around 9€/kg); delivery takes about 1 to 2 weeks depending on the line.
+
+Good to know: football jerseys have a minimum of 4 per order; a jersey weighs 200 to 250 g. Jerseys use European sizing; Chinese clothing sizes run small.
+
+## Pages
+
+- [How to order](https://lovegofinds.com/how-to-order): full ordering guide with shipping tips and a package tracker
+- [FAQ](https://lovegofinds.com/faq): quality, sizing, delivery times, customs, customisation, shipping cost
+- [Reviews](https://lovegofinds.com/reviews): customer photos and videos
+- [Men's catalog](https://lovegofinds.com/) and [Women's catalog](https://lovegofinds.com/women)
+- [Discord](https://discord.gg/5EhjDVZ2x7): community and questions
