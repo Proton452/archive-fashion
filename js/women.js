@@ -562,7 +562,7 @@ function appendNextBatch() {
           ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(displayName)}" decoding="async"${globalIdx >= 8 ? ' loading="lazy"' : ''}>`
           : `<div class="product-card__image-placeholder">No image</div>`
         }
-        ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))} (${p.qc})">${CAMERA_ICON}${p.qc}</span>` : ''}
+        ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${CAMERA_ICON}</span>` : ''}
       </div>
       <div class="product-card__info">
         <h3 class="product-card__name" data-tooltip="${escapeAttr(displayName)}">${escapeHTML(displayName)}</h3>
@@ -644,7 +644,7 @@ grid.addEventListener('transitionend', e => {
   }
 });
 
-const CAMERA_ICON = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/></svg>';
+const CAMERA_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/></svg>';
 grid.addEventListener('keydown', e => {
   const badge = e.target.closest('.product-card__photos');
   if (!badge || (e.key !== 'Enter' && e.key !== ' ')) return;

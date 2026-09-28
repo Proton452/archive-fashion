@@ -26,7 +26,7 @@ archive-fashion/
 ├── js/
 │   ├── main.js         Page Men : chargement catalogue, onglets, filtres, recherche, tri, scroll infini
 │   ├── women.js        Même logique pour la page Women
-│   ├── photos.js       Vraies photos (QC) : pastille 📷 sur les cartes + fenêtre (Men / Women)
+│   ├── photos.js       Vraies photos (QC) : pastille appareil photo (sans nombre) sur les cartes + fenêtre (Men / Women)
 │   ├── nav.js          Navbar + FAQ pour les pages secondaires
 │   └── partner.js      Liens partenaires (/slug → code d'invitation, feuille "Codes")
 ├── assets/
@@ -55,7 +55,7 @@ archive-fashion/
 ## Vraies photos (QC) — js/photos.js
 
 - Les photos QC du CSV (`qc_photos`) sont écrites par `build_catalog.py` dans `data/qc/<2 derniers chiffres de l'id>.json` (chargé seulement à l'ouverture) ; le catalogue ne garde que le nombre de photos (7e champ) pour la pastille.
-- Carte : le clic reste direct vers Lovegobuy ; la pastille appareil photo + nombre ouvre la fenêtre (pas de page séparée : `partner.js` prendrait `/p/...` pour un code créateur).
+- Carte : le clic reste direct vers Lovegobuy ; la pastille appareil photo (sans nombre) ouvre la fenêtre (pas de page séparée : `partner.js` prendrait `/p/...` pour un code créateur).
 - Lien partageable : `/#p=<id Lovegobuy>` (ou `/women#p=...`) ; Retour/✕/Échap ferment la fenêtre sans bouger la page.
 - Photos lourdes (400–800 Ko, pas de redimensionnement chez le partenaire) : seules la photo affichée et la suivante sont chargées.
 - Photos des modèles (`model_images`) : pas encore utilisées.
