@@ -24,7 +24,7 @@ Good to know: football jerseys have a minimum of 4 per order; a jersey weighs 20
 
 ## Is it reliable?
 
-- LovegoFinds does not sell anything itself and never takes payment: it is a free catalog. Every purchase, payment and delivery goes through Lovegobuy.
+- LovegoFinds is a discovery engine, not a marketplace: it does not sell any product and never takes payment. Every purchase, payment and delivery goes through Lovegobuy.
 - Lovegobuy is a purchasing and shipping agent used by millions of people: it buys items from Chinese marketplaces on the buyer's behalf, receives them in its warehouse, checks them and ships them worldwide.
 - Before anything is shipped, the buyer gets QC photos of the actual item in the warehouse and can check it.
 - Shipping insurance is available: a parcel seized by customs is reimbursed.
