@@ -2746,6 +2746,11 @@ a.reviews__tp-inline {
 
 .photos-open { overflow: hidden; }
 
+/* The green chat button stays out of the way while a window is open
+   (phone browsers tint their address bar with what is under it) */
+.photos-open .chat-bubble, .photos-open .chat-teaser,
+.locale-open .chat-bubble, .locale-open .chat-teaser { visibility: hidden; }
+
 /* No double-tap zoom on the arrows and photos (tapping an arrow quickly used to zoom the page) */
 .photos-modal, .photos-modal button { touch-action: manipulation; }
 
@@ -3030,13 +3035,8 @@ a.reviews__tp-inline {
     pointer-events: none;
   }
 
-  .photos-info { padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); overflow: visible; }
-
-  .photos-buy {
-    position: sticky;
-    bottom: calc(12px + env(safe-area-inset-bottom));
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  }
+  /* Extra room at the bottom: phone browsers draw their address bar over it */
+  .photos-info { padding: 18px 16px calc(24px + env(safe-area-inset-bottom)); overflow: visible; }
 }
 
 @media (prefers-reduced-motion: reduce) {
