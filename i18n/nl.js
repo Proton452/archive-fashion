@@ -232,5 +232,14 @@ window.I18N_DICT = {
  "Dollar": "Dollar",
  "Pound": "Pond",
  "Złoty": "Złoty",
- "Yuan": "Yuan"
+ "Yuan": "Yuan",
+ "See real photos": "Echte foto's bekijken",
+ "Real photos": "Echte foto's",
+ "Real photos of this item, taken at Lovegobuy's warehouse on previous orders.": "Echte foto's van dit artikel, gemaakt in het magazijn van Lovegobuy bij eerdere bestellingen.",
+ "Minimum 4 jerseys per order.": "Minimaal 4 shirts per bestelling.",
+ "Buy on Lovegobuy →": "Kopen op Lovegobuy →",
+ "Size and colour are chosen on Lovegobuy.": "Maat en kleur kies je op Lovegobuy.",
+ "Previous photo": "Vorige foto",
+ "Next photo": "Volgende foto",
+ "This photo couldn't be loaded.": "Deze foto kon niet worden geladen."
 };

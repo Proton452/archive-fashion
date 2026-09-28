@@ -5,9 +5,11 @@ Usage:  python scripts/build_catalog.py [path/to/my-little-shop-produits.csv]
 
 Output format (compact, ~8k items):
   { "link": "...{id}...", "image": "...{id}...", "end": <index where non-fashion items start>,
-    "items": [[name, brand, category, price_cny, item_id, image_id], ...] }
+    "items": [[name, brand, category, price_cny, item_id, image_id, qc_count], ...] }
+Real (QC) photos go to data/qc/<last 2 digits of item_id>.json, loaded only when a
+visitor opens them: { item_id: { g, n, b, c, p, i, q: [urls] } }
 """
-import csv, json, random, re, sys
+import csv, json, random, re, shutil, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -53,6 +55,7 @@ def main():
     src = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_CSV
     rows = list(csv.DictReader(open(src, encoding='utf-8-sig')))
     out = {'men': [], 'women': []}
+    qc_shards = {}
 
     for r in rows:
         link, image = LINK_RE.match(r['lien_lovegobuy'].strip()), IMAGE_RE.match(r['lien_image'].strip())
@@ -63,14 +66,21 @@ def main():
         if not gender:
             print('skipped (no genre):', r['titre'])
             continue
-        out[gender].append([
+        qc = [u.strip() for u in r.get('qc_photos', '').split('|') if u.strip().startswith('https://')]
+        item = [
             r['titre'].strip(),
             r['brand'].strip(),
             clean_category(r['categorie']),
             int(float(r['prix_cny'])),
             link.group(1),
             image.group(1),
-        ])
+            len(qc),
+        ]
+        out[gender].append(item)
+        if qc:
+            qc_shards.setdefault(link.group(1)[-2:], {})[link.group(1)] = {
+                'g': gender, 'n': item[0], 'b': item[1], 'c': item[2], 'p': item[3], 'i': item[5], 'q': qc,
+            }
 
     (ROOT / 'data').mkdir(exist_ok=True)
     for gender, items in out.items():
@@ -83,6 +93,15 @@ def main():
         path = ROOT / 'data' / f'{gender}.json'
         path.write_text(json.dumps(payload, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
         print(f'{gender}: {len(items)} items -> {path.relative_to(ROOT)} ({path.stat().st_size // 1024} KB)')
+
+    qc_dir = ROOT / 'data' / 'qc'
+    shutil.rmtree(qc_dir, ignore_errors=True)
+    qc_dir.mkdir()
+    for shard, entries in qc_shards.items():
+        (qc_dir / f'{shard}.json').write_text(json.dumps(entries, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+    sizes = [f.stat().st_size for f in qc_dir.iterdir()]
+    print(f'real photos: {sum(len(e) for e in qc_shards.values())} items in {len(sizes)} files '
+          f'(largest {max(sizes) // 1024} KB) -> data/qc/')
 
 
 if __name__ == '__main__':

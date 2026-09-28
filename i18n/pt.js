@@ -232,5 +232,14 @@ window.I18N_DICT = {
  "Dollar": "Dólar",
  "Pound": "Libra",
  "Złoty": "Zlóti",
- "Yuan": "Yuan"
+ "Yuan": "Yuan",
+ "See real photos": "Ver fotos reais",
+ "Real photos": "Fotos reais",
+ "Real photos of this item, taken at Lovegobuy's warehouse on previous orders.": "Fotos reais deste artigo, tiradas no armazém da Lovegobuy em encomendas anteriores.",
+ "Minimum 4 jerseys per order.": "Mínimo de 4 camisolas por encomenda.",
+ "Buy on Lovegobuy →": "Comprar na Lovegobuy →",
+ "Size and colour are chosen on Lovegobuy.": "O tamanho e a cor escolhem-se na Lovegobuy.",
+ "Previous photo": "Foto anterior",
+ "Next photo": "Foto seguinte",
+ "This photo couldn't be loaded.": "Não foi possível carregar esta foto."
 };
