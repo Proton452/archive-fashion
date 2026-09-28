@@ -7,12 +7,15 @@
 
 (function (root) {
   // Value of 1 CNY on Lovegobuy, read from its product pages on 2026-09-28
-  // (88 ¥ = 12.43 €, 544 ¥ = 87.47 $, 680 ¥ = 82.55 £). Update when Lovegobuy's rates move.
-  const RATES = { EUR: 0.1413, USD: 0.1608, GBP: 0.1214 };
+  // (88 ¥ = 12.43 €, 544 ¥ = 87.47 $, 680 ¥ = 82.55 £, 150 ¥ = 92.65 zł). Update when Lovegobuy's rates move.
+  // CNY is the catalog's own currency: no conversion.
+  const RATES = { EUR: 0.1413, USD: 0.1608, GBP: 0.1214, PLN: 0.61771, CNY: 1 };
   const CURRENCIES = {
     EUR: { symbol: '€', name: 'Euro' },
     USD: { symbol: '$', name: 'US Dollar' },
     GBP: { symbol: '£', name: 'British Pound' },
+    PLN: { symbol: 'zł', name: 'Polish Złoty' },
+    CNY: { symbol: '¥', name: 'Chinese Yuan' },
   };
   const DEFAULT = 'EUR';
   const STORE_KEY = 'currency';
@@ -42,17 +45,19 @@
     if (cny == null || isNaN(cny)) return '';
     cur = cur || current();
     const n = fromCny(cny, cur);
-    return cur === 'EUR' ? `${n}€` : `${CURRENCIES[cur].symbol}${n}`;
+    if (cur === 'EUR') return `${n}€`;
+    if (cur === 'PLN') return `${n} zł`;
+    return `${CURRENCIES[cur].symbol}${n}`;
   }
 
   // Price text from the Google Sheet ("4€", "4,50 €", "$5", "¥30") → CNY
   function parseToCny(str) {
     if (!str) return null;
     const s = String(str);
-    const cur = /\$|usd/i.test(s) ? 'USD' : /£|gbp/i.test(s) ? 'GBP' : /¥|cny|rmb|yuan/i.test(s) ? 'CNY' : 'EUR';
+    const cur = /\$|usd/i.test(s) ? 'USD' : /£|gbp/i.test(s) ? 'GBP' : /zł|pln/i.test(s) ? 'PLN' : /¥|cny|rmb|yuan/i.test(s) ? 'CNY' : 'EUR';
     const val = parseFloat(s.replace(',', '.').replace(/[^\d.]/g, ''));
     if (isNaN(val)) return null;
-    return cur === 'CNY' ? val : val / RATES[cur];
+    return val / RATES[cur];
   }
 
   const api = { RATES, CURRENCIES, DEFAULT, current, set, fromCny, toCny, format, parseToCny };
