@@ -11,7 +11,8 @@ const CATEGORY_MAP = {
   tops:        ['t-shirts', 'shirts', 'hoodies & sweats', 'long sleeves', 'polo', 'sweater', 'tracksuits & sets'],
   winter:      ['coats & puffers', 'jackets'],
   pants:       ['pants', 'jeans', 'sweatpants', 'shorts', 'denim shorts', 'skirts'],
-  shoes:       ['sneakers', 'running', 'boots', 'slides & sandals', 'dress shoes'],
+  sport:       ['running'],   // partner's "Running" is mostly sportswear (Alo, Under Armour…)
+  shoes:       ['sneakers', 'boots', 'slides & sandals', 'dress shoes'],
   bags:        ['backpacks', 'crossbody & shoulder', 'handbags', 'duffels', 'cosmetic bags'],
   accessories: ['belts', 'wallets', 'socks', 'scarves', 'ties', 'hats & caps', 'sunglasses', 'jewelry', 'bracelets', 'necklaces', 'rings', 'earrings', 'watches', 'accessories', 'underwear'],
 };
@@ -21,6 +22,7 @@ let currentCategoryTab = 'all';
 let selectedFilters    = new Set();
 let searchQuery        = '';
 let sortOrder          = null;
+const MIN_CATEGORY_COUNT = 3;   // smallest category listed in "All"
 const PAGE_SIZE        = 30;
 let visibleProducts    = [];
 let displayedCount     = 0;
@@ -113,6 +115,7 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
     sortBtn.classList.remove('is-asc', 'is-desc');
     sortBtn.querySelector('.toolbar__sort-chevron').textContent = '↕';
     gaEvent('click_category', { category: chosen });
+    generateFilterDropdown();
     applyFilters();
   });
 });
@@ -289,55 +292,87 @@ async function loadProducts() {
   }
 }
 
-function generateFilterDropdown() {
-  filterDropdown.innerHTML = '';
+// Is this product in the selected tab?
+function inCurrentTab(p) {
+  if (currentCategoryTab === 'best-sellers') return p.isBestSeller;
+  if (currentCategoryTab === 'all') return true;
+  return (CATEGORY_MAP[currentCategoryTab] || []).includes((p.article || '').toLowerCase().trim());
+}
 
+// ─── Category pickers: chips under the tabs + "Category" dropdown ───
+// Both list the categories of the current tab and share selectedFilters.
+function generateFilterDropdown() {
   const categoryCounts = {};
   allProducts.forEach(p => {
+    if (!inCurrentTab(p)) return;
     const cat = (p.article || '').toLowerCase().trim();
     if (cat) categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
   });
 
-  const allItem = document.createElement('div');
-  allItem.className = 'toolbar__filter-item toolbar__filter-item--all' +
-                      (selectedFilters.size === 0 ? ' is-active' : '');
-  allItem.textContent = 'ALL';
-  allItem.addEventListener('click', () => {
-    selectedFilters.clear();
-    filterDropdown.querySelectorAll('.toolbar__filter-item').forEach(el => el.classList.remove('is-active'));
-    allItem.classList.add('is-active');
-    applyFilters();
-  });
-  filterDropdown.appendChild(allItem);
-
-  const validCategories = Object.entries(categoryCounts)
-    .filter(([, count]) => count >= 3)
+  // "All" has every category, so keep only the bigger ones there
+  const minCount = currentCategoryTab === 'all' ? MIN_CATEGORY_COUNT : 1;
+  const categories = Object.entries(categoryCounts)
+    .filter(([, count]) => count >= minCount)
     .map(([cat]) => cat)
     .sort();
+  const label = cat => cat.charAt(0).toUpperCase() + cat.slice(1);
 
-  validCategories.forEach(cat => {
+  function toggle(cat) {
+    if (cat === null) selectedFilters.clear();
+    else if (selectedFilters.has(cat)) selectedFilters.delete(cat);
+    else selectedFilters.add(cat);
+    if (cat !== null) gaEvent('click_subcategory', { category: cat });
+    generateFilterDropdown();
+    applyFilters();
+  }
+
+  // Dropdown
+  filterDropdown.innerHTML = '';
+  const allItem = document.createElement('div');
+  allItem.className = 'toolbar__filter-item toolbar__filter-item--all' + (selectedFilters.size === 0 ? ' is-active' : '');
+  allItem.textContent = 'ALL';
+  // stopPropagation: the item is re-rendered, so the outside-click handler would close the menu
+  allItem.addEventListener('click', e => { e.stopPropagation(); toggle(null); });
+  filterDropdown.appendChild(allItem);
+
+  categories.forEach(cat => {
     const div = document.createElement('div');
     div.className = 'toolbar__filter-item' + (selectedFilters.has(cat) ? ' is-active' : '');
     div.dataset.category = cat;
-    div.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-
-    div.addEventListener('click', () => {
-      if (selectedFilters.has(cat)) {
-        selectedFilters.delete(cat);
-        div.classList.remove('is-active');
-      } else {
-        selectedFilters.add(cat);
-        div.classList.add('is-active');
-        allItem.classList.remove('is-active');
-      }
-      if (selectedFilters.size === 0) allItem.classList.add('is-active');
-      applyFilters();
-    });
-
+    div.textContent = label(cat);
+    div.addEventListener('click', e => { e.stopPropagation(); toggle(cat); });
     filterDropdown.appendChild(div);
   });
 
   const filterBtn = document.getElementById('filterBtn');
+  const filterCount = document.getElementById('filterCount');
+  if (filterCount) filterCount.textContent = selectedFilters.size ? `(${selectedFilters.size})` : '';
+  if (filterBtn) filterBtn.classList.toggle('is-active', selectedFilters.size > 0);
+
+  // Chips: only inside a tab, and only when there is a choice to make
+  const chips = document.getElementById('catChips');
+  if (chips) {
+    const show = currentCategoryTab !== 'all' && categories.length >= 2;
+    const scrollLeft = chips.scrollLeft;
+    chips.innerHTML = '';
+    if (show) {
+      const make = (cat, text) => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-chip' + ((cat === null ? selectedFilters.size === 0 : selectedFilters.has(cat)) ? ' is-active' : '');
+        btn.textContent = text;
+        btn.addEventListener('click', () => toggle(cat));
+        chips.appendChild(btn);
+      };
+      make(null, 'All');
+      categories.forEach(cat => make(cat, label(cat)));
+    }
+    chips.scrollLeft = scrollLeft;
+    if (chips.hidden === show) {
+      chips.hidden = !show;
+      window.dispatchEvent(new Event('resize'));   // the sticky bar changed height
+    }
+  }
+
   if (filterBtn && !filterBtn._attached) {
     filterBtn.addEventListener('click', e => {
       e.stopPropagation();
@@ -359,14 +394,7 @@ function generateFilterDropdown() {
 function applyFilters() {
   let filtered = allProducts;
 
-  if (currentCategoryTab === 'best-sellers') {
-    filtered = filtered.filter(p => p.isBestSeller);
-  } else if (currentCategoryTab !== 'all') {
-    const keywords = CATEGORY_MAP[currentCategoryTab] || [];
-    filtered = filtered.filter(p => {
-      return keywords.includes((p.article || '').toLowerCase().trim());
-    });
-  }
+  if (currentCategoryTab !== 'all') filtered = filtered.filter(inCurrentTab);
 
   if (selectedFilters.size > 0) {
     filtered = filtered.filter(p =>

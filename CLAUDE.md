@@ -61,7 +61,8 @@ archive-fashion/
 ## Logique JS (main.js / women.js)
 
 - **Chargement** : `fetchCatalog()` (JSON) + `fetchSheetJerseys()` (Men seulement) → `mixIn()` (maillots insérés à des places aléatoires fixes) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
-- **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories (CSV + `jersey` du sheet) pour chaque onglet ; Best Sellers toujours affiché
+- **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories (CSV + `jersey` du sheet) pour chaque onglet ; Best Sellers toujours affiché ; « Running » du partenaire = vêtements de sport → onglet Sport
+- **Sous-catégories** : `generateFilterDropdown()` construit les pastilles sous les onglets (`#catChips`, masquées sur All ou s'il n'y a qu'une catégorie) et le menu « Category » ; les deux ne listent que les catégories de l'onglet en cours et partagent `selectedFilters`
 - **Prix** : CSV en yuan (`¥`), maillots du sheet en € ; le tri compare en ¥ (`priceInYuan`, 1 € ≈ 8 ¥)
 - **Filtres / recherche / tri** : en mémoire sur `allProducts[]` (`applyFilters()`), recherche multilingue via dictionnaire de synonymes
 - **Affichage** : scroll infini par lots de 30 (`PAGE_SIZE`)

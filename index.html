@@ -98,6 +98,7 @@
           <button class="cat-tab" data-cat="summer">Summer</button>
           <button class="cat-tab" data-cat="tops">Tops</button>
           <button class="cat-tab" data-cat="pants">Pants</button>
+          <button class="cat-tab" data-cat="sport">Sport</button>
           <button class="cat-tab" data-cat="shoes">Shoes</button>
           <button class="cat-tab" data-cat="bags">Bags</button>
           <button class="cat-tab" data-cat="accessories">Accessories</button>
@@ -105,11 +106,14 @@
         </div>
       </div>
 
+      <!-- SUB-CATEGORY CHIPS (filled by JS for the current tab) -->
+      <div class="cat-chips" id="catChips" hidden></div>
+
       <!-- TOOLBAR -->
       <div class="toolbar" id="toolbar">
         <div class="toolbar__filter-wrapper">
           <button class="toolbar__filter-btn" id="filterBtn">
-            Filter <span class="toolbar__chevron">▾</span>
+            Category <span class="toolbar__filter-count" id="filterCount"></span> <span class="toolbar__chevron">▾</span>
           </button>
           <div class="toolbar__filter-dropdown" id="filterDropdown"></div>
         </div>
