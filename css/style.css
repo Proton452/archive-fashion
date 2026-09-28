@@ -2735,6 +2735,9 @@ a.reviews__tp-inline {
 }
 
 .product-card__photos:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Small press, like the site's other buttons */
+.product-card__photos { transition: border-color 0.2s, background-color 0.2s, transform 0.12s var(--ease-out); }
+.product-card__photos:active { transform: scale(0.92); }
 
 .photos-open { overflow: hidden; }
 
@@ -2977,18 +2980,19 @@ a.reviews__tp-inline {
   text-align: center;
 }
 
-/* ─── Phones: full screen, slides up from the bottom, drag it down to close ─── */
+/* ─── Phones: sheet sized to its content, slides up from the bottom, drag it down to close.
+       The catalog stays visible (dimmed) above it. ─── */
 @media (max-width: 700px) {
-  .photos-modal { padding: 0; align-items: stretch; transition: background 0.25s ease-out; }
+  .photos-modal { padding: 0; align-items: flex-end; transition: background 0.25s ease-out; }
   .photos-modal.is-open { background: rgba(13, 13, 13, 0.4); }
 
   .photos-sheet {
     display: flex;
     flex-direction: column;
     max-width: none;
-    max-height: none;
-    height: 100%;
-    border-radius: 0;
+    max-height: 92vh;
+    max-height: 92dvh;
+    border-radius: 20px 20px 0 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     opacity: 1;
