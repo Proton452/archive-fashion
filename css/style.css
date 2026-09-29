@@ -2884,6 +2884,17 @@ a.reviews__tp-inline {
   .product-card:has(.product-card__fav:hover) .product-card__image img { transform: none; }
 }
 
+/* Phones: bigger touch area (46px) around the heart and the camera, same look */
+@media (pointer: coarse) {
+  .product-card__fav::after,
+  .product-card__photos::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+  }
+}
+
 /* Heart in the real photos window, at the end of the product row */
 .photos-fav {
   display: flex;
