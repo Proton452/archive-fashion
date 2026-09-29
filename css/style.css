@@ -2908,14 +2908,8 @@ a.reviews__tp-inline {
   .photos-fav:hover { border-color: var(--text-muted); }
 }
 
-/* "♥ Favorites" tab */
-.cat-tab--fav {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.cat-tab--fav svg { color: var(--accent); }
+/* "Favorites" tab: shown once there is a favorite */
+.cat-tab[hidden] { display: none; }
 
 @media (min-width: 701px) {
   .photos-open { overflow: hidden; }   /* see .locale-open: computers only */
