@@ -248,7 +248,7 @@ window.I18N_DICT = {
  "Privacy & Terms | LovegoFinds": "Confidentialité et conditions | LovegoFinds",
  "Legal": "Informations légales",
  "Privacy & Terms": "Confidentialité et conditions",
- "How LovegoFinds works, what data the site uses and who runs it.": "Comment fonctionne LovegoFinds, quelles données le site utilise et qui le gère.",
+ "How LovegoFinds works and what data the site uses.": "Comment fonctionne LovegoFinds et quelles données le site utilise.",
  "Last updated: 29 September 2026": "Dernière mise à jour : 29 septembre 2026",
  "Privacy policy": "Politique de confidentialité",
  "LovegoFinds (lovegofinds.com) is an independent website that lists products available on Lovegobuy. We don't ask for your name, email or address, and we don't sell any data.": "LovegoFinds (lovegofinds.com) est un site indépendant qui répertorie des produits disponibles sur Lovegobuy. Nous ne demandons ni ton nom, ni ton e-mail, ni ton adresse, et nous ne vendons aucune donnée.",
