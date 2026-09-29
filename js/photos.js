@@ -309,6 +309,7 @@
 
   function hide() {
     if (!modal || modal.hidden) return;
+    document.querySelectorAll('.product-card.is-held').forEach(c => c.classList.remove('is-held'));   // back to normal: zoomed only if the mouse is still on it
     modal.classList.remove('is-open');
     sheet.style.transform = '';
     document.documentElement.classList.remove('photos-open');

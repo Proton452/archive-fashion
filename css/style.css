@@ -1382,7 +1382,8 @@ a.reviews__tp-inline {
 }
 
 @media (hover: hover) {
-  .product-card:hover .product-card__image img { transform: scale(1.03); }
+  .product-card:hover .product-card__image img,
+  .product-card.is-held .product-card__image img { transform: scale(1.03); }   /* is-held: its real photos window is open */
 }
 
 .product-card__image-placeholder {

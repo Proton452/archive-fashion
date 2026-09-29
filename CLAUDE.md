@@ -62,6 +62,7 @@ archive-fashion/
 - Lien partageable : `/#p=<id Lovegobuy>` (ou `/women#p=...`) ouvre la fenêtre. L'ouverture depuis une carte ne change PAS l'adresse (pushState sans URL) et ne met pas le focus sur mobile : sinon Safari iPhone agrandit sa barre d'adresse et affiche une bande. Retour/✕/Échap ferment la fenêtre sans bouger la page.
 - Photos lourdes (400–800 Ko, pas de redimensionnement chez le partenaire) : seules la photo affichée et ses voisines sont chargées. Défilement au doigt = scroll-snap natif (`.photos-track`) ; la photo est zoomée pour remplir le cadre quand sa forme est proche (écart ≤ 30 %), sinon elle reste entière avec sa copie floutée autour. Pas de double-tap zoom (`touch-action: manipulation`).
 - Mobile : fenêtre à la hauteur de son contenu (max 92 %) qui monte du bas, catalogue visible au-dessus ; se ferme en la tirant vers le bas (poignée en haut). Ordinateur : simple fondu court, fond peu assombri (animations volontairement calmes, demandé par l'utilisateur).
+- Ordinateur : la carte dont on ouvre les photos garde son zoom tant que la fenêtre est ouverte (classe `.is-held`, retirée dans `hide()`), sinon elle se dézoomait derrière la fenêtre. Le survol du cœur / de « Photos » n'annule plus le zoom.
 - Photos des modèles (`model_images`) : pas encore utilisées.
 
 ## Favoris — js/favorites.js

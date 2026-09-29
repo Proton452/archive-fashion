@@ -694,6 +694,7 @@ function appendNextBatch() {
       // Camera badge: open the real photos instead of Lovegobuy
       if (e.target.closest('.product-card__photos')) {
         e.preventDefault();
+        card.classList.add('is-held');   // stays zoomed behind the window (the mouse is now on the window)
         if (window.RealPhotos) RealPhotos.open(p.id);
         return;
       }
@@ -815,7 +816,7 @@ grid.addEventListener('keydown', e => {
   if (!badge || (e.key !== 'Enter' && e.key !== ' ')) return;
   e.preventDefault();
   const card = badge.closest('.product-card');
-  if (card && card._product && window.RealPhotos) RealPhotos.open(card._product.id);
+  if (card && card._product && window.RealPhotos) { card.classList.add('is-held'); RealPhotos.open(card._product.id); }
 });
 
 // ─── Football minimum spend, in the visitor's currency ─
