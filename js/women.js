@@ -585,7 +585,7 @@ function appendNextBatch() {
           ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(displayName)}" decoding="async"${globalIdx >= 8 ? ' loading="lazy"' : ''}>`
           : `<div class="product-card__image-placeholder">No image</div>`
         }
-        ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${GALLERY_ICON}<span>${escapeHTML(t('Photos'))}</span></span>` : ''}
+        ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${GALLERY_ICON}<span>${escapeHTML(t('Real photos'))}</span></span>` : ''}
         ${Favs.badge(p)}
       </div>
       <div class="product-card__info">

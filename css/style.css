@@ -2814,7 +2814,7 @@ a.reviews__tp-inline {
 [dir="rtl"] .product-card__price { text-align: right; }
 
 /* ================================================
-   REAL PHOTOS (QC) — "Photos" pill on cards + window (js/photos.js)
+   REAL PHOTOS (QC) — "Real photos" pill on cards + window (js/photos.js)
 ================================================ */
 .product-card__photos {
   position: absolute;
@@ -2853,7 +2853,7 @@ a.reviews__tp-inline {
   .product-card:has(.product-card__photos:hover) .product-card__image img { transform: none; }
 }
 
-/* ─── Favorites (js/favorites.js): grey heart in a white circle, top corner; green when on ─── */
+/* ─── Favorites (js/favorites.js): light grey heart in a white circle, top corner; green when on ─── */
 .product-card__fav {
   position: absolute;
   top: 8px;
@@ -2867,7 +2867,7 @@ a.reviews__tp-inline {
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.1);
-  color: var(--text-muted);
+  color: #A1A1AA;   /* light grey: the heart stays secondary to the Real photos pill */
   cursor: pointer;
   transition: box-shadow 0.2s, color 0.2s, transform 0.12s var(--ease-out);
 }
@@ -2885,7 +2885,7 @@ a.reviews__tp-inline {
 }
 
 @media (hover: hover) {
-  .product-card__fav:not(.is-on):hover { color: var(--text); }
+  .product-card__fav:not(.is-on):hover { color: var(--text-muted); }
   .product-card:has(.product-card__fav:hover) .product-card__image img { transform: none; }
 }
 

@@ -243,6 +243,5 @@ window.I18N_DICT = {
  "Real photos of this item, taken at the warehouse.": "Fotos reales de este artículo, tomadas en el almacén.",
  "No favorites yet. Tap the heart on an item to save it here.": "Aún no tienes favoritos. Toca el corazón de un artículo para guardarlo aquí.",
  "Recently viewed": "Vistos recientemente",
- "Photos": "Fotos",
  "Favorites": "Favoritos"
 };
