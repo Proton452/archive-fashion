@@ -293,6 +293,5 @@ window.I18N_DICT = {
  "Styles": "Modelli",
  "Style": "Modello",
  "Available styles": "Modelli disponibili",
- "Official photos of the styles available for this item.": "Foto ufficiali dei modelli disponibili per questo articolo.",
- "See all styles": "Vedi tutti i modelli"
+ "Official photos of the styles available for this item.": "Foto ufficiali dei modelli disponibili per questo articolo."
 };

@@ -293,6 +293,5 @@ window.I18N_DICT = {
  "Styles": "موديلات",
  "Style": "موديل",
  "Available styles": "الموديلات المتاحة",
- "Official photos of the styles available for this item.": "صور رسمية للموديلات المتاحة لهذا المنتج.",
- "See all styles": "عرض كل الموديلات"
+ "Official photos of the styles available for this item.": "صور رسمية للموديلات المتاحة لهذا المنتج."
 };

@@ -293,6 +293,5 @@ window.I18N_DICT = {
  "Styles": "Varianten",
  "Style": "Variant",
  "Available styles": "Beschikbare varianten",
- "Official photos of the styles available for this item.": "Officiële foto's van de beschikbare varianten van dit artikel.",
- "See all styles": "Bekijk alle varianten"
+ "Official photos of the styles available for this item.": "Officiële foto's van de beschikbare varianten van dit artikel."
 };

@@ -8,16 +8,16 @@
    - Photos slide under the finger (native scroll-snap). They are heavy
      (400-800 KB): only the one shown and its neighbours are loaded.
    - Phones: full screen, slides up from the bottom, drag it down to close.
-   - Styles (official photos of each colour / design, `m` in the data): a row of 4 thumbnails
-     under the product (the 4th shows "+N" when there are more) opens them full screen.
-     Items with styles but no real photos show the styles in the photo strip instead.
+   - Styles (official photos of each colour / design, `m` in the data): two buttons
+     "Real photos (10) | Styles (16)" choose what the photo strip shows. With styles, a grid
+     of all of them sits under the buttons: a tap shows that style big in the strip.
+     Items with only one of the two have no buttons.
 ============================================== */
 
 (function () {
   const LINK_TPL  = 'https://www.lovegobuy.com/product?id={id}&shop_type=weidian&invite_code=500EUROSOFFERED';
   const IMAGE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5';
   const STYLE_TPL = 'https://img.theqcbook.com/products/{id}/{n}.webp?v5';
-  const STYLE_THUMBS = 4;   // thumbnails under the product; more = "+N" on the last one
   const HASH_RE = /^#p=(\d+)$/;
   const phone = window.matchMedia('(max-width: 700px)');
 
@@ -28,7 +28,7 @@
   const shards = {};
   let modal = null, sheet = null, track = null;
   let item = null, itemId = null, index = 0, pushedHash = false, lastFocus = null;
-  let photos = [], styles = [], stylesOnly = false;   // photo strip, style photos, strip shows styles
+  let photos = [], styles = [], showing = 'qc';   // photo strip, style photos, 'qc' | 'styles' in the strip
 
   function el(tag, cls, html) {
     const n = document.createElement(tag);
@@ -42,6 +42,7 @@
   }
 
   const isRTL = () => document.documentElement.dir === 'rtl';
+  const escapeText = str => String(str).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   function loadItem(id) {
     const key = id.slice(-2);
@@ -77,8 +78,13 @@
           <span class="photos-counter" aria-live="polite"></span>
         </div>
         <div class="photos-info">
+          <div class="photos-tabs" role="tablist" hidden>
+            <button type="button" class="photos-tab" role="tab" data-set="qc"></button>
+            <button type="button" class="photos-tab" role="tab" data-set="styles"></button>
+          </div>
           <p class="photos-label" id="photosTitle"><span class="photos-label__main"></span> <span class="photos-label__qc">(QC)</span></p>
           <p class="photos-caption"></p>
+          <div class="photos-styles" hidden></div>
           <div class="photos-product">
             <img class="photos-product__img" alt="" decoding="async">
             <div class="photos-product__text">
@@ -87,10 +93,6 @@
               <p class="photos-product__price"></p>
             </div>
             <button type="button" class="photos-fav"></button>
-          </div>
-          <div class="photos-styles" hidden>
-            <p class="photos-styles__title"></p>
-            <div class="photos-styles__grid"></div>
           </div>
           <p class="photos-jersey" hidden></p>
           <a class="btn btn--primary photos-buy" target="_blank" rel="noopener noreferrer"></a>
@@ -106,6 +108,11 @@
     modal.querySelector('.photos-nav--prev').addEventListener('click', () => goTo(index + (isRTL() ? 1 : -1)));
     modal.querySelector('.photos-nav--next').addEventListener('click', () => goTo(index + (isRTL() ? -1 : 1)));
     modal.querySelector('.photos-fav').addEventListener('click', () => { if (window.Favs) Favs.toggle(itemId); });
+    modal.querySelectorAll('.photos-tab').forEach(tab => tab.addEventListener('click', () => {
+      if (tab.dataset.set === showing) return;
+      showSet(tab.dataset.set);
+      gaEvent('photos_tab', { item_name: item && item.n, tab: tab.dataset.set });
+    }));
     modal.querySelector('.photos-buy').addEventListener('click', () => {
       gaEvent('click_product', { item_name: item && item.n, source: 'real_photos' });
     });
@@ -179,7 +186,7 @@
   // a very different shape keeps the whole photo (with the blurred copy around it)
   const MAX_ZOOM = 1.3;
   function fitPhoto(slide, img) {
-    if (stylesOnly || !img.naturalWidth || !slide.clientHeight) return;   // styles: always whole
+    if (showing === 'styles' || !img.naturalWidth || !slide.clientHeight) return;   // styles: always whole
     const photo = img.naturalWidth / img.naturalHeight;
     const frame = slide.clientWidth / slide.clientHeight;
     slide.classList.toggle('is-cover', Math.max(photo / frame, frame / photo) <= MAX_ZOOM);
@@ -200,10 +207,16 @@
     const n = photos.length;
     index = Math.max(0, Math.min(n - 1, i));
     ensureLoaded(index);
-    const label = stylesOnly ? t('Style') : t('Real photos');
+    const label = showing === 'styles' ? t('Style') : t('Real photos');
     [...track.children].forEach((s, j) => {
       s.querySelector('.photos-slide__img').alt = j === index ? label + ' ' + (j + 1) + '/' + n : '';
     });
+    if (showing === 'styles') {   // the style shown big is outlined in the grid
+      modal.querySelectorAll('.photos-style').forEach((b, j) => {
+        b.classList.toggle('is-active', j === index);
+        b.setAttribute('aria-pressed', j === index);
+      });
+    }
     modal.querySelector('.photos-counter').textContent = (index + 1) + ' / ' + n;
     const atStart = index === 0, atEnd = index === n - 1;
     modal.querySelector('.photos-nav--prev').hidden = n < 2 || (isRTL() ? atEnd : atStart);
@@ -224,16 +237,24 @@
     q('.photos-sheet__close').setAttribute('aria-label', t('Close'));
     q('.photos-nav--prev').setAttribute('aria-label', t('Previous photo'));
     q('.photos-nav--next').setAttribute('aria-label', t('Next photo'));
-    q('.photos-label__main').textContent = stylesOnly ? t('Available styles') : t('Real photos');
-    q('.photos-label__qc').hidden = stylesOnly;
+    const onStyles = showing === 'styles';
+    const tabs = item.q.length && styles.length;   // both: buttons instead of the title
+    q('.photos-tabs').hidden = !tabs;
+    q('.photos-label').hidden = !!tabs;
+    q('.photos-tab[data-set="qc"]').innerHTML = `${escapeText(t('Real photos'))} <span>${item.q.length}</span>`;
+    q('.photos-tab[data-set="styles"]').innerHTML = `${escapeText(t('Styles'))} <span>${styles.length}</span>`;
+    modal.querySelectorAll('.photos-tab').forEach(tab => {
+      const on = tab.dataset.set === showing;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on);
+    });
+    q('.photos-label__main').textContent = onStyles ? t('Available styles') : t('Real photos');
+    q('.photos-label__qc').hidden = onStyles;
     // No agent name: some photos come from other agents' warehouses (Hipobuy watermark)
-    q('.photos-caption').textContent = stylesOnly
+    q('.photos-caption').textContent = onStyles
       ? t('Official photos of the styles available for this item.')
       : t('Real photos of this item, taken at the warehouse.');
-    q('.photos-styles__title').textContent = t('Available styles') + ' (' + styles.length + ')';
-    q('.photos-styles__grid').querySelectorAll('.photos-style').forEach((b, i) => {
-      b.setAttribute('aria-label', b.classList.contains('has-more') ? t('See all styles') : t('Style') + ' ' + (i + 1));
-    });
+    modal.querySelectorAll('.photos-style').forEach((b, i) => b.setAttribute('aria-label', t('Style') + ' ' + (i + 1)));
     q('.photos-product__img').src = IMAGE_TPL.replace('{id}', item.i);
     q('.photos-product__name').textContent = niceName(item.n);
     q('.photos-product__meta').textContent = [item.b, catLabel(item.c)].filter(Boolean).join(' · ');
@@ -249,36 +270,30 @@
     q('.photos-note').textContent = t('Size and colour are chosen on Lovegobuy.');
   }
 
-  // ─── Styles: row of thumbnails under the product (items that also have real photos) ───
-  function buildStyles() {
-    const box = modal.querySelector('.photos-styles');
-    const grid = modal.querySelector('.photos-styles__grid');
-    box.hidden = stylesOnly || !styles.length;
-    if (box.hidden) { grid.replaceChildren(); return; }
-    const more = styles.length > STYLE_THUMBS;
-    const thumbs = styles.slice(0, STYLE_THUMBS).map((url, i) => {
+  // ─── Styles: grid of all of them; a tap shows that one big in the photo strip ───
+  function buildGrid() {
+    const grid = modal.querySelector('.photos-styles');
+    const thumbs = styles.map((url, i) => {
       const btn = el('button', 'photos-style is-loading');
       btn.type = 'button';
       const img = el('img', 'photos-style__img');
       img.alt = '';
       img.decoding = 'async';
       btn.append(img);
-      if (more && i === STYLE_THUMBS - 1) {   // the last thumbnail is covered, so it counts too
-        btn.classList.add('has-more');
-        btn.append(el('span', 'photos-style__more', '+' + (styles.length - STYLE_THUMBS + 1)));
-      }
       btn.addEventListener('click', () => {
-        Viewer.open(styles, i);
-        gaEvent('open_styles', { item_name: item && item.n, styles: styles.length });
+        goTo(i, false);   // straight to it: sliding past the others would load them all
+        // Phones: the big photo may have scrolled out of sight above the grid
+        const top = modal.querySelector('.photos-gallery').getBoundingClientRect();
+        if (top.bottom < sheet.getBoundingClientRect().top + top.height / 2) sheet.scrollTo({ top: 0, behavior: 'smooth' });
       });
       return btn;
     });
     grid.replaceChildren(...thumbs);
-    // One after the other: the server refuses bursts, and the real photos load at the same time.
-    // A thumbnail that still fails stays an empty grey square (it opens the viewer all the same).
+    // One after the other: the server refuses bursts, and the big photos load at the same time.
+    // A thumbnail that still fails stays an empty grey square (a tap still shows the style).
     const loadThumb = i => {
       const btn = thumbs[i];
-      if (!btn || !btn.isConnected) return;
+      if (!btn || !btn.isConnected) return;   // another item was opened since
       const img = btn.querySelector('img');
       const done = failed => {
         btn.classList.remove('is-loading');
@@ -291,115 +306,16 @@
     loadThumb(0);
   }
 
-  // ─── Full-screen viewer for the styles (white: the photos have no background) ───
-  const Viewer = (() => {
-    let box = null, vtrack = null, urls = [], at = 0;
-
-    function build() {
-      box = el('div', 'styles-viewer');
-      box.hidden = true;
-      box.setAttribute('role', 'dialog');
-      box.setAttribute('aria-modal', 'true');
-      box.tabIndex = -1;
-      box.innerHTML = `
-        <div class="styles-viewer__track"></div>
-        <button type="button" class="styles-viewer__close">${ICON_CLOSE}</button>
-        <button type="button" class="photos-nav photos-nav--prev">${ICON_PREV}</button>
-        <button type="button" class="photos-nav photos-nav--next">${ICON_NEXT}</button>
-        <span class="photos-counter" aria-live="polite"></span>`;
-      vtrack = box.querySelector('.styles-viewer__track');
-      box.querySelector('.styles-viewer__close').addEventListener('click', close);
-      box.querySelector('.photos-nav--prev').addEventListener('click', () => go(at + (isRTL() ? 1 : -1)));
-      box.querySelector('.photos-nav--next').addEventListener('click', () => go(at + (isRTL() ? -1 : 1)));
-      let ticking = false;
-      vtrack.addEventListener('scroll', () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          ticking = false;
-          const i = Math.round(Math.abs(vtrack.scrollLeft) / (vtrack.clientWidth || 1));
-          if (i !== at) set(i);
-        });
-      }, { passive: true });
-      blockTouchScroll(box, ['.styles-viewer__track']);
-      document.body.append(box);
-    }
-
-    // Only the style shown and its neighbours are loaded (the server refuses bursts)
-    function load(i) {
-      const slide = vtrack.children[i];
-      if (!slide || slide.dataset.loaded) return;
-      slide.dataset.loaded = '1';
-      const img = slide.querySelector('img');
-      img.addEventListener('load', () => slide.classList.remove('is-loading'));
-      loadWithRetry(img, urls[i], () => {
-        slide.classList.remove('is-loading');
-        img.hidden = true;
-        slide.append(el('span', 'photos-slide__error', t("This photo couldn't be loaded.")));
-      });
-    }
-
-    function set(i) {
-      at = Math.max(0, Math.min(urls.length - 1, i));
-      load(at); load(at + 1); load(at - 1);
-      [...vtrack.children].forEach((s, j) => {
-        s.querySelector('img').alt = j === at ? t('Style') + ' ' + (j + 1) + '/' + urls.length : '';
-      });
-      box.querySelector('.photos-counter').textContent = (at + 1) + ' / ' + urls.length;
-      box.querySelector('.styles-viewer__close').setAttribute('aria-label', t('Close'));
-      const prev = box.querySelector('.photos-nav--prev'), next = box.querySelector('.photos-nav--next');
-      prev.setAttribute('aria-label', t('Previous photo'));
-      next.setAttribute('aria-label', t('Next photo'));
-      const atStart = at === 0, atEnd = at === urls.length - 1;
-      prev.hidden = urls.length < 2 || (isRTL() ? atEnd : atStart);
-      next.hidden = urls.length < 2 || (isRTL() ? atStart : atEnd);
-    }
-
-    function go(i, smooth = true) {
-      i = Math.max(0, Math.min(urls.length - 1, i));
-      vtrack.scrollTo({ left: i * vtrack.clientWidth * (isRTL() ? -1 : 1), behavior: smooth ? 'smooth' : 'auto' });
-      set(i);
-    }
-
-    function open(list, i) {
-      if (!box) build();
-      urls = list;
-      vtrack.replaceChildren(...list.map(() => {
-        const slide = el('div', 'styles-viewer__slide is-loading');
-        const img = el('img');
-        img.decoding = 'async';
-        slide.append(img, el('span', 'photos-slide__spinner'));
-        return slide;
-      }));
-      box.hidden = false;
-      go(i, false);
-      requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('is-open')));
-      if (window.matchMedia('(hover: hover)').matches) box.focus({ preventScroll: true });   // arrows / Escape work at once
-    }
-
-    const isOpen = () => !!box && box.classList.contains('is-open');
-
-    function close() {
-      if (!isOpen()) return;
-      box.classList.remove('is-open');
-      setTimeout(() => {
-        if (box.classList.contains('is-open')) return;
-        box.hidden = true;
-        vtrack.replaceChildren();   // stop loading styles nobody looks at any more
-      }, 200);
-    }
-
-    function onKey(e) {
-      if (e.key === 'Escape') close();
-      if (e.key === 'ArrowRight') go(at + (isRTL() ? -1 : 1));
-      if (e.key === 'ArrowLeft') go(at + (isRTL() ? 1 : -1));
-    }
-
-    // Rotation / language change: keep the current style in place (Arabic flips the strip)
-    function refresh() { if (isOpen()) go(at, false); }
-
-    return { open, close, isOpen, onKey, refresh };
-  })();
+  // What the photo strip shows: 'qc' (real photos) or 'styles'
+  function showSet(set) {
+    showing = set;
+    photos = set === 'styles' ? styles : item.q;
+    sheet.classList.toggle('is-styles', set === 'styles');
+    modal.querySelector('.photos-styles').hidden = set !== 'styles';
+    renderTexts();
+    buildSlides();
+    if (!modal.hidden) goTo(0, false);
+  }
 
   // Heart next to the product: same favorites as the cards (js/favorites.js)
   function renderFav() {
@@ -478,18 +394,15 @@
     try { data = await loadItem(String(id)); } catch (e) { data = null; }
     if (!data) { if (fromHash) clearHash(); return; }
     styles = (data.m || []).map(n => STYLE_TPL.replace('{id}', data.i).replace('{n}', n));
-    stylesOnly = !data.q.length;
-    photos = stylesOnly ? styles : data.q;
-    if (!photos.length) { if (fromHash) clearHash(); return; }
+    if (!data.q.length && !styles.length) { if (fromHash) clearHash(); return; }
     if (!modal) build();
     item = data;
     itemId = String(id);
-    sheet.classList.toggle('is-styles', stylesOnly);
     if (window.Recent) Recent.add(itemId);
     lastFocus = document.activeElement;
-    buildStyles();
-    renderTexts();
-    buildSlides();
+    modal.querySelector('.photos-styles').replaceChildren();
+    if (styles.length) buildGrid();
+    showSet(data.q.length ? 'qc' : 'styles');   // real photos first when there are some
     sheet.style.transform = '';
     sheet.scrollTop = 0;
     modal.hidden = false;
@@ -509,7 +422,6 @@
   }
 
   function hide() {
-    Viewer.close();
     if (!modal || modal.hidden) return;
     document.querySelectorAll('.product-card.is-held').forEach(c => c.classList.remove('is-held'));   // back to normal: zoomed only if the mouse is still on it
     modal.classList.remove('is-open');
@@ -519,6 +431,7 @@
       if (modal.classList.contains('is-open')) return;
       modal.hidden = true;
       track.replaceChildren();   // stop loading photos nobody looks at any more
+      modal.querySelector('.photos-styles').replaceChildren();
     }, 300);
     item = null;
     if (lastFocus) lastFocus.focus({ preventScroll: true });
@@ -543,7 +456,6 @@
   });
 
   document.addEventListener('keydown', e => {
-    if (Viewer.isOpen()) { Viewer.onKey(e); return; }
     if (!modal || modal.hidden || !item) return;
     if (e.key === 'Escape') close();
     if (e.key === 'ArrowRight') goTo(index + (isRTL() ? -1 : 1));
@@ -552,14 +464,12 @@
 
   // Keep the current photo in place if the window is resized (phone rotation)
   window.addEventListener('resize', () => {
-    Viewer.refresh();
     if (!item) return;
     goTo(index, false);
     [...track.children].forEach(sl => fitPhoto(sl, sl.querySelector('.photos-slide__img')));
   });
 
   document.addEventListener('localechange', () => {
-    Viewer.refresh();
     if (!item) return;
     renderTexts();
     goTo(index, false);   // Arabic flips the photo strip
