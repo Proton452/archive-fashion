@@ -27,6 +27,7 @@ archive-fashion/
 │   ├── main.js         Page Men : chargement catalogue, onglets, filtres, recherche, tri, scroll infini
 │   ├── women.js        Même logique pour la page Women
 │   ├── photos.js       Vraies photos (QC) : pastille appareil photo (sans nombre) sur les cartes + fenêtre (Men / Women)
+│   ├── recent.js       Récemment consultés : onglet « Recently viewed » (localStorage)
 │   ├── favorites.js    Favoris : cœur sur les cartes + fenêtre QC, onglet « Favorites » (localStorage)
 │   ├── nav.js          Navbar + FAQ pour les pages secondaires
 │   └── partner.js      Liens partenaires (/slug → code d'invitation, feuille "Codes")
@@ -67,6 +68,11 @@ archive-fashion/
 - Cœur en haut à droite de chaque carte (la pastille QC est en bas à droite) et dans la fenêtre QC, à côté de la fiche produit. Le clic sur le cœur n'ouvre pas Lovegobuy.
 - Gardés dans le navigateur (`localStorage`) : `favs-men` / `favs-women`, une liste par page. Clé = id Lovegobuy (maillots du sheet : leur lien).
 - Onglet « Favorites » (texte seul, sans cœur ni nombre) en 1re position, masqué tant qu'il n'y a aucun favori ; s'il est vidé pendant qu'on y est : message « Tap the heart… ». `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
+
+## Récemment consultés — js/recent.js
+
+- Onglet « Recently viewed » juste après « Favorites », masqué tant qu'il est vide. Les 20 derniers articles ouverts (clic vers Lovegobuy ou fenêtre QC), du plus récent au plus ancien (`Recent.order()` dans `applyFilters`, le tri par prix passe par-dessus).
+- `localStorage` : `recent-men` / `recent-women`, même clé que les favoris (`Favs.key`).
 
 ## Langues (js/i18n.js)
 

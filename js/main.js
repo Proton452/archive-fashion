@@ -407,6 +407,7 @@ async function loadProducts() {
 // Is this product in the selected tab?
 function inCurrentTab(p) {
   if (currentCategoryTab === 'favorites') return Favs.has(Favs.key(p));
+  if (currentCategoryTab === 'recent') return Recent.has(Favs.key(p));
   if (currentCategoryTab === 'best-sellers') return p.isBestSeller;
   if (currentCategoryTab === 'all') return !p.fromSheet;
   return (CATEGORY_MAP[currentCategoryTab] || []).includes((p.article || '').toLowerCase().trim());
@@ -543,6 +544,9 @@ function applyFilters() {
   }
 
   // 4. Sort by price
+  // Recently viewed: newest first (a price sort still applies on top)
+  if (currentCategoryTab === 'recent') filtered = Recent.order(filtered);
+
   if (sortOrder) {
     const withPrice = [];
     const noPrice   = [];
@@ -694,6 +698,7 @@ function appendNextBatch() {
         return;
       }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
+      Recent.add(Favs.key(p));
       if (isFootball && link && currentCategoryTab === 'football' && !jerseyPopupDismissed) {
         e.preventDefault();
         const popup = document.getElementById('jerseyPopup');

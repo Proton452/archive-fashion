@@ -294,6 +294,7 @@ async function loadProducts() {
 // Is this product in the selected tab?
 function inCurrentTab(p) {
   if (currentCategoryTab === 'favorites') return Favs.has(Favs.key(p));
+  if (currentCategoryTab === 'recent') return Recent.has(Favs.key(p));
   if (currentCategoryTab === 'best-sellers') return p.isBestSeller;
   if (currentCategoryTab === 'all') return true;
   return (CATEGORY_MAP[currentCategoryTab] || []).includes((p.article || '').toLowerCase().trim());
@@ -424,6 +425,9 @@ function applyFilters() {
       return brandMatch || termMatch;
     });
   }
+
+  // Recently viewed: newest first (a price sort still applies on top)
+  if (currentCategoryTab === 'recent') filtered = Recent.order(filtered);
 
   if (sortOrder) {
     const withPrice = [];
@@ -572,6 +576,7 @@ function appendNextBatch() {
         return;
       }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
+      Recent.add(Favs.key(p));
     });
 
     card.innerHTML = `

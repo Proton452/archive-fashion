@@ -285,6 +285,7 @@
     if (!modal) build();
     item = data;
     itemId = String(id);
+    if (window.Recent) Recent.add(itemId);
     lastFocus = document.activeElement;
     renderTexts();
     buildSlides();
