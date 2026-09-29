@@ -402,12 +402,20 @@
     lastFocus = document.activeElement;
     modal.querySelector('.photos-styles').replaceChildren();
     if (styles.length) buildGrid();
-    sheet.classList.toggle('has-tabs', !!(data.q.length && styles.length));   // same size on both buttons
-    showSet(styles.length ? 'styles' : 'qc');   // styles first: pick one, then check the real photos
+    const both = !!(data.q.length && styles.length);
+    sheet.style.height = '';
+    showSet(styles.length && !both ? 'styles' : 'qc');   // with both: real photos first, to measure them
     sheet.style.transform = '';
     sheet.scrollTop = 0;
     modal.hidden = false;
     document.documentElement.classList.add('photos-open');
+    // Both: the window takes the size of the Real photos side (what's around the item matters
+    // there) and keeps it on Styles, whose long grid scrolls inside. Then styles first: pick
+    // one, then check the real photos.
+    if (both) {
+      sheet.style.height = sheet.offsetHeight + 'px';
+      showSet('styles');
+    }
     goTo(0, false);
     requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
     // Computers: focus the window (keyboard users land inside it). Not on phones: like the
@@ -464,8 +472,12 @@
   });
 
   // Keep the current photo in place if the window is resized (phone rotation)
+  let lastWidth = window.innerWidth;
   window.addEventListener('resize', () => {
+    const turned = window.innerWidth !== lastWidth;   // not the phone's address bar growing / shrinking
+    lastWidth = window.innerWidth;
     if (!item) return;
+    if (turned) sheet.style.height = '';   // measured for the old width: the window follows its content again
     goTo(index, false);
     [...track.children].forEach(sl => fitPhoto(sl, sl.querySelector('.photos-slide__img')));
   });

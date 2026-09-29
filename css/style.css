@@ -3050,8 +3050,6 @@ a.reviews__tp-inline {
 }
 
 .photos-modal.is-open .photos-sheet { opacity: 1; }
-/* Items with both Styles and Real photos: the window keeps one size when switching (the long styles grid made it grow) */
-.photos-sheet.has-tabs { height: min(760px, calc(100dvh - 48px)); }
 .photos-sheet:focus { outline: none; }
 
 .photos-sheet__close {
@@ -3193,7 +3191,9 @@ a.reviews__tp-inline {
   flex-direction: column;
   gap: 14px;
   padding: 28px 24px 24px;
-  /* Its own scroll next to the photo (long styles grid): the grid row alone doesn't limit it */
+  /* Its own scroll next to the photo (long styles grid): the grid row alone doesn't limit it,
+     and min-height 0 lets it fit the height set from the Real photos side (js/photos.js) */
+  min-height: 0;
   max-height: calc(100vh - 48px);
   max-height: calc(100dvh - 48px);
   overflow-y: auto;
@@ -3346,7 +3346,6 @@ a.reviews__tp-inline {
   }
 
   .photos-modal.is-open .photos-sheet { transform: none; }
-  .photos-sheet.has-tabs { height: 92vh; height: 92dvh; }
   .photos-sheet.is-dragging { transition: none; }
 
   .photos-slide {
