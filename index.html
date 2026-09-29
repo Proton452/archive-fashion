@@ -165,12 +165,6 @@
     </div>
 
 
-    <!-- FOOTBALL NOTICE -->
-    <div class="football-notice" id="footballNotice" role="note">
-      <span class="football-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 10.5h10.3L20 7.5H6"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg></span>
-      <p class="football-notice__text" id="footballNoticeText"></p>
-    </div>
-
     <!-- JERSEY POPUP -->
     <div class="jersey-popup" id="jerseyPopup" hidden>
       <div class="jersey-popup__box">
@@ -185,6 +179,14 @@
 
     <!-- PRODUCTS -->
     <section class="collection">
+      <!-- FOOTBALL NOTICE (Football tab) -->
+      <div class="football-notice" id="footballNotice" role="note">
+        <span class="football-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 10.5h10.3L20 7.5H6"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg></span>
+        <div class="football-notice__body">
+          <p class="football-notice__title" id="footballNoticeTitle"></p>
+          <p class="football-notice__sub">Mix and match any football items to reach it.</p>
+        </div>
+      </div>
       <div class="collection__grid" id="productsGrid"></div>
       <div class="collection__loading" id="loading" role="status">
         <span class="visually-hidden">Loading collection</span>

@@ -60,7 +60,7 @@
   const INLINE = new Set(['STRONG', 'EM', 'B', 'I', 'A', 'BR', 'SPAN', 'SMALL', 'U']);
   const SKIP = new Set(['SCRIPT', 'STYLE', 'SVG', 'NOSCRIPT']);
   const FIELDS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);          // attributes only
-  const SKIP_IDS = new Set(['productsGrid', 'catChips', 'filterDropdown', 'footballNoticeText', 'jerseyPopupText']);   // drawn by main.js / women.js
+  const SKIP_IDS = new Set(['productsGrid', 'catChips', 'filterDropdown', 'footballNoticeTitle', 'jerseyPopupText']);   // drawn by main.js / women.js
   const ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
 
   const originalText = new Map();   // text node → English text

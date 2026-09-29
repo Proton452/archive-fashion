@@ -33,6 +33,8 @@ window.I18N_DICT = {
  "Search…": "ابحث…",
  "Price": "السعر",
  "Football items: <strong>{amount} minimum</strong> per order.": "منتجات كرة القدم: <strong>{amount} على الأقل</strong> لكل طلب.",
+ "Minimum order <strong>{amount}</strong>": "الحد الأدنى للطلب <strong>{amount}</strong>",
+ "Mix and match any football items to reach it.": "اجمع أي منتجات كرة قدم تريدها للوصول إليه.",
  "Before you go": "قبل المتابعة",
  "Football orders need a minimum of <strong>{amount}</strong>.": "طلبات كرة القدم تتطلب حدًا أدنى قدره <strong>{amount}</strong>.",
  "Cancel": "إلغاء",
