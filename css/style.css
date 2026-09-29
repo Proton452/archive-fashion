@@ -2865,11 +2865,10 @@ a.reviews__tp-inline {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.1);
+  background: #fff;   /* no shadow: invisible on the white image background, only keeps the heart readable over a dark corner */
   color: #A1A1AA;   /* light grey: the heart stays secondary to the Real photos pill */
   cursor: pointer;
-  transition: box-shadow 0.2s, color 0.2s, transform 0.12s var(--ease-out);
+  transition: color 0.2s, transform 0.12s var(--ease-out);
 }
 
 .product-card__fav svg, .photos-fav svg { fill: none; transition: fill 0.2s; }
