@@ -658,6 +658,8 @@ a.reviews__tp-inline {
 
 .hero__tp-count { color: var(--text-muted); }
 
+.hero__tp-badge > * { white-space: nowrap; }   /* stars and "600+ reviews" never split over two lines */
+
 .hero__title {
   font-family: var(--sans);
   font-size: clamp(2.2rem, 4.2vw, 5.5rem);
@@ -2324,6 +2326,7 @@ a.reviews__tp-inline {
   .hero { padding: calc(var(--nav-h) + 1.5rem) var(--pad-x) 0; }
   .hero__ctas .btn--ghost { display: none; }
   .btn--primary { width: 100%; justify-content: center; }
+  .hero__ctas .btn--primary { white-space: normal; text-align: center; }   /* long translations wrap instead of widening the page (320px phones) */
 
   .hero__stats { flex-direction: row; }
   .hero__stat { padding: 1rem 0.5rem; flex: 1; }
@@ -2332,6 +2335,14 @@ a.reviews__tp-inline {
   .collection__grid { grid-template-columns: repeat(2, 1fr); }
 
   .footer__links { gap: 1rem; }
+}
+
+/* Very small phones (320px): tighter nav so the menu button isn't cut off */
+@media (max-width: 380px) {
+  .nav { gap: 0.5rem; }
+  .nav__right { gap: 0.25rem; }
+  .locale__btn { padding: 0 6px; }
+  .hero__tp-badge { gap: 5px; padding: 6px 12px; font-size: 0.72rem; }   /* long translations ("600+ Bewertungen") fit */
 }
 
 /* ================================================
