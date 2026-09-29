@@ -799,7 +799,7 @@ grid.addEventListener('keydown', e => {
 function renderFootballMinimum() {
   const amount = `<bdi>${Prices.formatMinimum(Prices.FOOTBALL_MIN_EUR)}</bdi>`;
   document.getElementById('footballNoticeTitle').innerHTML =
-    t('Minimum order <strong>{amount}</strong>').replace('{amount}', amount);
+    t('Minimum order for football items: <strong>{amount}</strong>').replace('{amount}', amount);
   document.getElementById('jerseyPopupText').innerHTML =
     t('Football orders need a minimum of <strong>{amount}</strong>.').replace('{amount}', amount);
 }
