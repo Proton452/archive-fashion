@@ -37,35 +37,34 @@
     return `<span class="product-card__fav${on ? ' is-on' : ''}" role="button" tabindex="0" data-fav="${k.replace(/"/g, '&quot;')}" aria-pressed="${on}" aria-label="${t('Favorites')}">${HEART}</span>`;
   }
 
-  // Show / hide a tab calmly: it fades in (or out) while the tabs after it slide over (no zoom).
-  // Also used by js/recent.js. animate = false on page load (no motion for a returning visitor)
-  const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+  // Show / hide a tab calmly: it opens up (width grows from 0) and pushes the tabs after it,
+  // then its text fades in (reverse to hide). Also used by js/recent.js. animate = false on page load (returning visitor)
   function setTabShown(tab, show, animate = true) {
     if (!tab || tab.hidden === !show) return;
-    const bar = tab.parentNode;
-    const refreshFade = () => bar.dispatchEvent(new Event('scroll'));   // right-edge fade in main.js / women.js
+    const refreshFade = () => tab.parentNode.dispatchEvent(new Event('scroll'));   // right-edge fade in main.js / women.js
     if (!animate || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       tab.hidden = !show;
       refreshFade();
       return;
     }
-    const others = [...bar.children].filter(el => el !== tab && !el.hidden);
-    const slide = change => {
-      const before = others.map(el => el.getBoundingClientRect().left);
-      change();
-      others.forEach((el, i) => {
-        const dx = before[i] - el.getBoundingClientRect().left;
-        if (dx) el.animate([{ transform: `translateX(${dx}px)` }, { transform: 'none' }], { duration: 250, easing: EASE });
-      });
+    tab.hidden = false;
+    const cs = getComputedStyle(tab);
+    const open   = { width: tab.offsetWidth + 'px', paddingLeft: cs.paddingLeft, paddingRight: cs.paddingRight };
+    const closed = { width: '0px', paddingLeft: '0px', paddingRight: '0px' };
+    tab.style.overflow = 'hidden';
+    tab.style.flexShrink = '0';   // overflow: hidden would otherwise let the tab bar squeeze it
+    // Width: steady opening / closing. Text: fades in once there is room, fades out first
+    const size = tab.animate(show ? [closed, open] : [open, closed],
+      { duration: 260, delay: show ? 0 : 60, easing: 'ease-in-out', fill: 'both' });
+    const text = tab.animate([{ opacity: 0 }, { opacity: 1 }],
+      { duration: show ? 140 : 100, delay: show ? 120 : 0, direction: show ? 'normal' : 'reverse', fill: 'both' });
+    size.onfinish = () => {
+      tab.hidden = !show;
+      tab.style.overflow = tab.style.flexShrink = '';
+      size.cancel();
+      text.cancel();
       refreshFade();
     };
-    if (show) {
-      slide(() => { tab.hidden = false; });
-      tab.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: 80, fill: 'backwards' });
-    } else {
-      const fade = tab.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: 'forwards' });
-      fade.onfinish = () => { slide(() => { tab.hidden = true; }); fade.cancel(); };
-    }
   }
 
   // "Favorites" tab: hidden while empty (unless it is the one open)

@@ -68,7 +68,7 @@ archive-fashion/
 - Cœur en haut à droite de chaque carte (la pastille QC est en bas à droite ; sur téléphone, zone de toucher agrandie à 46 px pour les deux via ::after) et dans la fenêtre QC, à côté de la fiche produit. Le clic sur le cœur n'ouvre pas Lovegobuy.
 - Gardés dans le navigateur (`localStorage`) : `favs-men` / `favs-women`, une liste par page. Clé = id Lovegobuy (maillots du sheet : leur lien).
 - Onglet « Favorites » (texte seul, sans cœur ni nombre) en 1re position, masqué tant qu'il n'y a aucun favori ; s'il est vidé pendant qu'on y est : message « Tap the heart… ». `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
-- Apparition / disparition des onglets Favorites et Recently viewed animée (`Favs.setTabShown` : fondu + les onglets suivants glissent), sans animation au chargement de la page.
+- Apparition / disparition des onglets Favorites et Recently viewed animée (`Favs.setTabShown` : l’onglet s’ouvre en largeur et pousse les suivants, puis son texte apparaît en fondu ; l’inverse pour disparaître), sans animation au chargement de la page.
 
 ## Récemment consultés — js/recent.js
 
