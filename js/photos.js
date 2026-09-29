@@ -195,7 +195,8 @@
     q('.photos-product__price').textContent = Prices.format(item.p);
     const jersey = q('.photos-jersey');
     jersey.hidden = item.c.toLowerCase() !== 'jersey';
-    jersey.textContent = t('Minimum 4 jerseys per order.');
+    jersey.innerHTML = t('Football items: <strong>{amount} minimum</strong> per order.')
+      .replace('{amount}', `<bdi>${Prices.formatMinimum(Prices.FOOTBALL_MIN_EUR)}</bdi>`);
     const buy = q('.photos-buy');
     buy.textContent = t('Buy on Lovegobuy →');
     buy.href = buyLink(itemId);

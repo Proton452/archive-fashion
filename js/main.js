@@ -794,8 +794,20 @@ grid.addEventListener('keydown', e => {
   if (card && card._product && window.RealPhotos) RealPhotos.open(card._product.id);
 });
 
+// ─── Football minimum spend, in the visitor's currency ─
+// <bdi>: the amount keeps its Latin order inside Arabic text
+function renderFootballMinimum() {
+  const amount = `<bdi>${Prices.formatMinimum(Prices.FOOTBALL_MIN_EUR)}</bdi>`;
+  document.getElementById('footballNoticeText').innerHTML =
+    t('Football items: <strong>{amount} minimum</strong> per order.').replace('{amount}', amount);
+  document.getElementById('jerseyPopupText').innerHTML =
+    t('Football orders need a minimum of <strong>{amount}</strong>.').replace('{amount}', amount);
+}
+renderFootballMinimum();
+
 // ─── Language / currency switch (no reload) ─────
 document.addEventListener('localechange', () => {
+  renderFootballMinimum();
   allProducts.forEach(p => { p.price = Prices.format(p.cny); });
   grid.querySelectorAll('.product-card').forEach(card => {
     const priceEl = card.querySelector('.product-card__price');

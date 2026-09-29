@@ -18,6 +18,7 @@
     CNY: { symbol: '¥', name: 'Chinese Yuan' },
   };
   const DEFAULT = 'EUR';
+  const FOOTBALL_MIN_EUR = 15;   // minimum spend per order on football items
   const STORE_KEY = 'currency';
 
   // First visit: guess the currency from the device's time zone (more reliable than the
@@ -67,10 +68,20 @@
   function format(cny, cur) {
     if (cny == null || isNaN(cny)) return '';
     cur = cur || current();
-    const n = fromCny(cny, cur);
+    return withSymbol(fromCny(cny, cur), cur);
+  }
+
+  function withSymbol(n, cur) {
     if (cur === 'EUR') return `${n}€`;
     if (cur === 'PLN') return `${n} zł`;
     return `${CURRENCIES[cur].symbol}${n}`;
+  }
+
+  // A minimum spend set in euros, in `cur`. Rounded UP, unlike prices, so it's
+  // never shown below the real minimum (15 € → $18, £13)
+  function formatMinimum(eur, cur) {
+    cur = cur || current();
+    return withSymbol(Math.ceil(eur / RATES.EUR * RATES[cur] - 1e-6), cur);
   }
 
   // Price text from the Google Sheet ("4€", "4,50 €", "$5", "¥30") → CNY
@@ -83,7 +94,7 @@
     return val / RATES[cur];
   }
 
-  const api = { RATES, CURRENCIES, DEFAULT, current, detect, set, fromCny, toCny, format, parseToCny };
+  const api = { RATES, CURRENCIES, DEFAULT, FOOTBALL_MIN_EUR, current, detect, set, fromCny, toCny, format, formatMinimum, parseToCny };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Prices = api;
 })(typeof window !== 'undefined' ? window : globalThis);

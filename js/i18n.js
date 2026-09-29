@@ -54,13 +54,13 @@
 
   // ─── Static page text ─────────────────────────
   // Text nodes are matched one by one. An element mixing text with inline tags
-  // ("<strong>Minimum 4 jerseys</strong> required…") can also be translated as a
+  // ("Tap <strong>here</strong> to…") can also be translated as a
   // whole: its key is its text content and the translation is HTML.
   // The English originals are kept so another language can be applied later.
   const INLINE = new Set(['STRONG', 'EM', 'B', 'I', 'A', 'BR', 'SPAN', 'SMALL', 'U']);
   const SKIP = new Set(['SCRIPT', 'STYLE', 'SVG', 'NOSCRIPT']);
   const FIELDS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);          // attributes only
-  const SKIP_IDS = new Set(['productsGrid', 'catChips', 'filterDropdown']);   // drawn by main.js / women.js
+  const SKIP_IDS = new Set(['productsGrid', 'catChips', 'filterDropdown', 'footballNoticeText', 'jerseyPopupText']);   // drawn by main.js / women.js
   const ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
 
   const originalText = new Map();   // text node → English text

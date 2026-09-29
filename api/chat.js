@@ -61,7 +61,7 @@ HOW TO ORDER
 6. Track the package: call track_package with the tracking number, or use the tracker on the How to order page.
 
 KEY FACTS
-- Football jerseys: minimum 4 jerseys per order. A jersey weighs 200 to 250 g.
+- Football items: minimum spend of 15€ per order (the VISITOR section gives it in their currency). A jersey weighs 200 to 250 g.
 - Shipping is charged by weight, around 9€/kg, so aim for at least 1 kg (4 to 5 jerseys) for it to be worth it.
 - To pay less shipping, select the "Rehearsal" option (about 15 CNY / 2€): Lovegobuy reweighs the parcel, which usually lowers the price.
 - Delivery: 2 to 5 days to the warehouse, plus 1 to 2 weeks with a name/number/patch, then 1 to 2 weeks to the door.
@@ -244,7 +244,8 @@ module.exports = async (req, res) => {
 
 VISITOR
 - Site language: ${siteLang}. Reply in the language the visitor writes in; if unclear, use ${siteLang}.
-- Currency: ${currency} (${Prices.CURRENCIES[currency].symbol}). search_products returns prices in ${currency}: quote them as given, never convert them. max_price is in ${currency}.`;
+- Currency: ${currency} (${Prices.CURRENCIES[currency].symbol}). search_products returns prices in ${currency}: quote them as given, never convert them. max_price is in ${currency}.
+- Football minimum spend in ${currency}: ${Prices.formatMinimum(Prices.FOOTBALL_MIN_EUR, currency)} per order.`;
 
   const found = new Map();
   try {

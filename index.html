@@ -166,15 +166,16 @@
 
 
     <!-- FOOTBALL NOTICE -->
-    <div class="football-notice" id="footballNotice">
-      <strong>Minimum 4 jerseys</strong> required when ordering football items.
+    <div class="football-notice" id="footballNotice" role="note">
+      <span class="football-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 10.5h10.3L20 7.5H6"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg></span>
+      <p class="football-notice__text" id="footballNoticeText"></p>
     </div>
 
     <!-- JERSEY POPUP -->
     <div class="jersey-popup" id="jerseyPopup" hidden>
       <div class="jersey-popup__box">
         <p class="jersey-popup__title">Before you go</p>
-        <p class="jersey-popup__text">You have to order at least <strong>4 jerseys</strong>.</p>
+        <p class="jersey-popup__text" id="jerseyPopupText"></p>
         <div class="jersey-popup__actions">
           <button class="jersey-popup__cancel" id="jerseyPopupCancel">Cancel</button>
           <a class="jersey-popup__confirm" id="jerseyPopupConfirm" target="_blank" rel="noopener noreferrer">Got it, continue →</a>

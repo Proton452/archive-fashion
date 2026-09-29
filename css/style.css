@@ -914,17 +914,32 @@ a.reviews__tp-inline {
 ================================================ */
 .football-notice {
   display: none;
-  margin: 0.75rem var(--pad-x);
-  padding: 10px 16px;
-  background: rgba(26, 92, 71, 0.12);
-  border: 1px solid rgba(26, 92, 71, 0.35);
-  border-radius: 8px;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: calc(100% - 2 * var(--pad-x));
+  margin: 0.9rem auto 0.25rem;
+  padding: 6px 16px 6px 6px;
+  background: var(--accent-bg);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
-.football-notice.is-visible { display: block; }
-.football-notice strong { color: var(--text); }
+.football-notice.is-visible { display: flex; }
+.football-notice__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+}
+.football-notice__text { margin: 0; }
+.football-notice strong { color: var(--accent-dark); font-weight: 600; }
 
 .toolbar {
   display: flex;
