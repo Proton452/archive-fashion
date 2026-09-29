@@ -75,7 +75,7 @@ archive-fashion/
 
 - Le catalogue reste aléatoire mais pondéré selon la saison (hiver du 15 septembre au 31 mars, été du 1er avril au 14 septembre). Mélange visé en scrollant : hiver 40 % / été 5 % / toute l'année 55 % en hiver ; hiver 5 % / été 30 % / toute l'année 65 % en été. Poids calculés à partir du nombre d'articles de chaque groupe (plafond ×3).
 - Groupes : hiver = manteaux & doudounes, vestes, sweats & hoodies, pulls, boots, écharpes, manches longues ; été = shorts, claquettes & sandales, casquettes, lunettes, polos ; le reste (t-shirts, robes, sneakers…) = toute l'année.
-- Aucun article hors saison dans les 12 premières cartes. Seuls les articles mode sont réordonnés (avant `end`), la fin non-mode ne bouge pas. Même ordre pour toute la saison (graine fixe par saison).
+- Aucun article hors saison dans les 12 premières cartes. Catégories peu demandées (`PUSH_BACK`, pour l'instant cravates = 95 %) : cette part exacte passe après tous les autres vêtements, le reste reste mélangé. Seuls les articles mode sont réordonnés (avant `end`), la fin non-mode ne bouge pas. Même ordre pour toute la saison (graine fixe par saison).
 
 ## Récemment consultés — js/recent.js
 

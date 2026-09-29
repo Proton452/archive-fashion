@@ -5,7 +5,8 @@
    non-fashion tail (after `end`) stays at the end.
    Target mix while scrolling: winter 40 % / summer 5 % / all-year 55 % in winter,
    winter 5 % / summer 30 % / all-year 65 % in summer.
-   No off-season item in the first 12 cards. Same order for every visit
+   No off-season item in the first 12 cards. 95 % of the ties go after the
+   other clothes (PUSH_BACK). Same order for every visit
    during a season (fixed seed per season).
 ============================================== */
 
@@ -17,7 +18,9 @@
     summer: { winter: 0.05, summer: 0.30, all: 0.65 },
   };
   const FIRST_SCREEN = 12;   // no off-season item in the first 12 cards
-  const MAX_WEIGHT = 3;   // a small group (e.g. Women summer) doesn't all pile up at the top
+  const MAX_WEIGHT = 3;
+  // Categories few people want: this share of them goes after all the other clothes (the rest stays in the mix)
+  const PUSH_BACK = { 'ties': 0.95 };   // a small group (e.g. Women summer) doesn't all pile up at the top
 
   const now = new Date();
   const m = now.getMonth() + 1, d = now.getDate();
@@ -63,7 +66,21 @@
       if (i < 0) break;
       inSeason.push(rest.splice(i, 1)[0]);
     }
-    return inSeason.concat(moved, rest, tail);
+    return pushBack(inSeason.concat(moved, rest), rng).concat(tail);
+  }
+
+  // Exactly that share of each category goes back; the ones kept are picked at random
+  function pushBack(items, rng) {
+    const art = p => (p.article || '').toLowerCase().trim();
+    const keep = new Set();
+    Object.keys(PUSH_BACK).forEach(c => {
+      const all = items.filter(p => art(p) === c);
+      const n = Math.round(all.length * (1 - PUSH_BACK[c]));
+      all.map(p => ({ p, k: rng() })).sort((x, y) => x.k - y.k).slice(0, n).forEach(x => keep.add(x.p));
+    });
+    const kept = [], back = [];
+    items.forEach(p => (PUSH_BACK[art(p)] && !keep.has(p) ? back : kept).push(p));
+    return kept.concat(back);
   }
 
   window.Season = { season, order };
