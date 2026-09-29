@@ -10,7 +10,7 @@ Mirrors js/i18n.js: text nodes are keys; an element mixing text with inline tags
 can also be translated as a whole, keyed by its text content, with an HTML translation.
 JS strings are the literals passed to t('...').
 """
-import json, re, sys
+import html, json, re, sys
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -79,7 +79,7 @@ def page_keys(path, keys):
     tree.feed(path.read_text(encoding='utf-8'))
     title = re.search(r'<title>(.*?)</title>', path.read_text(encoding='utf-8'), re.S)
     if title:
-        keys.setdefault(norm(title.group(1)), None)
+        keys.setdefault(norm(html.unescape(title.group(1))), None)   # "&amp;" in the source, "&" in document.title
 
     def walk(node):
         if isinstance(node, str):

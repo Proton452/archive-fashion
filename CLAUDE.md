@@ -87,7 +87,7 @@ archive-fashion/
 
 ## Page légale — legal.html
 
-- Une seule page « Privacy & Terms » (`/legal`) : confidentialité (Google Analytics + Vercel Insights, chat → Google Gemini, suivi → 17TRACK, localStorage, liens Lovegobuy), conditions d'utilisation (site indépendant, commandes gérées par Lovegobuy, prix indicatifs, liens d'affiliation) et mentions légales (éditeur : LovegoFinds + Discord ; hébergeur : Vercel).
+- Une seule page « Privacy & Terms » (`/legal`), style document (titre à gauche, parties numérotées, listes, liens rapides Privacy / Terms) : confidentialité 1-5 (qui, données utilisées, services tiers, durée de conservation, droits RGPD), conditions 6-11 (acceptation, ce qu'est le site, affiliation, responsabilité, marques, modifications), mentions légales, contact. Le chat enregistre les questions anonymisées (`logQuestion` dans api/chat.js) : c'est indiqué sur la page.
 - Si un service ou une donnée collectée change, mettre la page à jour (et la date « Last updated »). `legal` est dans `PAGE_NAMES` de partner.js (sinon pris pour un code partenaire) et dans vercel.json.
 
 ## Langues (js/i18n.js)
