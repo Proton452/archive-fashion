@@ -2926,20 +2926,19 @@ a.reviews__tp-inline {
   width: 40px;
   height: 40px;
   margin-inline-start: auto;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: #fff;
-  color: var(--text-muted);   /* grey like the cards, green when on */
-  transition: border-color 0.2s, color 0.2s, transform 0.12s var(--ease-out);
+  border-radius: 50%;   /* focus ring shape only: no visible circle, just the heart (like the cards) */
+  background: none;
+  color: #A1A1AA;   /* light grey like the cards, green when on */
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s, transform 0.12s var(--ease-out);
 }
 
 .photos-fav[hidden] { display: none; }
-.photos-fav svg { width: 18px; height: 18px; }
+.photos-fav svg { width: 22px; height: 22px; }
 .photos-fav:active { transform: scale(0.92); }
 
 @media (hover: hover) {
-  .photos-fav:hover { border-color: var(--text-muted); }
-  .photos-fav:not(.is-on):hover { color: var(--text); }
+  .photos-fav:not(.is-on):hover { color: var(--text-muted); }
 }
 
 /* "Favorites" tab: shown once there is a favorite */
