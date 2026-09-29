@@ -1128,58 +1128,94 @@ a.reviews__tp-inline {
   position: fixed;
   inset: 0;
   z-index: 500;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.45);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--pad-x);
+  padding: 1.25rem;
+  animation: jersey-popup-fade 0.2s ease-out;
 }
 .jersey-popup[hidden] { display: none; }
 
+/* Same look as the Football tab notice: white card, green cart icon */
 .jersey-popup__box {
   background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+  padding: 1.75rem 1.5rem 1.5rem;
+  max-width: 380px;
   width: 100%;
   text-align: center;
+  animation: jersey-popup-in 0.28s var(--ease-out);
+}
+.jersey-popup__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 0.9rem;
+  border-radius: 12px;
+  background: var(--accent-bg);
+  color: var(--accent);
 }
 .jersey-popup__title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.4rem;
 }
 .jersey-popup__text {
   font-size: 0.9rem;
   color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  margin-bottom: 1.4rem;
+  text-wrap: balance;
 }
-.jersey-popup__text strong { color: var(--text); }
+.jersey-popup__text strong { color: var(--accent-dark); font-weight: 700; }
 .jersey-popup__actions {
   display: flex;
-  gap: 0.75rem;
-  justify-content: center;
+  gap: 0.6rem;
 }
-.jersey-popup__cancel {
-  padding: 10px 20px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.85rem;
-}
+.jersey-popup__cancel,
 .jersey-popup__confirm {
-  padding: 10px 20px;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 0.86rem;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
+}
+.jersey-popup__cancel {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+}
+.jersey-popup__confirm {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+@media (hover: hover) {
+  .jersey-popup__cancel:hover { background: var(--bg-hover); }
+  .jersey-popup__confirm:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+}
+/* Phones: full-width buttons, stacked (main action on top), so no label wraps */
+@media (max-width: 480px) {
+  .jersey-popup__actions { flex-direction: column-reverse; }
+  .jersey-popup__cancel, .jersey-popup__confirm { flex: none; }
+}
+@keyframes jersey-popup-fade { from { opacity: 0; } }
+@keyframes jersey-popup-in { from { opacity: 0; translate: 0 12px; scale: 0.97; } }
+@media (prefers-reduced-motion: reduce) {
+  .jersey-popup, .jersey-popup__box { animation: none; }
 }
 
 /* ================================================

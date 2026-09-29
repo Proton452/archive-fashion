@@ -35,7 +35,6 @@ window.I18N_DICT = {
  "Football items: <strong>{amount} minimum</strong> per order.": "Artículos de fútbol: <strong>mínimo {amount}</strong> por pedido.",
  "Minimum order for football items: <strong>{amount}</strong>": "Pedido mínimo para artículos de fútbol: <strong>{amount}</strong>",
  "Before you go": "Antes de continuar",
- "Football orders need a minimum of <strong>{amount}</strong>.": "Los pedidos de fútbol requieren un mínimo de <strong>{amount}</strong>.",
  "Cancel": "Cancelar",
  "Got it, continue →": "Entendido, continuar →",
  "Loading collection": "Cargando la colección",

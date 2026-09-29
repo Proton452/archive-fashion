@@ -798,10 +798,9 @@ grid.addEventListener('keydown', e => {
 // <bdi>: the amount keeps its Latin order inside Arabic text
 function renderFootballMinimum() {
   const amount = `<bdi>${Prices.formatMinimum(Prices.FOOTBALL_MIN_EUR)}</bdi>`;
-  document.getElementById('footballNoticeTitle').innerHTML =
-    t('Minimum order for football items: <strong>{amount}</strong>').replace('{amount}', amount);
-  document.getElementById('jerseyPopupText').innerHTML =
-    t('Football orders need a minimum of <strong>{amount}</strong>.').replace('{amount}', amount);
+  const text = t('Minimum order for football items: <strong>{amount}</strong>').replace('{amount}', amount);
+  document.getElementById('footballNoticeTitle').innerHTML = text;
+  document.getElementById('jerseyPopupText').innerHTML = text;   // same sentence in the "Before you go" popup
 }
 renderFootballMinimum();
 
