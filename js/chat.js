@@ -351,8 +351,7 @@
       closeTimer = setTimeout(() => {
         panel.hidden = true;
         backdrop.hidden = true;
-        panel.style.bottom = '';
-        panel.style.height = '';
+        panel.style.top = panel.style.bottom = panel.style.height = '';
       }, CLOSE_MS);
     }
   }
@@ -368,18 +367,18 @@
   function fitToViewport() {
     const vv = window.visualViewport;
     if (!vv || !state.open || !isSheet()) {
-      panel.style.bottom = '';
-      panel.style.height = '';
+      panel.style.top = panel.style.bottom = panel.style.height = '';
       return;
     }
-    const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-    if (keyboard > 80) {
-      panel.style.bottom = keyboard + 'px';
+    // Placed from the top of the visible area: with Safari's floating bar, innerHeight doesn't
+    // match the real bottom of the screen and a bottom offset pushed the header off screen.
+    if (window.innerHeight - vv.height > 80) {
+      panel.style.top = Math.round(vv.offsetTop + 8) + 'px';
+      panel.style.bottom = 'auto';
       panel.style.height = Math.round(vv.height - 8) + 'px';
       list.scrollTop = list.scrollHeight;
     } else {
-      panel.style.bottom = '';
-      panel.style.height = '';
+      panel.style.top = panel.style.bottom = panel.style.height = '';
     }
   }
 
