@@ -26,7 +26,7 @@ archive-fashion/
 ├── js/
 │   ├── main.js         Page Men : chargement catalogue, onglets, filtres, recherche, tri, scroll infini
 │   ├── women.js        Même logique pour la page Women
-│   ├── photos.js       Vraies photos (QC) : pastille gris clair « Photos » + icône galerie verte, à droite du prix (sans nombre) sur les cartes + fenêtre (Men / Women)
+│   ├── photos.js       Vraies photos (QC) : pastille vert clair (--accent-bg) « Photos » + icône galerie verte, à droite du prix (sans nombre) sur les cartes + fenêtre (Men / Women)
 │   ├── recent.js       Récemment consultés : onglet « Recently viewed » (localStorage)
 │   ├── favorites.js    Favoris : cœur sur les cartes + fenêtre QC, onglet « Favorites » (localStorage)
 │   ├── nav.js          Navbar + FAQ pour les pages secondaires

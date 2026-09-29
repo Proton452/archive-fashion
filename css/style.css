@@ -2814,7 +2814,7 @@ a.reviews__tp-inline {
 [dir="rtl"] .product-card__price { text-align: right; }
 
 /* ================================================
-   REAL PHOTOS (QC) — "Photos" pill next to the price + window (js/photos.js)
+   REAL PHOTOS (QC) — pale green "Photos" pill next to the price + window (js/photos.js)
 ================================================ */
 .product-card__row {
   display: flex;
@@ -2834,7 +2834,7 @@ a.reviews__tp-inline {
   margin-inline-start: auto;
   padding-inline: 8px 10px;
   border-radius: 999px;
-  background: #F2F3F2;
+  background: var(--accent-bg);   /* pale green: reads as an action and ties to the site's colour (grey read as a tag) */
   color: var(--text);
   font-size: 0.75rem;
   -webkit-tap-highlight-color: transparent;
@@ -2846,7 +2846,7 @@ a.reviews__tp-inline {
 .product-card__photos svg { flex-shrink: 0; color: var(--accent); }
 
 @media (hover: hover) {
-  .product-card__photos:hover { background: #E8EAE8; }
+  .product-card__photos:hover { background: rgba(0, 168, 107, 0.15); }
 }
 
 .product-card__photos:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
