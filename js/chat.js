@@ -304,37 +304,23 @@
   const CLOSE_MS = 340;
   let closeTimer = null;
 
-  // The page behind the mobile sheet is never frozen with body{position:fixed}: on iPhone
-  // Safari that grows the address bar and the sheet jumps (on open, and under the finger on
-  // the input). Touch scrolling is blocked instead (below), the sheet follows the visible
-  // area when the keyboard opens (fitToViewport), and if iOS scrolled the page to show the
-  // input, it's put back where it was on close.
-  let openY = null;
-  function setLocked(lock) {
-    document.documentElement.classList.toggle('chat-open', lock);
-    if (lock && openY === null && isSheet()) openY = window.scrollY;
-  }
-  function restoreScroll() {
-    if (openY !== null && Math.abs(window.scrollY - openY) > 1) {
-      window.scrollTo({ top: openY, behavior: 'instant' });
+  // Freeze the page behind the mobile sheet (iOS scrolls it when the keyboard opens)
+  // and put it back exactly where it was on close.
+  let lockedY = null;
+  function lockPage(lock) {
+    const b = document.body.style;
+    if (lock && lockedY === null && window.matchMedia('(max-width: 480px)').matches) {
+      lockedY = window.scrollY;
+      b.position = 'fixed';
+      b.top = -lockedY + 'px';
+      b.left = '0';
+      b.right = '0';
+      b.width = '100%';
+    } else if (!lock && lockedY !== null) {
+      b.position = b.top = b.left = b.right = b.width = '';
+      window.scrollTo({ top: lockedY, behavior: 'instant' });
+      lockedY = null;
     }
-    openY = null;
-  }
-
-  // Swipes on the dimmed page or on parts of the sheet that can't scroll that way
-  // are cancelled, so the page behind stays still (same as js/photos.js).
-  function blockTouchScroll(overlay, scrollers) {
-    let y0 = 0;
-    overlay.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, { passive: true });
-    overlay.addEventListener('touchmove', e => {
-      if (e.defaultPrevented || !isSheet()) return;
-      const dy = e.touches[0].clientY - y0;
-      for (let n = e.target; n && n !== overlay; n = n.parentElement) {
-        if (scrollers.includes(n) &&
-            (dy < 0 ? n.scrollTop + n.clientHeight < n.scrollHeight - 1 : n.scrollTop > 0)) return;
-      }
-      e.preventDefault();
-    }, { passive: false });
   }
 
   function setOpen(open, animate = true) {
@@ -343,13 +329,14 @@
     clearTimeout(closeTimer);
     bubble.classList.toggle('is-hidden', open);
     if (open) markOpened();
+    document.documentElement.classList.toggle('chat-open', open);
+    lockPage(open);
 
     if (open) {
       if (!animate) {                        // already in the open position before first paint
         panel.classList.add('is-open');
         backdrop.classList.add('is-open');
       }
-      setLocked(true);
       panel.hidden = false;
       backdrop.hidden = false;
       render();
@@ -361,12 +348,11 @@
       panel.classList.remove('is-open');
       backdrop.classList.remove('is-open');
       if (document.activeElement === input) input.blur();
-      restoreScroll();
       closeTimer = setTimeout(() => {
-        setLocked(false);
         panel.hidden = true;
         backdrop.hidden = true;
-        clearFit();
+        panel.style.bottom = '';
+        panel.style.height = '';
       }, CLOSE_MS);
     }
   }
@@ -377,22 +363,24 @@
   const isSheet = () => window.matchMedia('(max-width: 480px)').matches;
 
   // ─── Mobile keyboard: keep the sheet inside the visible area ───
-  // When the keyboard opens, the visible area shrinks and iOS may scroll it around, but the
-  // page (and 85dvh) don't change. The sheet then fills exactly the visible area above the
-  // keyboard, wherever iOS scrolled it, so the page never shows through.
-  function clearFit() {
-    panel.style.top = panel.style.bottom = panel.style.height = '';
-  }
+  // When the keyboard opens, the visible viewport shrinks but the page (and 85dvh) don't,
+  // so the browser scrolls things around. Pin the sheet right above the keyboard instead.
   function fitToViewport() {
     const vv = window.visualViewport;
-    if (!vv || !state.open || !isSheet() || window.innerHeight - vv.height < 80) {
-      clearFit();
+    if (!vv || !state.open || !isSheet()) {
+      panel.style.bottom = '';
+      panel.style.height = '';
       return;
     }
-    panel.style.top = Math.round(vv.offsetTop) + 'px';
-    panel.style.bottom = 'auto';
-    panel.style.height = Math.round(vv.height) + 'px';
-    list.scrollTop = list.scrollHeight;
+    const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    if (keyboard > 80) {
+      panel.style.bottom = keyboard + 'px';
+      panel.style.height = Math.round(vv.height - 8) + 'px';
+      list.scrollTop = list.scrollHeight;
+    } else {
+      panel.style.bottom = '';
+      panel.style.height = '';
+    }
   }
 
   if (window.visualViewport) {
@@ -400,8 +388,6 @@
     window.visualViewport.addEventListener('scroll', fitToViewport);
   }
   input.addEventListener('focus', () => setTimeout(fitToViewport, 50));
-  blockTouchScroll(backdrop, []);
-  blockTouchScroll(panel, [list, input]);
   input.addEventListener('blur', () => setTimeout(fitToViewport, 50));
   let drag = null;
 
