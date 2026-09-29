@@ -169,6 +169,8 @@
     return r.width && r.bottom > 0 && r.top < innerHeight;
   };
 
+  const ownText = el => [...el.childNodes].filter(n => n.nodeType === 3).map(n => n.data).join('');
+
   // Elements on screen that hold text directly (not the images or backgrounds around them)
   function textOnScreen() {
     const els = new Set();
@@ -202,6 +204,7 @@
     if (code === lang || !info(code)) return;
     let dict;
     try { [dict] = await Promise.all([loadDict(code), pickerClosed()]); } catch (e) { return; }
+    const before = new Map(textOnScreen().map(el => [el, ownText(el)]));   // to fade only what changes
     restorePage();
     lang = code;
     window.I18N_DICT = dict;
@@ -212,7 +215,7 @@
     if (typeof gtag === 'function') gtag('event', 'change_language', { language: code });
     updateButton();
     announce('lang');
-    textIn(textOnScreen());
+    textIn(textOnScreen().filter(el => before.get(el) !== ownText(el)));   // not the logo, numbers… that stay the same
   }
 
   async function setCurrency(code) {
