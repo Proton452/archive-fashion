@@ -37,7 +37,7 @@
     return `<span class="product-card__fav${on ? ' is-on' : ''}" role="button" tabindex="0" data-fav="${k.replace(/"/g, '&quot;')}" aria-pressed="${on}" aria-label="${t('Favorites')}">${HEART}</span>`;
   }
 
-  // Show / hide a tab smoothly: it fades in (or out) while the tabs after it slide over.
+  // Show / hide a tab calmly: it fades in (or out) while the tabs after it slide over (no zoom).
   // Also used by js/recent.js. animate = false on page load (no motion for a returning visitor)
   const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
   function setTabShown(tab, show, animate = true) {
@@ -55,14 +55,13 @@
       change();
       others.forEach((el, i) => {
         const dx = before[i] - el.getBoundingClientRect().left;
-        if (dx) el.animate([{ transform: `translateX(${dx}px)` }, { transform: 'none' }], { duration: 400, easing: EASE });
+        if (dx) el.animate([{ transform: `translateX(${dx}px)` }, { transform: 'none' }], { duration: 250, easing: EASE });
       });
       refreshFade();
     };
     if (show) {
       slide(() => { tab.hidden = false; });
-      tab.animate([{ opacity: 0, transform: 'scale(0.85)' }, { opacity: 1, transform: 'none' }],
-        { duration: 350, delay: 120, easing: EASE, fill: 'backwards' });
+      tab.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: 80, fill: 'backwards' });
     } else {
       const fade = tab.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: 'forwards' });
       fade.onfinish = () => { slide(() => { tab.hidden = true; }); fade.cancel(); };
