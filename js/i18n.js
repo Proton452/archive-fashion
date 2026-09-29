@@ -158,10 +158,43 @@
   }
 
   // ─── Calm switch: the change is applied once the picker has finished closing,
-  // so the text doesn't jump while the window slides away (no fade: it looked like a white flash)
+  // so the text doesn't jump while the window slides away. Then only the new text on
+  // screen fades in (the page itself never dims: that looked like a white flash)
   const CLOSE_MS = 250;   // the picker's closing animation (see close())
   let closedAt = 0;
   const pickerClosed = () => new Promise(r => setTimeout(r, Math.max(0, closedAt + CLOSE_MS - Date.now())));
+
+  const onScreen = el => {
+    const r = el.getBoundingClientRect();
+    return r.width && r.bottom > 0 && r.top < innerHeight;
+  };
+
+  // Elements on screen that hold text directly (not the images or backgrounds around them)
+  function textOnScreen() {
+    const els = new Set();
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: n => n.data.trim() && n.parentElement && !/^(SCRIPT|STYLE)$/.test(n.parentElement.tagName)
+        ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT,
+    });
+    while (walker.nextNode() && els.size < 400) {
+      const el = walker.currentNode.parentElement;
+      if (!els.has(el) && onScreen(el)) els.add(el);
+    }
+    return [...els];
+  }
+
+  // Only the text colour fades in (from 30 % of itself): backgrounds, buttons and images stay as they are
+  function textIn(els) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    els.forEach(el => {
+      if (!el.animate) return;
+      const c = getComputedStyle(el).color.match(/[\d.]+/g);
+      if (!c) return;
+      const a = c[3] !== undefined ? +c[3] : 1;
+      el.animate([{ color: `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a * 0.3})` }, { color: `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})` }],
+        { duration: 260, easing: 'ease-out' });
+    });
+  }
 
   async function setLanguage(code) {
     if (code === lang || !info(code)) return;
@@ -177,6 +210,7 @@
     if (typeof gtag === 'function') gtag('event', 'change_language', { language: code });
     updateButton();
     announce('lang');
+    textIn(textOnScreen());
   }
 
   async function setCurrency(code) {
@@ -186,6 +220,7 @@
     if (typeof gtag === 'function') gtag('event', 'change_currency', { currency: code });
     updateButton();
     announce('currency');
+    textIn([...document.querySelectorAll('.product-card__price, .photos-product__price, .chat-product__price')].filter(onScreen));   // only the prices changed
   }
 
   // ─── Language / currency picker ───────────────
