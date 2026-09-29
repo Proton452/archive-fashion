@@ -2869,9 +2869,6 @@ a.reviews__tp-inline {
 .product-card__photos:active { transform: scale(0.92); }
 /* Pressing the Photos pill must not press the whole card (the card links to Lovegobuy) */
 .product-card:has(.product-card__photos:active) { scale: 1; }
-@media (hover: hover) {
-  .product-card:has(.product-card__photos:hover) .product-card__image img { transform: none; }
-}
 
 /* ─── Favorites (js/favorites.js): light grey heart in a white circle, top corner; green when on ─── */
 .product-card__fav {
@@ -2906,7 +2903,6 @@ a.reviews__tp-inline {
 
 @media (hover: hover) {
   .product-card__fav:not(.is-on):hover { color: var(--text-muted); }
-  .product-card:has(.product-card__fav:hover) .product-card__image img { transform: none; }
 }
 
 /* Phones: bigger touch area (8px more all round) for the heart and the Photos pill, same look */
