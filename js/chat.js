@@ -323,19 +323,27 @@
     }
   }
 
+  // Freezing the page re-lays out the whole catalog, which made the slide stutter when
+  // done in the same frame; so the page is frozen once the sheet is up and freed once it's down.
+  function setLocked(lock) {
+    document.documentElement.classList.toggle('chat-open', lock);
+    lockPage(lock);
+  }
+
   function setOpen(open, animate = true) {
     state.open = open;
     save();
     clearTimeout(closeTimer);
     bubble.classList.toggle('is-hidden', open);
     if (open) markOpened();
-    document.documentElement.classList.toggle('chat-open', open);
-    lockPage(open);
 
     if (open) {
       if (!animate) {                        // already in the open position before first paint
         panel.classList.add('is-open');
         backdrop.classList.add('is-open');
+        setLocked(true);
+      } else {
+        closeTimer = setTimeout(() => setLocked(true), CLOSE_MS);
       }
       panel.hidden = false;
       backdrop.hidden = false;
@@ -349,6 +357,7 @@
       backdrop.classList.remove('is-open');
       if (document.activeElement === input) input.blur();
       closeTimer = setTimeout(() => {
+        setLocked(false);
         panel.hidden = true;
         backdrop.hidden = true;
         panel.style.bottom = '';
