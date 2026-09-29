@@ -1974,7 +1974,7 @@ a.reviews__tp-inline {
   color: var(--text);
 }
 
-.legal__date { margin-top: 0.4rem; font-size: 0.8rem; }
+.legal__date { margin-top: 2.5rem; font-size: 0.8rem; }   /* at the end of the page */
 
 .legal__lead {
   margin-top: 1.25rem;
