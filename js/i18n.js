@@ -159,17 +159,18 @@
 
   // ─── Calm switch: wait for the picker to finish closing, then a short fade ───
   // (dim 0.12 s → swap → back 0.2 s), so the text doesn't jump while the window closes
+  const DIM = 0.6;   // only slightly dimmed: lower turns the white page into a white flash
   const CLOSE_MS = 250;   // the picker's closing animation (see close())
   let closedAt = 0;
   const pickerClosed = () => new Promise(r => setTimeout(r, Math.max(0, closedAt + CLOSE_MS - Date.now())));
 
   function fadeSwap(els, swap) {
     if (!els.length || !els[0].animate || matchMedia('(prefers-reduced-motion: reduce)').matches) { swap(); return; }
-    const out = els.map(el => el.animate([{ opacity: 1 }, { opacity: 0.2 }], { duration: 120, easing: 'ease-out', fill: 'forwards' }));
+    const out = els.map(el => el.animate([{ opacity: 1 }, { opacity: DIM }], { duration: 120, easing: 'ease-out', fill: 'forwards' }));
     out[0].finished.then(() => {
       swap();
       els.forEach((el, i) => {
-        el.animate([{ opacity: 0.2 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
+        el.animate([{ opacity: DIM }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
         out[i].cancel();
       });
     }, swap);
