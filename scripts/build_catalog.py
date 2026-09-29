@@ -44,6 +44,11 @@ PUSH_TO_END = {
 }
 
 
+# Real photos already copied to Bunny.net by scripts/qc_to_bunny.py: {original address: Bunny address}
+_bunny_map = Path(__file__).resolve().parent / 'qc_bunny.json'
+BUNNY_QC = json.loads(_bunny_map.read_text(encoding='utf-8')) if _bunny_map.exists() else {}
+
+
 def clean_category(raw):
     key = raw.strip().lower()
     if key in WATCH_BRANDS:
@@ -67,6 +72,7 @@ def main():
             print('skipped (no genre):', r['titre'])
             continue
         qc = [u.strip() for u in r.get('qc_photos', '').split('|') if u.strip().startswith('https://')]
+        qc = [BUNNY_QC.get(u, u) for u in qc]   # copies on Bunny (scripts/qc_to_bunny.py)
         item = [
             r['titre'].strip(),
             r['brand'].strip(),
