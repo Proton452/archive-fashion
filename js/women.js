@@ -275,7 +275,8 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    allProducts = (await fetchCatalog(CATALOG_URL)).items;
+    const catalog = await fetchCatalog(CATALOG_URL);
+    allProducts = Season.order(catalog.items, catalog.end);   // in-season clothes first (js/season.js)
 
     loading.style.display = 'none';
     generateFilterDropdown();

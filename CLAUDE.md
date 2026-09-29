@@ -27,6 +27,7 @@ archive-fashion/
 │   ├── main.js         Page Men : chargement catalogue, onglets, filtres, recherche, tri, scroll infini
 │   ├── women.js        Même logique pour la page Women
 │   ├── photos.js       Vraies photos (QC) : pastille vert clair (--accent-bg) « Photos » + icône galerie verte, à droite du prix (sans nombre) sur les cartes + fenêtre (Men / Women)
+│   ├── season.js       Ordre saisonnier : vêtements de saison plus souvent en haut (hiver 15/09 → 31/03)
 │   ├── recent.js       Récemment consultés : onglet « Recently viewed » (localStorage)
 │   ├── favorites.js    Favoris : cœur sur les cartes + fenêtre QC, onglet « Favorites » (localStorage)
 │   ├── nav.js          Navbar + FAQ pour les pages secondaires
@@ -70,6 +71,12 @@ archive-fashion/
 - Onglet « Favorites » (texte seul, sans cœur ni nombre) en 1re position, masqué tant qu'il n'y a aucun favori ; s'il est vidé pendant qu'on y est : message « Tap the heart… ». `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
 - Au chargement, un petit script dans le HTML (juste après les onglets) affiche Favorites / Recently viewed avant le premier rendu (pas de saut). Ensuite, apparition / disparition animée (`Favs.setTabShown` : l’onglet s’ouvre en largeur et pousse les suivants, puis son texte apparaît en fondu ; l’inverse pour disparaître), sans animation au chargement de la page.
 
+## Ordre saisonnier — js/season.js
+
+- Le catalogue reste aléatoire mais pondéré selon la saison (hiver du 15 septembre au 31 mars, été du 1er avril au 14 septembre). Mélange visé en scrollant : hiver 40 % / été 5 % / toute l'année 55 % en hiver ; hiver 5 % / été 30 % / toute l'année 65 % en été. Poids calculés à partir du nombre d'articles de chaque groupe (plafond ×3).
+- Groupes : hiver = manteaux & doudounes, vestes, sweats & hoodies, pulls, boots, écharpes, manches longues ; été = shorts, claquettes & sandales, casquettes, lunettes, polos ; le reste (t-shirts, robes, sneakers…) = toute l'année.
+- Aucun article hors saison dans les 12 premières cartes. Seuls les articles mode sont réordonnés (avant `end`), la fin non-mode ne bouge pas. Même ordre pour toute la saison (graine fixe par saison).
+
 ## Récemment consultés — js/recent.js
 
 - Onglet « Recently viewed » juste après « Favorites », masqué tant qu'il est vide. Les 20 derniers articles ouverts (clic vers Lovegobuy ou fenêtre QC), du plus récent au plus ancien (`Recent.order()` dans `applyFilters`, le tri par prix passe par-dessus).
@@ -94,7 +101,7 @@ archive-fashion/
 
 ## Logique JS (main.js / women.js)
 
-- **Chargement** : `fetchCatalog()` (JSON, préchargé dans le `<head>`) + `fetchSheetJerseys()` (Men seulement, `/api/jerseys`, abandonné après 3 s) → `mixIn()` (maillots insérés à des places aléatoires fixes ; marqués `fromSheet`, ils n'apparaissent **que dans Football et Best Sellers, jamais dans All**) → `deduplicateProducts()`. L'ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON)
+- **Chargement** : `fetchCatalog()` (JSON, préchargé dans le `<head>`) + `fetchSheetJerseys()` (Men seulement, `/api/jerseys`, abandonné après 3 s) → `mixIn()` (maillots insérés à des places aléatoires fixes ; marqués `fromSheet`, ils n'apparaissent **que dans Football et Best Sellers, jamais dans All**) → `deduplicateProducts()`. L’ordre est aléatoire mais fixe (graine), identique pour tous, non-mode à la fin (`end` dans le JSON), puis pondéré par saison (`Season.order()`, voir js/season.js)
 - **Onglets catégories** : `CATEGORY_MAP` liste les noms exacts des catégories (CSV + `jersey` du sheet) pour chaque onglet ; Best Sellers toujours affiché ; « Running » du partenaire = vêtements de sport → onglet Sport
 - **Sous-catégories** : `generateFilterDropdown()` construit les pastilles sous les onglets (`#catChips`, masquées sur All ou s'il n'y a qu'une catégorie) et le menu « Category » ; les deux ne listent que les catégories de l'onglet en cours et partagent `selectedFilters`
 - **Prix** : chaque produit a `cny` (prix en yuan ; maillots du sheet en € convertis) et `price` (texte affiché). `js/prices.js` (partagé avec `/api/chat`) convertit au taux Lovegobuy (`RATES`, marge incluse) dans la devise choisie (EUR par défaut, USD, GBP, PLN, CNY = prix d'origine sans conversion) et **arrondit toujours à l'unité inférieure**. Si Lovegobuy change ses taux, mettre à jour `RATES`. Le tri compare `cny`

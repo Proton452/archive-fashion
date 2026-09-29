@@ -387,7 +387,7 @@ async function loadProducts() {
 
   try {
     const [catalog, jerseys] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys()]);
-    allProducts = deduplicateProducts(mixIn(catalog.items, jerseys, catalog.end));
+    allProducts = deduplicateProducts(mixIn(Season.order(catalog.items, catalog.end), jerseys, catalog.end));
 
     loading.style.display = 'none';
     generateFilterDropdown();
