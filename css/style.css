@@ -2297,6 +2297,8 @@ a.reviews__tp-inline {
   margin: 0 auto;
 }
 
+.page-hero__sub--wide { max-width: 720px; }   /* legal.html: its one sentence fits on one line on computers, in every language */
+
 @media (max-width: 768px) {
   .page-hero { padding: calc(var(--nav-h) + 2.5rem) var(--pad-x) 3rem; }
 }
