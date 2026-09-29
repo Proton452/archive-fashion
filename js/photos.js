@@ -188,7 +188,7 @@
     q('.photos-nav--next').setAttribute('aria-label', t('Next photo'));
     q('.photos-label__main').textContent = t('Real photos');
     // No agent name: some photos come from other agents' warehouses (Hipobuy watermark)
-    q('.photos-caption').textContent = t('Real photos of this item, taken at the warehouse on previous orders.');
+    q('.photos-caption').textContent = t('Real photos of this item, taken at the warehouse.');
     q('.photos-product__img').src = IMAGE_TPL.replace('{id}', item.i);
     q('.photos-product__name').textContent = niceName(item.n);
     q('.photos-product__meta').textContent = [item.b, catLabel(item.c)].filter(Boolean).join(' · ');

@@ -241,5 +241,5 @@ window.I18N_DICT = {
  "Previous photo": "Foto anterior",
  "Next photo": "Foto siguiente",
  "This photo couldn't be loaded.": "No se ha podido cargar esta foto.",
- "Real photos of this item, taken at the warehouse on previous orders.": "Fotos reales de este artículo, tomadas en el almacén en pedidos anteriores."
+ "Real photos of this item, taken at the warehouse.": "Fotos reales de este artículo, tomadas en el almacén."
 };
