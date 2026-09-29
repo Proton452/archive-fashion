@@ -691,6 +691,7 @@ function appendNextBatch() {
         const confirm = document.getElementById('jerseyPopupConfirm');
         confirm.href = cardHref;
         popup.hidden = false;
+        rememberJerseyPopup();
       }
     });
 
@@ -846,17 +847,31 @@ document.addEventListener('mouseout', e => {
 });
 
 // ─── Jersey Popup ────────────────────────────────
+// Shown once, then not again for a week (remembered in the browser)
+const JERSEY_POPUP_KEY  = 'jerseyPopupSeen';
+const JERSEY_POPUP_DAYS = 7;
 let jerseyPopupDismissed = false;
-document.getElementById('jerseyPopupCancel').addEventListener('click', () => {
+try {
+  const seen = Number(localStorage.getItem(JERSEY_POPUP_KEY));
+  jerseyPopupDismissed = seen > 0 && Date.now() - seen < JERSEY_POPUP_DAYS * 864e5;
+} catch (e) {}
+
+function rememberJerseyPopup() {
   jerseyPopupDismissed = true;
+  try { localStorage.setItem(JERSEY_POPUP_KEY, String(Date.now())); } catch (e) {}
+}
+
+function closeJerseyPopup() {
   document.getElementById('jerseyPopup').hidden = true;
-});
-document.getElementById('jerseyPopupConfirm').addEventListener('click', () => {
-  jerseyPopupDismissed = true;
-  document.getElementById('jerseyPopup').hidden = true;
-});
+}
+
+document.getElementById('jerseyPopupCancel').addEventListener('click', closeJerseyPopup);
+document.getElementById('jerseyPopupConfirm').addEventListener('click', closeJerseyPopup);
 document.getElementById('jerseyPopup').addEventListener('click', e => {
-  if (e.target === e.currentTarget) e.currentTarget.hidden = true;
+  if (e.target === e.currentTarget) closeJerseyPopup();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.getElementById('jerseyPopup').hidden) closeJerseyPopup();
 });
 
 // ─── Init ────────────────────────────────────────
