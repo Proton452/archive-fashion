@@ -847,9 +847,9 @@ document.addEventListener('mouseout', e => {
 });
 
 // ─── Jersey Popup ────────────────────────────────
-// Shown once, then not again for a week (remembered in the browser)
+// Shown once, then not again for a day (remembered in the browser)
 const JERSEY_POPUP_KEY  = 'jerseyPopupSeen';
-const JERSEY_POPUP_DAYS = 7;
+const JERSEY_POPUP_DAYS = 1;
 let jerseyPopupDismissed = false;
 try {
   const seen = Number(localStorage.getItem(JERSEY_POPUP_KEY));
