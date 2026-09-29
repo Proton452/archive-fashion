@@ -80,6 +80,7 @@
               <p class="photos-product__meta"></p>
               <p class="photos-product__price"></p>
             </div>
+            <button type="button" class="photos-fav"></button>
           </div>
           <p class="photos-jersey" hidden></p>
           <a class="btn btn--primary photos-buy" target="_blank" rel="noopener noreferrer"></a>
@@ -94,6 +95,7 @@
     // Arrows follow the screen direction (reversed in Arabic)
     modal.querySelector('.photos-nav--prev').addEventListener('click', () => goTo(index + (isRTL() ? 1 : -1)));
     modal.querySelector('.photos-nav--next').addEventListener('click', () => goTo(index + (isRTL() ? -1 : 1)));
+    modal.querySelector('.photos-fav').addEventListener('click', () => { if (window.Favs) Favs.toggle(itemId); });
     modal.querySelector('.photos-buy').addEventListener('click', () => {
       gaEvent('click_product', { item_name: item && item.n, source: 'real_photos' });
     });
@@ -193,6 +195,7 @@
     q('.photos-product__name').textContent = niceName(item.n);
     q('.photos-product__meta').textContent = [item.b, catLabel(item.c)].filter(Boolean).join(' · ');
     q('.photos-product__price').textContent = Prices.format(item.p);
+    renderFav();
     const jersey = q('.photos-jersey');
     jersey.hidden = item.c.toLowerCase() !== 'jersey';
     jersey.innerHTML = t('Football items: <strong>{amount} minimum</strong> per order.')
@@ -202,6 +205,22 @@
     buy.href = buyLink(itemId);
     q('.photos-note').textContent = t('Size and colour are chosen on Lovegobuy.');
   }
+
+  // Heart next to the product: same favorites as the cards (js/favorites.js)
+  function renderFav() {
+    const fav = modal.querySelector('.photos-fav');
+    fav.hidden = !window.Favs;
+    if (!window.Favs) return;
+    const on = Favs.has(itemId);
+    fav.innerHTML = Favs.HEART;
+    fav.classList.toggle('is-on', on);
+    fav.setAttribute('aria-pressed', on);
+    fav.setAttribute('aria-label', t('Favorites'));
+  }
+
+  document.addEventListener('favchange', e => {
+    if (item && e.detail.key === itemId) renderFav();
+  });
 
   // Phones: keep the page behind still without locking its scroll (iPhone Safari shows solid
   // bars when the page can't scroll). Swipes outside the window, or on parts of it that can't

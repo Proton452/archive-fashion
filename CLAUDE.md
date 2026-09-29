@@ -27,6 +27,7 @@ archive-fashion/
 │   ├── main.js         Page Men : chargement catalogue, onglets, filtres, recherche, tri, scroll infini
 │   ├── women.js        Même logique pour la page Women
 │   ├── photos.js       Vraies photos (QC) : pastille appareil photo (sans nombre) sur les cartes + fenêtre (Men / Women)
+│   ├── favorites.js    Favoris : cœur sur les cartes + fenêtre QC, onglet « ♥ Favorites » (localStorage)
 │   ├── nav.js          Navbar + FAQ pour les pages secondaires
 │   └── partner.js      Liens partenaires (/slug → code d'invitation, feuille "Codes")
 ├── assets/
@@ -60,6 +61,12 @@ archive-fashion/
 - Photos lourdes (400–800 Ko, pas de redimensionnement chez le partenaire) : seules la photo affichée et ses voisines sont chargées. Défilement au doigt = scroll-snap natif (`.photos-track`) ; la photo est zoomée pour remplir le cadre quand sa forme est proche (écart ≤ 30 %), sinon elle reste entière avec sa copie floutée autour. Pas de double-tap zoom (`touch-action: manipulation`).
 - Mobile : fenêtre à la hauteur de son contenu (max 92 %) qui monte du bas, catalogue visible au-dessus ; se ferme en la tirant vers le bas (poignée en haut). Ordinateur : simple fondu court, fond peu assombri (animations volontairement calmes, demandé par l'utilisateur).
 - Photos des modèles (`model_images`) : pas encore utilisées.
+
+## Favoris — js/favorites.js
+
+- Cœur en haut à droite de chaque carte (la pastille QC est en bas à droite) et dans la fenêtre QC, à côté de la fiche produit. Le clic sur le cœur n'ouvre pas Lovegobuy.
+- Gardés dans le navigateur (`localStorage`) : `favs-men` / `favs-women`, une liste par page. Clé = id Lovegobuy (maillots du sheet : leur lien).
+- Onglet « ♥ Favorites » en 1re position, masqué tant qu'il n'y a aucun favori, avec le nombre. `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
 
 ## Langues (js/i18n.js)
 

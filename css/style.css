@@ -2818,7 +2818,7 @@ a.reviews__tp-inline {
 ================================================ */
 .product-card__photos {
   position: absolute;
-  top: 8px;
+  bottom: 8px;   /* the heart takes the top corner */
   inset-inline-end: 8px;
   z-index: 1;
   display: flex;
@@ -2846,6 +2846,83 @@ a.reviews__tp-inline {
 .product-card:has(.product-card__photos:active) { scale: 1; }
 @media (hover: hover) {
   .product-card:has(.product-card__photos:hover) .product-card__image img { transform: none; }
+}
+
+/* ─── Favorites (js/favorites.js): heart in the top corner, same look as the camera ─── */
+.product-card__fav {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s, transform 0.12s var(--ease-out);
+}
+
+.product-card__fav svg, .photos-fav svg { fill: none; transition: fill 0.2s; }
+.product-card__fav.is-on, .photos-fav.is-on { color: var(--accent); }
+.product-card__fav.is-on svg, .photos-fav.is-on svg { fill: currentColor; }
+.product-card__fav:active { transform: scale(0.92); }
+.product-card__fav.is-popping svg { animation: fav-pop 0.3s var(--ease-out); }
+.product-card__fav:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.product-card:has(.product-card__fav:active) { scale: 1; }
+
+@keyframes fav-pop {
+  50% { transform: scale(1.25); }
+}
+
+@media (hover: hover) {
+  .product-card__fav:hover { background: #fff; border-color: var(--text-muted); }
+  .product-card:has(.product-card__fav:hover) .product-card__image img { transform: none; }
+}
+
+/* Heart in the real photos window, at the end of the product row */
+.photos-fav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  margin-inline-start: auto;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--text);
+  transition: border-color 0.2s, color 0.2s, transform 0.12s var(--ease-out);
+}
+
+.photos-fav[hidden] { display: none; }
+.photos-fav svg { width: 18px; height: 18px; }
+.photos-fav:active { transform: scale(0.92); }
+
+@media (hover: hover) {
+  .photos-fav:hover { border-color: var(--text-muted); }
+}
+
+/* "♥ Favorites" tab: shown once there is a favorite */
+.cat-tab[hidden] { display: none; }
+
+.cat-tab--fav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cat-tab--fav svg { color: var(--accent); }
+
+.cat-tab__count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 @media (min-width: 701px) {

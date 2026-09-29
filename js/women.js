@@ -293,6 +293,7 @@ async function loadProducts() {
 
 // Is this product in the selected tab?
 function inCurrentTab(p) {
+  if (currentCategoryTab === 'favorites') return Favs.has(Favs.key(p));
   if (currentCategoryTab === 'best-sellers') return p.isBestSeller;
   if (currentCategoryTab === 'all') return true;
   return (CATEGORY_MAP[currentCategoryTab] || []).includes((p.article || '').toLowerCase().trim());
@@ -556,6 +557,12 @@ function appendNextBatch() {
 
     card.addEventListener('click', e => {
       if (_docScrolled) { e.preventDefault(); return; }
+      // Heart: add to / remove from favorites instead of opening Lovegobuy
+      if (e.target.closest('.product-card__fav')) {
+        e.preventDefault();
+        Favs.toggle(Favs.key(p));
+        return;
+      }
       // Camera badge: open the real photos instead of Lovegobuy
       if (e.target.closest('.product-card__photos')) {
         e.preventDefault();
@@ -572,6 +579,7 @@ function appendNextBatch() {
           : `<div class="product-card__image-placeholder">No image</div>`
         }
         ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${CAMERA_ICON}</span>` : ''}
+        ${Favs.badge(p)}
       </div>
       <div class="product-card__info">
         <h3 class="product-card__name" data-tooltip="${escapeAttr(displayName)}">${escapeHTML(displayName)}</h3>
@@ -655,6 +663,12 @@ grid.addEventListener('transitionend', e => {
 
 const CAMERA_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/></svg>';
 grid.addEventListener('keydown', e => {
+  const fav = e.target.closest('.product-card__fav');
+  if (fav && (e.key === 'Enter' || e.key === ' ')) {
+    e.preventDefault();
+    Favs.toggle(fav.dataset.fav);
+    return;
+  }
   const badge = e.target.closest('.product-card__photos');
   if (!badge || (e.key !== 'Enter' && e.key !== ' ')) return;
   e.preventDefault();
