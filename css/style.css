@@ -1242,7 +1242,11 @@ a.reviews__tp-inline {
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  /* Same height as .product-card__info (2-line name + 6px + price), so the page
+     and its scrollbar don't grow when the products replace the placeholders */
+  box-sizing: content-box;
+  height: calc(2 * 1.4 * 0.82rem + 6px + 1.5 * 0.98rem);
 }
 
 .skeleton-card__line {
@@ -1365,6 +1369,8 @@ a.reviews__tp-inline {
 }
 
 .product-card__price {
+  display: block;
+  line-height: 1.5;
   font-family: var(--sans);
   font-size: 0.98rem;
   font-weight: 600;
@@ -2744,6 +2750,7 @@ a.reviews__tp-inline {
 /* Prices keep their Latin order ("143 zł", "$28") */
 [dir="rtl"] .product-card__price,
 [dir="rtl"] .chat-product__price { direction: ltr; unicode-bidi: isolate; }
+[dir="rtl"] .product-card__price { text-align: right; }
 
 /* ================================================
    REAL PHOTOS (QC) — camera badge on cards + window (js/photos.js)
