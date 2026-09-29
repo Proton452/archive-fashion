@@ -2758,13 +2758,15 @@ a.reviews__tp-inline {
   .back-to-top { bottom: calc(1rem + 50px + 12px); right: calc(1rem + 7px); }
   html.chat-open, html.chat-open body { overflow: hidden; }
 
-  /* Bottom sheet: slides up over a dimmed page, slides back down on close */
+  /* Bottom sheet: slides up over the page, slides back down on close. The backdrop only
+     catches taps (close) and isn't dimmed: iPhone Safari tints the status bar from it and
+     stayed dark after closing (the photos sheet doesn't dim either) */
   .chat-backdrop {
     display: block;
     position: fixed;
     inset: 0;
     z-index: 399;
-    background: rgba(0, 0, 0, 0.35);
+    background: transparent;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
