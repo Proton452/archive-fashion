@@ -1307,7 +1307,7 @@ a.reviews__tp-inline {
   /* Same height as .product-card__info (2-line name + 6px + price row), so the page
      and its scrollbar don't grow when the products replace the placeholders */
   box-sizing: content-box;
-  height: calc(2 * 1.4 * 0.82rem + 6px + max(1.5 * 0.98rem, 26px));   /* price row: see .product-card__row */
+  height: calc(2 * 1.4 * 0.82rem + 6px + max(1.5 * 0.98rem, 28px));   /* price row: see .product-card__row */
 }
 
 .skeleton-card__line {
@@ -2821,7 +2821,7 @@ a.reviews__tp-inline {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  min-height: 26px;   /* the pill's height, on every card (with or without photos) so the grid stays even */
+  min-height: 28px;   /* the pill's height, on every card (with or without photos) so the grid stays even */
 }
 
 .product-card__photos {
@@ -2830,13 +2830,14 @@ a.reviews__tp-inline {
   align-items: center;
   flex-shrink: 0;
   gap: 4px;
-  height: 26px;
+  height: 28px;   /* biggest that still fits next to a 3-digit price on a 360px-wide phone */
   margin-inline-start: auto;
   padding-inline: 8px 10px;
   border-radius: 999px;
   background: #F2F3F2;
   color: var(--text);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
+  -webkit-tap-highlight-color: transparent;
   font-weight: 500;
   line-height: 1;
   cursor: pointer;
@@ -2870,8 +2871,9 @@ a.reviews__tp-inline {
   width: 30px;
   height: 30px;
   border-radius: 50%;   /* shape of the focus ring and phone touch area; no visible circle, just the heart */
-  color: #A1A1AA;   /* light grey: the heart stays secondary to the Real photos pill */
+  color: #A1A1AA;   /* light grey: the heart stays secondary to the Photos pill */
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;   /* no grey circle flash on tap (iPhone), only the heart's pop */
   transition: color 0.2s, transform 0.12s var(--ease-out);
 }
 

@@ -803,7 +803,7 @@ document.querySelectorAll('.faq-item__q').forEach(btn => {
   });
 });
 
-const GALLERY_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="14" height="14" rx="2.5"/><path d="M3 7.5V18a3 3 0 0 0 3 3h10.5"/><circle cx="11.5" cy="7.5" r="1.5"/><path d="m21 13-3.2-3.2a1.5 1.5 0 0 0-2.1 0L10 15.5"/></svg>';
+const GALLERY_ICON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="14" height="14" rx="2.5"/><path d="M3 7.5V18a3 3 0 0 0 3 3h10.5"/><circle cx="11.5" cy="7.5" r="1.5"/><path d="m21 13-3.2-3.2a1.5 1.5 0 0 0-2.1 0L10 15.5"/></svg>';
 grid.addEventListener('keydown', e => {
   const fav = e.target.closest('.product-card__fav');
   if (fav && (e.key === 'Enter' || e.key === ' ')) {
