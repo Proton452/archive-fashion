@@ -410,8 +410,12 @@
     window.visualViewport.addEventListener('resize', fitToViewport);
     window.visualViewport.addEventListener('scroll', fitToViewport);
   }
+  // iOS scrolls the page when the keyboard opens: freeze it as soon as the finger touches the
+  // input, before focus. Freezing on focus fought that scroll and the sheet lagged behind.
+  const lockForKeyboard = () => { if (state.open && isSheet()) lockPage(true); };
+  input.addEventListener('touchstart', lockForKeyboard, { passive: true });
   input.addEventListener('focus', () => {
-    if (state.open && isSheet()) lockPage(true);   // iOS scrolls the page when the keyboard opens
+    lockForKeyboard();
     setTimeout(fitToViewport, 50);
   });
   blockTouchScroll(backdrop, []);
