@@ -186,9 +186,11 @@
   // Only the text colour fades in (from 30 % of itself): backgrounds, buttons and images stay as they are
   function textIn(els) {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    els.forEach(el => {
-      if (!el.animate) return;
-      const c = getComputedStyle(el).color.match(/[\d.]+/g);
+    // Read every colour first: once a parent is animating, a child that inherits its colour
+    // would read the pale one (and stay grey for the whole fade)
+    const colours = els.map(el => el.animate && getComputedStyle(el).color.match(/[\d.]+/g));
+    els.forEach((el, i) => {
+      const c = colours[i];
       if (!c) return;
       const a = c[3] !== undefined ? +c[3] : 1;
       el.animate([{ color: `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a * 0.3})` }, { color: `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})` }],
