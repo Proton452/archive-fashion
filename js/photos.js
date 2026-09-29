@@ -117,6 +117,8 @@
     document.body.append(modal);
   }
 
+  const RETRY_MS = [800, 2000, 4000];   // waits before each new try of a photo that didn't load
+
   function buildSlides() {
     const placeholder = IMAGE_TPL.replace('{id}', item.i);   // already cached by the catalog
     track.replaceChildren(...item.q.map((url, i) => {
@@ -133,7 +135,15 @@
         fitPhoto(slide, img);
         bg.src = img.src;   // for photos too different from the frame: blurred copy around them
       });
+      let tries = 0;
       img.addEventListener('error', () => {
+        // The photo server refuses bursts (HTTP 429, often after browsing the catalogue, same
+        // server): try again a little later before giving up
+        if (tries < RETRY_MS.length) {
+          const wait = RETRY_MS[tries++];
+          setTimeout(() => { img.src = url + (url.includes('?') ? '&' : '?') + 'retry=' + tries; }, wait);
+          return;
+        }
         slide.classList.remove('is-loading');
         slide.append(el('span', 'photos-slide__error', t("This photo couldn't be loaded.")));
       });
@@ -153,12 +163,15 @@
     slide.classList.toggle('is-cover', Math.max(photo / frame, frame / photo) <= MAX_ZOOM);
   }
 
-  // Load the photo shown and its neighbours only
+  // Load the photo shown first, then its neighbours (fewer requests at once: the server limits bursts)
   function ensureLoaded(i) {
-    [i, i + 1, i - 1].forEach(j => {
-      const img = track.children[j] && track.children[j].querySelector('.photos-slide__img');
-      if (img && !img.getAttribute('src')) img.src = img.dataset.src;
-    });
+    const imgAt = j => track.children[j] && track.children[j].querySelector('.photos-slide__img');
+    const load = img => { if (img && !img.getAttribute('src')) img.src = img.dataset.src; };
+    const current = imgAt(i);
+    load(current);
+    const neighbours = () => { load(imgAt(i + 1)); load(imgAt(i - 1)); };
+    if (!current || current.complete) neighbours();
+    else current.addEventListener('load', neighbours, { once: true });
   }
 
   function setIndex(i) {

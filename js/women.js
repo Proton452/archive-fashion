@@ -665,6 +665,18 @@ document.querySelectorAll('.nav__cta, .btn--primary').forEach(el => {
   update();
 })();
 
+// Product images: the image server refuses bursts (HTTP 429) — try again a little later
+const IMG_RETRY_MS = [800, 2000, 4000];
+grid.addEventListener('error', e => {
+  const img = e.target;
+  if (img.tagName !== 'IMG') return;
+  const tries = +(img.dataset.tries || 0);
+  if (tries >= IMG_RETRY_MS.length) return;
+  img.dataset.tries = tries + 1;
+  const base = img.dataset.base || (img.dataset.base = img.src);
+  setTimeout(() => { img.src = base + (base.includes('?') ? '&' : '?') + 'retry=' + (tries + 1); }, IMG_RETRY_MS[tries]);
+}, true);   // capture: error events don't bubble
+
 // Clear the stagger delay once a card has faded in, so press feedback isn't delayed
 grid.addEventListener('transitionend', e => {
   if (e.propertyName === 'opacity' && e.target.classList.contains('product-card')) {

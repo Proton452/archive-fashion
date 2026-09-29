@@ -63,6 +63,7 @@ archive-fashion/
 - Photos lourdes (400–800 Ko, pas de redimensionnement chez le partenaire) : seules la photo affichée et ses voisines sont chargées. Défilement au doigt = scroll-snap natif (`.photos-track`) ; la photo est zoomée pour remplir le cadre quand sa forme est proche (écart ≤ 30 %), sinon elle reste entière avec sa copie floutée autour. Pas de double-tap zoom (`touch-action: manipulation`).
 - Mobile : fenêtre à la hauteur de son contenu (max 92 %) qui monte du bas, catalogue visible au-dessus ; se ferme en la tirant vers le bas (poignée en haut). Ordinateur : simple fondu court, fond peu assombri (animations volontairement calmes, demandé par l'utilisateur).
 - Ordinateur : la carte dont on ouvre les photos garde son zoom tant que la fenêtre est ouverte (classe `.is-held`, retirée dans `hide()`), sinon elle se dézoomait derrière la fenêtre. Le survol du cœur / de « Photos » n'annule plus le zoom.
+- **img.theqcbook.com limite les rafales** (HTTP 429 par visiteur ; les images du catalogue viennent du même serveur). D'où : photo affichée chargée d'abord, voisines ensuite ; toute image refusée est redemandée 3 fois (après 0,8 / 2 / 4 s, avec `?retry=n`) avant « This photo couldn't be loaded » — pareil pour les images des cartes (`IMG_RETRY_MS` dans main.js / women.js).
 - Photos des modèles (`model_images`) : pas encore utilisées.
 
 ## Favoris — js/favorites.js
