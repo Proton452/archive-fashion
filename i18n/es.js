@@ -241,5 +241,6 @@ window.I18N_DICT = {
  "Next photo": "Foto siguiente",
  "This photo couldn't be loaded.": "No se ha podido cargar esta foto.",
  "Real photos of this item, taken at the warehouse.": "Fotos reales de este artículo, tomadas en el almacén.",
+ "No favorites yet. Tap the heart on an item to save it here.": "Aún no tienes favoritos. Toca el corazón de un artículo para guardarlo aquí.",
  "Favorites": "Favoritos"
 };

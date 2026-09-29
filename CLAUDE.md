@@ -66,7 +66,7 @@ archive-fashion/
 
 - Cœur en haut à droite de chaque carte (la pastille QC est en bas à droite) et dans la fenêtre QC, à côté de la fiche produit. Le clic sur le cœur n'ouvre pas Lovegobuy.
 - Gardés dans le navigateur (`localStorage`) : `favs-men` / `favs-women`, une liste par page. Clé = id Lovegobuy (maillots du sheet : leur lien).
-- Onglet « ♥ Favorites » en 1re position, masqué tant qu'il n'y a aucun favori, avec le nombre. `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
+- Onglet « ♥ Favorites » en 1re position, toujours visible, sans nombre (vide : message « Tap the heart… »). `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
 
 ## Langues (js/i18n.js)
 

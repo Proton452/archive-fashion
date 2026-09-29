@@ -601,7 +601,9 @@ function showEmptyState() {
   const isFiltered = raw || selectedFilters.size > 0 || currentCategoryTab !== 'all';
   emptyText.textContent = raw
     ? t('Nothing found for "{query}".').replace('{query}', raw) + '\n' + t('Try another word or browse all items.')
-    : t('Nothing here yet. Browse all items instead.');
+    : currentCategoryTab === 'favorites'
+      ? t('No favorites yet. Tap the heart on an item to save it here.')
+      : t('Nothing here yet. Browse all items instead.');
   emptyReset.hidden = !isFiltered;
   emptyState.hidden = false;
 }

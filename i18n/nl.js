@@ -241,5 +241,6 @@ window.I18N_DICT = {
  "Next photo": "Volgende foto",
  "This photo couldn't be loaded.": "Deze foto kon niet worden geladen.",
  "Real photos of this item, taken at the warehouse.": "Echte foto's van dit artikel, gemaakt in het magazijn.",
+ "No favorites yet. Tap the heart on an item to save it here.": "Nog geen favorieten. Tik op het hartje van een artikel om het hier te bewaren.",
  "Favorites": "Favorieten"
 };

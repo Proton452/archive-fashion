@@ -2908,9 +2908,7 @@ a.reviews__tp-inline {
   .photos-fav:hover { border-color: var(--text-muted); }
 }
 
-/* "♥ Favorites" tab: shown once there is a favorite */
-.cat-tab[hidden] { display: none; }
-
+/* "♥ Favorites" tab */
 .cat-tab--fav {
   display: inline-flex;
   align-items: center;
@@ -2918,12 +2916,6 @@ a.reviews__tp-inline {
 }
 
 .cat-tab--fav svg { color: var(--accent); }
-
-.cat-tab__count {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
 
 @media (min-width: 701px) {
   .photos-open { overflow: hidden; }   /* see .locale-open: computers only */

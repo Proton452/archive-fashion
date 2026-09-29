@@ -1,6 +1,6 @@
 /* ==============================================
    Favorites — heart on product cards + in the real photos window,
-   "♥ Favorites" tab (first tab, shown once there is at least one).
+   "♥ Favorites" tab (first tab, always shown).
    Kept in this browser only (localStorage), one list per page (Men / Women).
    Key: the Lovegobuy item id (sheet jerseys have none: their link).
 ============================================== */
@@ -37,14 +37,6 @@
     return `<span class="product-card__fav${on ? ' is-on' : ''}" role="button" tabindex="0" data-fav="${k.replace(/"/g, '&quot;')}" aria-pressed="${on}" aria-label="${t('Favorites')}">${HEART}</span>`;
   }
 
-  // "♥ Favorites" tab: hidden while empty (unless it is the one open)
-  function updateTab() {
-    const tab = document.querySelector('.cat-tab[data-cat="favorites"]');
-    if (!tab) return;
-    tab.hidden = favs.size === 0 && !tab.classList.contains('is-active');
-    tab.querySelector('.cat-tab__count').textContent = favs.size || '';
-  }
-
   document.addEventListener('favchange', e => {
     document.querySelectorAll('.product-card__fav').forEach(el => {
       if (el.dataset.fav !== e.detail.key) return;
@@ -56,14 +48,7 @@
         el.classList.add('is-popping');
       }
     });
-    updateTab();
   });
-
-  // Leaving an emptied Favorites tab hides it
-  document.addEventListener('click', e => { if (e.target.closest('.cat-tab')) updateTab(); });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateTab);
-  else updateTab();
 
   window.Favs = { key, has, toggle, badge, HEART };
 })();
