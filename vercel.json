@@ -6,10 +6,12 @@
     { "src": "/reviews", "dest": "/reviews.html" },
     { "src": "/faq", "dest": "/faq.html" },
     { "src": "/how-to-order", "dest": "/how-to-order.html" },
+    { "src": "/legal", "dest": "/legal.html" },
     { "src": "/women/([^/]+)", "dest": "/women.html" },
     { "src": "/reviews/([^/]+)", "dest": "/reviews.html" },
     { "src": "/faq/([^/]+)", "dest": "/faq.html" },
     { "src": "/how-to-order/([^/]+)", "dest": "/how-to-order.html" },
+    { "src": "/legal/([^/]+)", "dest": "/legal.html" },
     { "src": "/([^/.]+)", "dest": "/index.html" },
     { "src": "/(.*)", "dest": "/$1" }
   ]

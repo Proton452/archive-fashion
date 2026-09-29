@@ -21,6 +21,7 @@ archive-fashion/
 ├── reviews.html        Avis clients (photos + vidéos YouTube)
 ├── how-to-order.html   Guide de commande en 6 étapes
 ├── faq.html            FAQ (accordéon)
+├── legal.html          Privacy & Terms : confidentialité, conditions d'utilisation, mentions légales (lien en bas de chaque page)
 ├── 404.html            Redirige vers /
 ├── css/style.css       Tous les styles (tokens, composants, responsive)
 ├── js/
@@ -83,6 +84,11 @@ archive-fashion/
 
 - Onglet « Recently viewed » juste après « Favorites », masqué tant qu'il est vide. Les 20 derniers articles ouverts (clic vers Lovegobuy ou fenêtre QC), du plus récent au plus ancien (`Recent.order()` dans `applyFilters`, le tri par prix passe par-dessus).
 - `localStorage` : `recent-men` / `recent-women`, même clé que les favoris (`Favs.key`).
+
+## Page légale — legal.html
+
+- Une seule page « Privacy & Terms » (`/legal`) : confidentialité (Google Analytics + Vercel Insights, chat → Google Gemini, suivi → 17TRACK, localStorage, liens Lovegobuy), conditions d'utilisation (site indépendant, commandes gérées par Lovegobuy, prix indicatifs, liens d'affiliation) et mentions légales (éditeur : LovegoFinds + Discord ; hébergeur : Vercel).
+- Si un service ou une donnée collectée change, mettre la page à jour (et la date « Last updated »). `legal` est dans `PAGE_NAMES` de partner.js (sinon pris pour un code partenaire) et dans vercel.json.
 
 ## Langues (js/i18n.js)
 

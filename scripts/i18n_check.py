@@ -15,7 +15,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGES = ['index.html', 'women.html', 'faq.html', 'how-to-order.html', 'reviews.html']
+PAGES = ['index.html', 'women.html', 'faq.html', 'how-to-order.html', 'reviews.html', 'legal.html']
 LANGS = ['fr', 'es', 'pt', 'de', 'it', 'nl', 'ar']
 INLINE = {'strong', 'em', 'b', 'i', 'a', 'br', 'span', 'small', 'u'}
 SKIP = {'script', 'style', 'svg', 'noscript', 'head'}

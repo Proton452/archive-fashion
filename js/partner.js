@@ -1,7 +1,7 @@
 (function () {
   var SHEET_ID = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
   var CODES_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=Codes';
-  var PAGE_NAMES = ['index', 'women', 'reviews', 'faq', 'how-to-order'];
+  var PAGE_NAMES = ['index', 'women', 'reviews', 'faq', 'how-to-order', 'legal'];
 
   // Detect potential slug from URL path ("women.html" is a page, not a slug)
   var parts = window.location.pathname.split('/').filter(Boolean);
@@ -39,7 +39,8 @@
       'women.html': '/women' + c,
       'reviews.html': '/reviews' + c,
       'how-to-order.html': '/how-to-order' + c,
-      'faq.html': '/faq' + c
+      'faq.html': '/faq' + c,
+      'legal.html': '/legal' + c
     };
 
     // data-page keeps the original target so links can be rewritten again once the slug is known
