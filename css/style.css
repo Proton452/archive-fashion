@@ -1304,10 +1304,10 @@ a.reviews__tp-inline {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* Same height as .product-card__info (2-line name + 6px + price), so the page
+  /* Same height as .product-card__info (2-line name + 6px + price row), so the page
      and its scrollbar don't grow when the products replace the placeholders */
   box-sizing: content-box;
-  height: calc(2 * 1.4 * 0.82rem + 6px + 1.5 * 0.98rem);
+  height: calc(2 * 1.4 * 0.82rem + 6px + max(1.5 * 0.98rem, 26px));   /* price row: see .product-card__row */
 }
 
 .skeleton-card__line {
@@ -2821,6 +2821,7 @@ a.reviews__tp-inline {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
+  min-height: 26px;   /* the pill's height, on every card (with or without photos) so the grid stays even */
 }
 
 .product-card__photos {
@@ -2829,13 +2830,13 @@ a.reviews__tp-inline {
   align-items: center;
   flex-shrink: 0;
   gap: 4px;
-  height: 22px;   /* not taller than the price line: the info block keeps the skeleton's height */
+  height: 26px;
   margin-inline-start: auto;
-  padding-inline: 7px 8px;
+  padding-inline: 8px 10px;
   border-radius: 999px;
   background: #F2F3F2;
   color: var(--text);
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   font-weight: 500;
   line-height: 1;
   cursor: pointer;
@@ -2868,14 +2869,14 @@ a.reviews__tp-inline {
   justify-content: center;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
-  background: #fff;   /* no shadow: invisible on the white image background, only keeps the heart readable over a dark corner */
+  border-radius: 50%;   /* shape of the focus ring and phone touch area; no visible circle, just the heart */
   color: #A1A1AA;   /* light grey: the heart stays secondary to the Real photos pill */
   cursor: pointer;
   transition: color 0.2s, transform 0.12s var(--ease-out);
 }
 
 .product-card__fav svg, .photos-fav svg { fill: none; transition: fill 0.2s; }
+.product-card__fav svg { width: 18px; height: 18px; filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.9)); }   /* white halo: stays readable over a dark product */
 .product-card__fav.is-on, .photos-fav.is-on { color: var(--accent); }
 .product-card__fav.is-on svg, .photos-fav.is-on svg { fill: currentColor; }
 .product-card__fav:active { transform: scale(0.92); }

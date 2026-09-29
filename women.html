@@ -110,6 +110,8 @@
           <button class="cat-tab" data-cat="accessories">Accessories</button>
           <button class="cat-tab" data-cat="summer">Summer</button>
         </div>
+        <script>/* Favorites / Recently viewed tabs: shown before the first paint, so they don't pop in (js/favorites.js, js/recent.js keep them updated) */
+        try { var pg = /women/.test(location.pathname) ? 'women' : 'men'; [['favs-', 'favorites'], ['recent-', 'recent']].forEach(function (k) { if ((JSON.parse(localStorage.getItem(k[0] + pg)) || []).length) document.querySelector('.cat-tab[data-cat="' + k[1] + '"]').hidden = false; }); } catch (e) {}</script>
       </div>
 
       <!-- SUB-CATEGORY CHIPS (filled by JS for the current tab) -->
