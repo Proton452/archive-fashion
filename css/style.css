@@ -3050,6 +3050,8 @@ a.reviews__tp-inline {
 }
 
 .photos-modal.is-open .photos-sheet { opacity: 1; }
+/* Items with both Styles and Real photos: the window keeps one size when switching (the long styles grid made it grow) */
+.photos-sheet.has-tabs { height: min(760px, calc(100dvh - 48px)); }
 .photos-sheet:focus { outline: none; }
 
 .photos-sheet__close {
@@ -3344,6 +3346,7 @@ a.reviews__tp-inline {
   }
 
   .photos-modal.is-open .photos-sheet { transform: none; }
+  .photos-sheet.has-tabs { height: 92vh; height: 92dvh; }
   .photos-sheet.is-dragging { transition: none; }
 
   .photos-slide {

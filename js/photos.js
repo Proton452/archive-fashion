@@ -252,7 +252,7 @@
     q('.photos-label__qc').hidden = onStyles;
     // No agent name: some photos come from other agents' warehouses (Hipobuy watermark)
     q('.photos-caption').textContent = onStyles
-      ? t('Official photos of the styles available for this item.')
+      ? t('Every colour and design you can order.')
       : t('Real photos of this item, taken at the warehouse.');
     modal.querySelectorAll('.photos-style').forEach((b, i) => b.setAttribute('aria-label', t('Style') + ' ' + (i + 1)));
     q('.photos-product__img').src = IMAGE_TPL.replace('{id}', item.i);
@@ -402,6 +402,7 @@
     lastFocus = document.activeElement;
     modal.querySelector('.photos-styles').replaceChildren();
     if (styles.length) buildGrid();
+    sheet.classList.toggle('has-tabs', !!(data.q.length && styles.length));   // same size on both buttons
     showSet(styles.length ? 'styles' : 'qc');   // styles first: pick one, then check the real photos
     sheet.style.transform = '';
     sheet.scrollTop = 0;

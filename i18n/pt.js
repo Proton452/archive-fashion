@@ -293,5 +293,5 @@ window.I18N_DICT = {
  "Styles": "Modelos",
  "Style": "Modelo",
  "Available styles": "Modelos disponíveis",
- "Official photos of the styles available for this item.": "Fotos oficiais dos modelos disponíveis para este artigo."
+ "Every colour and design you can order.": "Todas as cores e estampas que você pode encomendar."
 };
