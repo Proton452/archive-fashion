@@ -251,9 +251,6 @@ window.I18N_DICT = {
  "Privacy policy": "Datenschutzerklärung",
  "Terms of use": "Nutzungsbedingungen",
  "LovegoFinds is a product discovery site. We don't sell any products.": "LovegoFinds ist eine Seite zum Entdecken von Produkten. Wir verkaufen keine Produkte.",
- "Privacy": "Datenschutz",
- "Terms": "Bedingungen",
- "Contact": "Kontakt",
  "1. Who we are": "1. Wer wir sind",
  "LovegoFinds (lovegofinds.com) lists products available on Lovegobuy and links to them. We don't sell, make or ship any products, and we don't ask for your name, email or address.": "LovegoFinds (lovegofinds.com) listet auf Lovegobuy erhältliche Produkte auf und verlinkt sie. Wir verkaufen, produzieren und versenden keine Produkte und fragen weder nach deinem Namen noch nach deiner E-Mail oder Adresse.",
  "2. Data we use": "2. Welche Daten wir nutzen",
@@ -284,12 +281,12 @@ window.I18N_DICT = {
  "We don't guarantee any product.": "Wir übernehmen keine Garantie für Produkte.",
  "Orders, shipping, customs and refunds are handled by Lovegobuy and its sellers, under their own terms.": "Bestellungen, Versand, Zoll und Erstattungen werden von Lovegobuy und seinen Verkäufern nach deren eigenen Bedingungen abgewickelt.",
  "Prices are converted from Chinese yuan and rounded down: they are indicative, and the price shown on Lovegobuy is the one that counts.": "Die Preise werden aus chinesischen Yuan umgerechnet und abgerundet: Sie sind unverbindlich, maßgeblich ist der Preis auf Lovegobuy.",
- "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the top shows the latest version.": "Wir können diese Bedingungen jederzeit ändern. Änderungen gelten ab ihrer Veröffentlichung auf dieser Seite; das Datum oben zeigt die neueste Version.",
  "For any question about this page, contact us on Discord.": "Bei Fragen zu dieser Seite kontaktiere uns auf <a href=\"https://discord.gg/rkfmXMBkYd\" target=\"_blank\" rel=\"noopener noreferrer\">Discord</a>.",
- "Sections": "Abschnitte",
  "8. Liability": "8. Haftung",
  "We do our best to keep prices, photos and links up to date, but they can change on Lovegobuy. Products, orders and deliveries are the responsibility of Lovegobuy and its sellers.": "Wir tun unser Bestes, um Preise, Fotos und Links aktuell zu halten, aber sie können sich auf Lovegobuy ändern. Für Produkte, Bestellungen und Lieferungen sind Lovegobuy und seine Verkäufer verantwortlich.",
  "9. Brands and intellectual property": "9. Marken und geistiges Eigentum",
  "Brand names belong to their owners and are only used to describe the products. Product photos belong to their respective owners. LovegoFinds is not affiliated with any brand listed on the site.": "Markennamen gehören ihren Inhabern und dienen nur zur Beschreibung der Produkte. Produktfotos gehören ihren jeweiligen Inhabern. LovegoFinds ist mit keiner der auf der Seite gezeigten Marken verbunden.",
- "10. Changes": "10. Änderungen"
+ "10. Changes": "10. Änderungen",
+ "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the bottom shows the latest version.": "Wir können diese Bedingungen jederzeit ändern. Änderungen gelten ab ihrer Veröffentlichung auf dieser Seite; das Datum unten zeigt die neueste Version.",
+ "Legal": "Rechtliches"
 };

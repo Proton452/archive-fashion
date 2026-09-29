@@ -1953,64 +1953,36 @@ a.reviews__tp-inline {
   border-top: 1px solid var(--border);
 }
 
-/* ─── Privacy & Terms page (legal.html): a plain document, left-aligned, numbered sections ─── */
+/* ─── Privacy & Terms page (legal.html): page hero like FAQ / Reviews, then two cards ─── */
 .legal {
-  padding: calc(var(--nav-h) + 2.5rem) var(--pad-x) 3.5rem;
+  padding: 2.5rem var(--pad-x) 3.5rem;
 }
 
 .legal__inner {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
   font-size: 0.92rem;
   line-height: 1.7;
   color: var(--text-muted);
 }
 
-.legal__h1 {
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-
-.legal__date { margin-top: 2.5rem; font-size: 0.8rem; }   /* at the end of the page */
-
-.legal__lead {
-  margin-top: 1.25rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text);
-}
-
-.legal__toc {
-  display: flex;
-  gap: 8px;
-  margin-top: 1.25rem;
-  padding-bottom: 1.75rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.legal__toc a {
-  padding: 6px 14px;
+.legal__card {
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text);
-  transition: border-color 0.2s;
-}
-
-@media (hover: hover) {
-  .legal__toc a:hover { border-color: var(--text-muted); }
+  border-radius: 16px;
 }
 
 .legal__title {
-  margin: 2.5rem 0 0.25rem;
-  font-size: 1.35rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--text);
-  scroll-margin-top: calc(var(--nav-h) + 1rem);   /* not hidden under the nav when jumped to */
 }
 
 .legal__sub {
@@ -2020,7 +1992,8 @@ a.reviews__tp-inline {
   color: var(--text);
 }
 
-.legal__inner p { margin-bottom: 0.6rem; }
+.legal__card p { margin-bottom: 0.6rem; }
+.legal__card > :last-child { margin-bottom: 0; }
 
 .legal__list {
   margin: 0.25rem 0 0.75rem;
@@ -2032,7 +2005,11 @@ a.reviews__tp-inline {
 .legal__list li::marker { color: var(--accent); }
 
 .legal__inner strong { color: var(--text); font-weight: 600; }
-.legal__inner p a, .legal__inner li a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.legal__inner a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
+.legal__contact, .legal__date { text-align: center; }
+.legal__contact { margin-top: 0.75rem; }
+.legal__date { font-size: 0.8rem; }
 
 .faq__inner {
   max-width: 720px;

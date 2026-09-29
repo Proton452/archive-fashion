@@ -251,9 +251,6 @@ window.I18N_DICT = {
  "Privacy policy": "Privacybeleid",
  "Terms of use": "Gebruiksvoorwaarden",
  "LovegoFinds is a product discovery site. We don't sell any products.": "LovegoFinds is een site om producten te ontdekken. Wij verkopen geen producten.",
- "Privacy": "Privacy",
- "Terms": "Voorwaarden",
- "Contact": "Contact",
  "1. Who we are": "1. Wie we zijn",
  "LovegoFinds (lovegofinds.com) lists products available on Lovegobuy and links to them. We don't sell, make or ship any products, and we don't ask for your name, email or address.": "LovegoFinds (lovegofinds.com) toont producten die op Lovegobuy te koop zijn en linkt ernaar. We verkopen, maken of verzenden geen producten en vragen niet om je naam, e-mail of adres.",
  "2. Data we use": "2. Gegevens die we gebruiken",
@@ -284,12 +281,12 @@ window.I18N_DICT = {
  "We don't guarantee any product.": "We geven geen garantie op producten.",
  "Orders, shipping, customs and refunds are handled by Lovegobuy and its sellers, under their own terms.": "Bestellingen, verzending, douane en terugbetalingen worden door Lovegobuy en zijn verkopers afgehandeld, volgens hun eigen voorwaarden.",
  "Prices are converted from Chinese yuan and rounded down: they are indicative, and the price shown on Lovegobuy is the one that counts.": "Prijzen worden omgerekend vanuit Chinese yuan en naar beneden afgerond: ze zijn indicatief, de prijs op Lovegobuy is bepalend.",
- "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the top shows the latest version.": "We kunnen deze voorwaarden altijd wijzigen. Wijzigingen gelden zodra ze op deze pagina staan, en de datum bovenaan toont de nieuwste versie.",
  "For any question about this page, contact us on Discord.": "Voor vragen over deze pagina kun je ons bereiken op <a href=\"https://discord.gg/rkfmXMBkYd\" target=\"_blank\" rel=\"noopener noreferrer\">Discord</a>.",
- "Sections": "Onderdelen",
  "8. Liability": "8. Aansprakelijkheid",
  "We do our best to keep prices, photos and links up to date, but they can change on Lovegobuy. Products, orders and deliveries are the responsibility of Lovegobuy and its sellers.": "We doen ons best om prijzen, foto’s en links actueel te houden, maar ze kunnen op Lovegobuy veranderen. Producten, bestellingen en leveringen vallen onder de verantwoordelijkheid van Lovegobuy en zijn verkopers.",
  "9. Brands and intellectual property": "9. Merken en intellectueel eigendom",
  "Brand names belong to their owners and are only used to describe the products. Product photos belong to their respective owners. LovegoFinds is not affiliated with any brand listed on the site.": "Merknamen zijn eigendom van hun eigenaars en worden alleen gebruikt om de producten te beschrijven. Productfoto’s zijn eigendom van hun respectieve eigenaars. LovegoFinds is niet verbonden aan een van de merken op de site.",
- "10. Changes": "10. Wijzigingen"
+ "10. Changes": "10. Wijzigingen",
+ "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the bottom shows the latest version.": "We kunnen deze voorwaarden altijd wijzigen. Wijzigingen gelden zodra ze op deze pagina staan, en de datum onderaan toont de nieuwste versie.",
+ "Legal": "Juridisch"
 };

@@ -60,16 +60,17 @@
 
   <main>
 
+    <div class="page-hero">
+      <span class="page-hero__label">Legal</span>
+      <h1 class="page-hero__title">Privacy &amp; Terms</h1>
+      <p class="page-hero__sub">LovegoFinds is a product discovery site. We don't sell any products.</p>
+    </div>
+
     <section class="legal">
       <div class="legal__inner">
-        <h1 class="legal__h1">Privacy &amp; Terms</h1>
-        <p class="legal__lead">LovegoFinds is a product discovery site. We don't sell any products.</p>
-        <nav class="legal__toc" aria-label="Sections">
-          <a href="#privacy" data-scroll>Privacy</a>
-          <a href="#terms" data-scroll>Terms</a>
-        </nav>
 
-        <h2 class="legal__title" id="privacy">Privacy policy</h2>
+        <div class="legal__card">
+        <h2 class="legal__title">Privacy policy</h2>
         <h3 class="legal__sub">1. Who we are</h3>
         <p>LovegoFinds (lovegofinds.com) lists products available on Lovegobuy and links to them. We don't sell, make or ship any products, and we don't ask for your name, email or address.</p>
         <h3 class="legal__sub">2. Data we use</h3>
@@ -99,7 +100,10 @@
         <h3 class="legal__sub">5. Your rights (GDPR)</h3>
         <p>You can ask to access, correct or delete data about you, or object to its use. Since we don't collect names or emails, most data can't be linked to you. For any request, contact us on <a href="https://discord.gg/rkfmXMBkYd" target="_blank" rel="noopener noreferrer">Discord</a>. You can also block analytics cookies in your browser settings.</p>
 
-        <h2 class="legal__title" id="terms">Terms of use</h2>
+        </div>
+
+        <div class="legal__card">
+        <h2 class="legal__title">Terms of use</h2>
         <h3 class="legal__sub">6. Acceptance of the terms</h3>
         <p>By using LovegoFinds, you accept these terms. If you don't accept them, please don't use the site.</p>
         <h3 class="legal__sub">7. What LovegoFinds is</h3>
@@ -115,23 +119,14 @@
         <h3 class="legal__sub">9. Brands and intellectual property</h3>
         <p>Brand names belong to their owners and are only used to describe the products. Product photos belong to their respective owners. LovegoFinds is not affiliated with any brand listed on the site.</p>
         <h3 class="legal__sub">10. Changes</h3>
-        <p>We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the top shows the latest version.</p>
+        <p>We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the bottom shows the latest version.</p>
 
-        <h2 class="legal__title">Contact</h2>
-        <p>For any question about this page, contact us on <a href="https://discord.gg/rkfmXMBkYd" target="_blank" rel="noopener noreferrer">Discord</a>.</p>
+        </div>
+
+        <p class="legal__contact">For any question about this page, contact us on <a href="https://discord.gg/rkfmXMBkYd" target="_blank" rel="noopener noreferrer">Discord</a>.</p>
         <p class="legal__date">Last updated: 29 September 2026</p>
       </div>
     </section>
-
-    <script>
-      // Section links: scroll within the page (the <base href="/"> would send "#privacy" to the home page)
-      document.querySelectorAll('[data-scroll]').forEach(function (a) {
-        a.addEventListener('click', function (e) {
-          e.preventDefault();
-          document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
-    </script>
 
   </main>
 

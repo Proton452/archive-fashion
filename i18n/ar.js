@@ -251,9 +251,6 @@ window.I18N_DICT = {
  "Privacy policy": "سياسة الخصوصية",
  "Terms of use": "شروط الاستخدام",
  "LovegoFinds is a product discovery site. We don't sell any products.": "LovegoFinds موقع لاكتشاف المنتجات. نحن لا نبيع أي منتج.",
- "Privacy": "الخصوصية",
- "Terms": "الشروط",
- "Contact": "التواصل",
  "1. Who we are": "1. من نحن",
  "LovegoFinds (lovegofinds.com) lists products available on Lovegobuy and links to them. We don't sell, make or ship any products, and we don't ask for your name, email or address.": "يعرض LovegoFinds (lovegofinds.com) منتجات متوفرة على Lovegobuy ويحيل إليها. نحن لا نبيع أي منتج ولا نصنعه ولا نشحنه، ولا نطلب اسمك أو بريدك الإلكتروني أو عنوانك.",
  "2. Data we use": "2. البيانات التي نستخدمها",
@@ -284,12 +281,12 @@ window.I18N_DICT = {
  "We don't guarantee any product.": "لا نضمن أي منتج.",
  "Orders, shipping, customs and refunds are handled by Lovegobuy and its sellers, under their own terms.": "تتولى Lovegobuy وبائعوها الطلبات والشحن والجمارك والمبالغ المستردة وفق شروطهم الخاصة.",
  "Prices are converted from Chinese yuan and rounded down: they are indicative, and the price shown on Lovegobuy is the one that counts.": "تُحوَّل الأسعار من اليوان الصيني وتُقرَّب إلى الأدنى: فهي تقديرية، والسعر المعتمد هو المعروض على Lovegobuy.",
- "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the top shows the latest version.": "قد نعدّل هذه الشروط في أي وقت. تسري التعديلات فور نشرها في هذه الصفحة، ويشير التاريخ في الأعلى إلى أحدث نسخة.",
  "For any question about this page, contact us on Discord.": "لأي سؤال حول هذه الصفحة، تواصل معنا على <a href=\"https://discord.gg/rkfmXMBkYd\" target=\"_blank\" rel=\"noopener noreferrer\">Discord</a>.",
- "Sections": "الأقسام",
  "8. Liability": "8. المسؤولية",
  "We do our best to keep prices, photos and links up to date, but they can change on Lovegobuy. Products, orders and deliveries are the responsibility of Lovegobuy and its sellers.": "نبذل قصارى جهدنا لتحديث الأسعار والصور والروابط، لكنها قد تتغير على Lovegobuy. المنتجات والطلبات والتوصيل من مسؤولية Lovegobuy وبائعيها.",
  "9. Brands and intellectual property": "9. العلامات التجارية والملكية الفكرية",
  "Brand names belong to their owners and are only used to describe the products. Product photos belong to their respective owners. LovegoFinds is not affiliated with any brand listed on the site.": "أسماء العلامات التجارية ملك لأصحابها وتُستخدم فقط لوصف المنتجات. صور المنتجات ملك لأصحابها. LovegoFinds غير تابع لأي علامة تجارية معروضة على الموقع.",
- "10. Changes": "10. التغييرات"
+ "10. Changes": "10. التغييرات",
+ "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the bottom shows the latest version.": "قد نعدّل هذه الشروط في أي وقت. تسري التعديلات فور نشرها في هذه الصفحة، ويشير التاريخ في الأسفل إلى أحدث نسخة.",
+ "Legal": "قانوني"
 };
