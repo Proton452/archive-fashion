@@ -37,10 +37,42 @@
     return `<span class="product-card__fav${on ? ' is-on' : ''}" role="button" tabindex="0" data-fav="${k.replace(/"/g, '&quot;')}" aria-pressed="${on}" aria-label="${t('Favorites')}">${HEART}</span>`;
   }
 
+  // Show / hide a tab smoothly: it fades in (or out) while the tabs after it slide over.
+  // Also used by js/recent.js. animate = false on page load (no motion for a returning visitor)
+  const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+  function setTabShown(tab, show, animate = true) {
+    if (!tab || tab.hidden === !show) return;
+    const bar = tab.parentNode;
+    const refreshFade = () => bar.dispatchEvent(new Event('scroll'));   // right-edge fade in main.js / women.js
+    if (!animate || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tab.hidden = !show;
+      refreshFade();
+      return;
+    }
+    const others = [...bar.children].filter(el => el !== tab && !el.hidden);
+    const slide = change => {
+      const before = others.map(el => el.getBoundingClientRect().left);
+      change();
+      others.forEach((el, i) => {
+        const dx = before[i] - el.getBoundingClientRect().left;
+        if (dx) el.animate([{ transform: `translateX(${dx}px)` }, { transform: 'none' }], { duration: 400, easing: EASE });
+      });
+      refreshFade();
+    };
+    if (show) {
+      slide(() => { tab.hidden = false; });
+      tab.animate([{ opacity: 0, transform: 'scale(0.85)' }, { opacity: 1, transform: 'none' }],
+        { duration: 350, delay: 120, easing: EASE, fill: 'backwards' });
+    } else {
+      const fade = tab.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: 'forwards' });
+      fade.onfinish = () => { slide(() => { tab.hidden = true; }); fade.cancel(); };
+    }
+  }
+
   // "Favorites" tab: hidden while empty (unless it is the one open)
-  function updateTab() {
+  function updateTab(animate = true) {
     const tab = document.querySelector('.cat-tab[data-cat="favorites"]');
-    if (tab) tab.hidden = favs.size === 0 && !tab.classList.contains('is-active');
+    if (tab) setTabShown(tab, favs.size > 0 || tab.classList.contains('is-active'), animate);
   }
 
   document.addEventListener('favchange', e => {
@@ -60,8 +92,8 @@
   // Leaving an emptied Favorites tab hides it
   document.addEventListener('click', e => { if (e.target.closest('.cat-tab')) updateTab(); });
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateTab);
-  else updateTab();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => updateTab(false));
+  else updateTab(false);
 
-  window.Favs = { key, has, toggle, badge, HEART };
+  window.Favs = { key, has, toggle, badge, HEART, setTabShown };
 })();

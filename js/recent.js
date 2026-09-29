@@ -17,7 +17,7 @@
     if (!k) return;
     list = [k, ...list.filter(x => x !== k)].slice(0, MAX);
     try { localStorage.setItem(STORE, JSON.stringify(list)); } catch (e) {}
-    updateTab();
+    updateTab(true);
   }
 
   const has = k => list.includes(String(k));
@@ -25,13 +25,13 @@
   // Newest first
   const order = products => products.slice().sort((a, b) => list.indexOf(Favs.key(a)) - list.indexOf(Favs.key(b)));
 
-  function updateTab() {
+  function updateTab(animate) {
     const tab = document.querySelector('.cat-tab[data-cat="recent"]');
-    if (tab) tab.hidden = list.length === 0;
+    if (tab) Favs.setTabShown(tab, list.length > 0, animate);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateTab);
-  else updateTab();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => updateTab(false));
+  else updateTab(false);
 
   window.Recent = { add, has, order };
 })();

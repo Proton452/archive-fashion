@@ -2826,16 +2826,17 @@ a.reviews__tp-inline {
   justify-content: center;
   width: 30px;
   height: 30px;
-  border: 1px solid var(--border);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--text);
+  background: rgba(17, 17, 17, 0.62);   /* dark: stands out on light photos, not mistaken for the heart */
+  color: #fff;
   cursor: pointer;
   transition: border-color 0.2s, background-color 0.2s;
 }
 
+.product-card__photos svg { width: 17px; height: 17px; }
+
 @media (hover: hover) {
-  .product-card__photos:hover { background: #fff; border-color: var(--text-muted); }
+  .product-card__photos:hover { background: rgba(17, 17, 17, 0.82); }
 }
 
 .product-card__photos:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
