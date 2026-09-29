@@ -678,6 +678,9 @@ a.reviews__tp-inline {
 
 .hero__title-accent { color: var(--accent); }
 
+/* Keeps "trending finds" on one line in English only: translations are longer and would overflow on phones */
+.hero__nowrap:lang(en) { white-space: nowrap; }
+
 .hero__ctas {
   display: flex;
   align-items: center;
@@ -2269,7 +2272,7 @@ a.reviews__tp-inline {
   /* Hero */
   .hero { padding: calc(var(--nav-h) + 2.25rem) var(--pad-x) 0; }
   .hero__content { padding-bottom: 2.25rem; gap: 1.1rem; }
-  .hero__title { font-size: clamp(2.4rem, 10vw, 3.5rem); }
+  .hero__title { font-size: clamp(1.75rem, 9.5vw, 3.5rem); overflow-wrap: break-word; }   /* 9.5vw: the longest words ("imbattables") fit a 360px screen in every language */
   .toolbar__search { font-size: 16px; }
   .hero__stats { margin: 0 calc(-1 * var(--pad-x)); }
   .hero__stat { padding: 1.25rem 1rem; }

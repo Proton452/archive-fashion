@@ -92,6 +92,7 @@ archive-fashion/
 - **Devise à la 1re visite** : devinée d'après le fuseau horaire (`Prices.detect()` : Pologne → PLN, Royaume-Uni → GBP, Amériques → USD, Chine → CNY, sinon EUR), non enregistrée tant que le visiteur ne choisit pas. La langue, elle, reste l'anglais par défaut (choix de l'utilisateur).
 - **Après avoir modifié un texte du site** : `python scripts/i18n_check.py` liste les traductions manquantes par langue (`--source` exporte tous les textes).
 - Les noms de produits (titres du partenaire) ne sont pas traduits.
+- Titre de la page Men : « trending finds » reste sur une ligne en anglais seulement (`.hero__nowrap:lang(en)`) ; les traductions sont plus longues et débordaient sur mobile. Taille du titre sur mobile : `clamp(1.75rem, 9.5vw, 3.5rem)`, vérifiée de 360 à 768 px dans les 8 langues.
 
 ## Conventions CSS
 
