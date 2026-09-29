@@ -157,57 +157,35 @@
     window.dispatchEvent(new Event('resize'));   // the nav, tabs and sticky bar may have changed size
   }
 
-  // ─── Calm switch: wait for the picker to finish closing, then a short fade ───
-  // (dim 0.12 s → swap → back 0.2 s), so the text doesn't jump while the window closes
-  const DIM = 0.6;   // only slightly dimmed: lower turns the white page into a white flash
+  // ─── Calm switch: the change is applied once the picker has finished closing,
+  // so the text doesn't jump while the window slides away (no fade: it looked like a white flash)
   const CLOSE_MS = 250;   // the picker's closing animation (see close())
   let closedAt = 0;
   const pickerClosed = () => new Promise(r => setTimeout(r, Math.max(0, closedAt + CLOSE_MS - Date.now())));
-
-  function fadeSwap(els, swap) {
-    if (!els.length || !els[0].animate || matchMedia('(prefers-reduced-motion: reduce)').matches) { swap(); return; }
-    const out = els.map(el => el.animate([{ opacity: 1 }, { opacity: DIM }], { duration: 120, easing: 'ease-out', fill: 'forwards' }));
-    out[0].finished.then(() => {
-      swap();
-      els.forEach((el, i) => {
-        el.animate([{ opacity: DIM }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
-        out[i].cancel();
-      });
-    }, swap);
-  }
 
   async function setLanguage(code) {
     if (code === lang || !info(code)) return;
     let dict;
     try { [dict] = await Promise.all([loadDict(code), pickerClosed()]); } catch (e) { return; }
-    fadeSwap([document.body], () => {   // the whole page: every text changes (and the direction in Arabic)
-      restorePage();
-      lang = code;
-      window.I18N_DICT = dict;
-      setDocLang();
-      translatePage();
-      localizeLinks();
-      try { localStorage.setItem(STORE_KEY, code); } catch (e) {}
-      if (typeof gtag === 'function') gtag('event', 'change_language', { language: code });
-      updateButton();
-      announce('lang');
-    });
+    restorePage();
+    lang = code;
+    window.I18N_DICT = dict;
+    setDocLang();
+    translatePage();
+    localizeLinks();
+    try { localStorage.setItem(STORE_KEY, code); } catch (e) {}
+    if (typeof gtag === 'function') gtag('event', 'change_language', { language: code });
+    updateButton();
+    announce('lang');
   }
 
   async function setCurrency(code) {
     if (!window.Prices || !Prices.RATES[code] || code === Prices.current()) return;
     await pickerClosed();
-    // Only the prices change: fade just the ones on screen
-    const prices = [...document.querySelectorAll('.product-card__price, .photos-product__price, .chat-product__price')].filter(el => {
-      const r = el.getBoundingClientRect();
-      return r.bottom > 0 && r.top < innerHeight && r.width;
-    });
-    fadeSwap(prices, () => {
-      Prices.set(code);
-      if (typeof gtag === 'function') gtag('event', 'change_currency', { currency: code });
-      updateButton();
-      announce('currency');
-    });
+    Prices.set(code);
+    if (typeof gtag === 'function') gtag('event', 'change_currency', { currency: code });
+    updateButton();
+    announce('currency');
   }
 
   // ─── Language / currency picker ───────────────
