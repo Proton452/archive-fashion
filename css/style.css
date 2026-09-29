@@ -2814,40 +2814,44 @@ a.reviews__tp-inline {
 [dir="rtl"] .product-card__price { text-align: right; }
 
 /* ================================================
-   REAL PHOTOS (QC) — "Real photos" pill on cards + window (js/photos.js)
+   REAL PHOTOS (QC) — "Photos" pill next to the price + window (js/photos.js)
 ================================================ */
-.product-card__photos {
-  position: absolute;
-  bottom: 8px;
-  inset-inline-start: 8px;   /* bottom-left, away from the heart (top-right) */
-  z-index: 1;
+.product-card__row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.product-card__photos {
+  position: relative;   /* for the phone touch area (::after) */
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
   gap: 4px;
-  height: 23px;
-  padding-inline: 6px 8px;
+  height: 22px;   /* not taller than the price line: the info block keeps the skeleton's height */
+  margin-inline-start: auto;
+  padding-inline: 7px 8px;
   border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.1);
+  background: #F2F3F2;
   color: var(--text);
-  font-size: 0.64rem;
+  font-size: 0.66rem;
   font-weight: 500;
   line-height: 1;
   cursor: pointer;
-  transition: box-shadow 0.2s;
 }
 
-.product-card__photos svg { flex-shrink: 0; }
+.product-card__photos svg { flex-shrink: 0; color: var(--accent); }
 
 @media (hover: hover) {
-  .product-card__photos:hover { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.16); }
+  .product-card__photos:hover { background: #E8EAE8; }
 }
 
 .product-card__photos:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Small press, like the site's other buttons */
-.product-card__photos { transition: box-shadow 0.2s, transform 0.12s var(--ease-out); }
+.product-card__photos { transition: background-color 0.2s, transform 0.12s var(--ease-out); }
 .product-card__photos:active { transform: scale(0.92); }
-/* Pressing the camera must not press the whole card (the card links to Lovegobuy) */
+/* Pressing the Photos pill must not press the whole card (the card links to Lovegobuy) */
 .product-card:has(.product-card__photos:active) { scale: 1; }
 @media (hover: hover) {
   .product-card:has(.product-card__photos:hover) .product-card__image img { transform: none; }
