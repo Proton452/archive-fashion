@@ -323,11 +323,27 @@
     }
   }
 
-  // Freezing the page re-lays out the whole catalog, which made the slide stutter when
-  // done in the same frame; so the page is frozen once the sheet is up and freed once it's down.
+  // Freezing the page on open made iPhone Safari grow its address bar, which pushed the
+  // sheet up; so it's only frozen once the keyboard opens (input focus, below) and freed on close.
   function setLocked(lock) {
     document.documentElement.classList.toggle('chat-open', lock);
-    lockPage(lock);
+    if (!lock) lockPage(false);
+  }
+
+  // Until then, swipes on the dimmed page or on parts of the sheet that can't scroll
+  // that way are cancelled, so the page behind stays still (same as js/photos.js).
+  function blockTouchScroll(overlay, scrollers) {
+    let y0 = 0;
+    overlay.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, { passive: true });
+    overlay.addEventListener('touchmove', e => {
+      if (e.defaultPrevented || !isSheet()) return;
+      const dy = e.touches[0].clientY - y0;
+      for (let n = e.target; n && n !== overlay; n = n.parentElement) {
+        if (scrollers.includes(n) &&
+            (dy < 0 ? n.scrollTop + n.clientHeight < n.scrollHeight - 1 : n.scrollTop > 0)) return;
+      }
+      e.preventDefault();
+    }, { passive: false });
   }
 
   function setOpen(open, animate = true) {
@@ -341,10 +357,8 @@
       if (!animate) {                        // already in the open position before first paint
         panel.classList.add('is-open');
         backdrop.classList.add('is-open');
-        setLocked(true);
-      } else {
-        closeTimer = setTimeout(() => setLocked(true), CLOSE_MS);
       }
+      setLocked(true);
       panel.hidden = false;
       backdrop.hidden = false;
       render();
@@ -396,7 +410,12 @@
     window.visualViewport.addEventListener('resize', fitToViewport);
     window.visualViewport.addEventListener('scroll', fitToViewport);
   }
-  input.addEventListener('focus', () => setTimeout(fitToViewport, 50));
+  input.addEventListener('focus', () => {
+    if (state.open && isSheet()) lockPage(true);   // iOS scrolls the page when the keyboard opens
+    setTimeout(fitToViewport, 50);
+  });
+  blockTouchScroll(backdrop, []);
+  blockTouchScroll(panel, [list, input]);
   input.addEventListener('blur', () => setTimeout(fitToViewport, 50));
   let drag = null;
 

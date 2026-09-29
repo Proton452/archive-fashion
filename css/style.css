@@ -2756,7 +2756,6 @@ a.reviews__tp-inline {
   .chat-bubble { right: 1rem; bottom: 1rem; }
   .chat-teaser { bottom: calc(1rem + 5px); }
   .back-to-top { bottom: calc(1rem + 50px + 12px); right: calc(1rem + 7px); }
-  html.chat-open, html.chat-open body { overflow: hidden; }
 
   /* Bottom sheet: slides up over a dimmed page, slides back down on close */
   .chat-backdrop {
