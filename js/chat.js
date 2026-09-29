@@ -304,34 +304,25 @@
   const CLOSE_MS = 340;
   let closeTimer = null;
 
-  // Freeze the page behind the mobile sheet (iOS scrolls it when the keyboard opens)
-  // and put it back exactly where it was on close.
-  let lockedY = null;
-  function lockPage(lock) {
-    const b = document.body.style;
-    if (lock && lockedY === null && window.matchMedia('(max-width: 480px)').matches) {
-      lockedY = window.scrollY;
-      b.position = 'fixed';
-      b.top = -lockedY + 'px';
-      b.left = '0';
-      b.right = '0';
-      b.width = '100%';
-    } else if (!lock && lockedY !== null) {
-      b.position = b.top = b.left = b.right = b.width = '';
-      window.scrollTo({ top: lockedY, behavior: 'instant' });
-      lockedY = null;
-    }
-  }
-
-  // Freezing the page on open made iPhone Safari grow its address bar, which pushed the
-  // sheet up; so it's only frozen once the keyboard opens (input focus, below) and freed on close.
+  // The page behind the mobile sheet is never frozen with body{position:fixed}: on iPhone
+  // Safari that grows the address bar and the sheet jumps (on open, and under the finger on
+  // the input). Touch scrolling is blocked instead (below), the sheet follows the visible
+  // area when the keyboard opens (fitToViewport), and if iOS scrolled the page to show the
+  // input, it's put back where it was on close.
+  let openY = null;
   function setLocked(lock) {
     document.documentElement.classList.toggle('chat-open', lock);
-    if (!lock) lockPage(false);
+    if (lock && openY === null && isSheet()) openY = window.scrollY;
+  }
+  function restoreScroll() {
+    if (openY !== null && Math.abs(window.scrollY - openY) > 1) {
+      window.scrollTo({ top: openY, behavior: 'instant' });
+    }
+    openY = null;
   }
 
-  // Until then, swipes on the dimmed page or on parts of the sheet that can't scroll
-  // that way are cancelled, so the page behind stays still (same as js/photos.js).
+  // Swipes on the dimmed page or on parts of the sheet that can't scroll that way
+  // are cancelled, so the page behind stays still (same as js/photos.js).
   function blockTouchScroll(overlay, scrollers) {
     let y0 = 0;
     overlay.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, { passive: true });
@@ -370,12 +361,12 @@
       panel.classList.remove('is-open');
       backdrop.classList.remove('is-open');
       if (document.activeElement === input) input.blur();
+      restoreScroll();
       closeTimer = setTimeout(() => {
         setLocked(false);
         panel.hidden = true;
         backdrop.hidden = true;
-        panel.style.bottom = '';
-        panel.style.height = '';
+        clearFit();
       }, CLOSE_MS);
     }
   }
@@ -386,38 +377,29 @@
   const isSheet = () => window.matchMedia('(max-width: 480px)').matches;
 
   // ─── Mobile keyboard: keep the sheet inside the visible area ───
-  // When the keyboard opens, the visible viewport shrinks but the page (and 85dvh) don't,
-  // so the browser scrolls things around. Pin the sheet right above the keyboard instead.
+  // When the keyboard opens, the visible area shrinks and iOS may scroll it around, but the
+  // page (and 85dvh) don't change. The sheet then fills exactly the visible area above the
+  // keyboard, wherever iOS scrolled it, so the page never shows through.
+  function clearFit() {
+    panel.style.top = panel.style.bottom = panel.style.height = '';
+  }
   function fitToViewport() {
     const vv = window.visualViewport;
-    if (!vv || !state.open || !isSheet()) {
-      panel.style.bottom = '';
-      panel.style.height = '';
+    if (!vv || !state.open || !isSheet() || window.innerHeight - vv.height < 80) {
+      clearFit();
       return;
     }
-    const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-    if (keyboard > 80) {
-      panel.style.bottom = keyboard + 'px';
-      panel.style.height = Math.round(vv.height - 8) + 'px';
-      list.scrollTop = list.scrollHeight;
-    } else {
-      panel.style.bottom = '';
-      panel.style.height = '';
-    }
+    panel.style.top = Math.round(vv.offsetTop) + 'px';
+    panel.style.bottom = 'auto';
+    panel.style.height = Math.round(vv.height) + 'px';
+    list.scrollTop = list.scrollHeight;
   }
 
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', fitToViewport);
     window.visualViewport.addEventListener('scroll', fitToViewport);
   }
-  // iOS scrolls the page when the keyboard opens: freeze it as soon as the finger touches the
-  // input, before focus. Freezing on focus fought that scroll and the sheet lagged behind.
-  const lockForKeyboard = () => { if (state.open && isSheet()) lockPage(true); };
-  input.addEventListener('touchstart', lockForKeyboard, { passive: true });
-  input.addEventListener('focus', () => {
-    lockForKeyboard();
-    setTimeout(fitToViewport, 50);
-  });
+  input.addEventListener('focus', () => setTimeout(fitToViewport, 50));
   blockTouchScroll(backdrop, []);
   blockTouchScroll(panel, [list, input]);
   input.addEventListener('blur', () => setTimeout(fitToViewport, 50));
