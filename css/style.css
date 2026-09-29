@@ -2814,34 +2814,38 @@ a.reviews__tp-inline {
 [dir="rtl"] .product-card__price { text-align: right; }
 
 /* ================================================
-   REAL PHOTOS (QC) — camera badge on cards + window (js/photos.js)
+   REAL PHOTOS (QC) — "Photos" pill on cards + window (js/photos.js)
 ================================================ */
 .product-card__photos {
   position: absolute;
-  bottom: 8px;   /* the heart takes the top corner */
-  inset-inline-end: 8px;
+  bottom: 8px;
+  inset-inline-start: 8px;   /* bottom-left, away from the heart (top-right) */
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(17, 17, 17, 0.62);   /* dark: stands out on light photos, not mistaken for the heart */
-  color: #fff;
+  gap: 4px;
+  height: 23px;
+  padding-inline: 6px 8px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.1);
+  color: var(--text);
+  font-size: 0.64rem;
+  font-weight: 500;
+  line-height: 1;
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition: box-shadow 0.2s;
 }
 
-.product-card__photos svg { width: 17px; height: 17px; }
+.product-card__photos svg { flex-shrink: 0; }
 
 @media (hover: hover) {
-  .product-card__photos:hover { background: rgba(17, 17, 17, 0.82); }
+  .product-card__photos:hover { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.16); }
 }
 
 .product-card__photos:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Small press, like the site's other buttons */
-.product-card__photos { transition: border-color 0.2s, background-color 0.2s, transform 0.12s var(--ease-out); }
+.product-card__photos { transition: box-shadow 0.2s, transform 0.12s var(--ease-out); }
 .product-card__photos:active { transform: scale(0.92); }
 /* Pressing the camera must not press the whole card (the card links to Lovegobuy) */
 .product-card:has(.product-card__photos:active) { scale: 1; }
@@ -2849,7 +2853,7 @@ a.reviews__tp-inline {
   .product-card:has(.product-card__photos:hover) .product-card__image img { transform: none; }
 }
 
-/* ─── Favorites (js/favorites.js): heart in the top corner, same look as the camera ─── */
+/* ─── Favorites (js/favorites.js): grey heart in a white circle, top corner; green when on ─── */
 .product-card__fav {
   position: absolute;
   top: 8px;
@@ -2860,12 +2864,12 @@ a.reviews__tp-inline {
   justify-content: center;
   width: 30px;
   height: 30px;
-  border: 1px solid var(--border);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--text);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.1);
+  color: var(--text-muted);
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s, color 0.2s, transform 0.12s var(--ease-out);
+  transition: box-shadow 0.2s, color 0.2s, transform 0.12s var(--ease-out);
 }
 
 .product-card__fav svg, .photos-fav svg { fill: none; transition: fill 0.2s; }
@@ -2881,18 +2885,18 @@ a.reviews__tp-inline {
 }
 
 @media (hover: hover) {
-  .product-card__fav:hover { background: #fff; border-color: var(--text-muted); }
+  .product-card__fav:not(.is-on):hover { color: var(--text); }
   .product-card:has(.product-card__fav:hover) .product-card__image img { transform: none; }
 }
 
-/* Phones: bigger touch area (46px) around the heart and the camera, same look */
+/* Phones: bigger touch area (8px more all round) for the heart and the Photos pill, same look */
 @media (pointer: coarse) {
   .product-card__fav::after,
   .product-card__photos::after {
     content: '';
     position: absolute;
     inset: -8px;
-    border-radius: 50%;
+    border-radius: inherit;
   }
 }
 
@@ -2908,7 +2912,7 @@ a.reviews__tp-inline {
   border: 1px solid var(--border);
   border-radius: 50%;
   background: #fff;
-  color: var(--text);
+  color: var(--text-muted);   /* grey like the cards, green when on */
   transition: border-color 0.2s, color 0.2s, transform 0.12s var(--ease-out);
 }
 
@@ -2918,6 +2922,7 @@ a.reviews__tp-inline {
 
 @media (hover: hover) {
   .photos-fav:hover { border-color: var(--text-muted); }
+  .photos-fav:not(.is-on):hover { color: var(--text); }
 }
 
 /* "Favorites" tab: shown once there is a favorite */

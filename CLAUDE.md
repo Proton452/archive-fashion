@@ -26,7 +26,7 @@ archive-fashion/
 ├── js/
 │   ├── main.js         Page Men : chargement catalogue, onglets, filtres, recherche, tri, scroll infini
 │   ├── women.js        Même logique pour la page Women
-│   ├── photos.js       Vraies photos (QC) : pastille appareil photo foncée (sans nombre) sur les cartes + fenêtre (Men / Women)
+│   ├── photos.js       Vraies photos (QC) : pastille blanche « Photos » + icône galerie, en bas à gauche des cartes (sans nombre) sur les cartes + fenêtre (Men / Women)
 │   ├── recent.js       Récemment consultés : onglet « Recently viewed » (localStorage)
 │   ├── favorites.js    Favoris : cœur sur les cartes + fenêtre QC, onglet « Favorites » (localStorage)
 │   ├── nav.js          Navbar + FAQ pour les pages secondaires
@@ -65,7 +65,7 @@ archive-fashion/
 
 ## Favoris — js/favorites.js
 
-- Cœur en haut à droite de chaque carte (la pastille QC est en bas à droite ; sur téléphone, zone de toucher agrandie à 46 px pour les deux via ::after) et dans la fenêtre QC, à côté de la fiche produit. Le clic sur le cœur n'ouvre pas Lovegobuy.
+- Cœur en haut à droite de chaque carte (gris dans un rond blanc, vert plein quand activé ; la pastille « Photos » est en bas à gauche ; sur téléphone, zone de toucher agrandie de 8 px pour les deux via ::after) et dans la fenêtre QC, à côté de la fiche produit. Le clic sur le cœur n'ouvre pas Lovegobuy.
 - Gardés dans le navigateur (`localStorage`) : `favs-men` / `favs-women`, une liste par page. Clé = id Lovegobuy (maillots du sheet : leur lien).
 - Onglet « Favorites » (texte seul, sans cœur ni nombre) en 1re position, masqué tant qu'il n'y a aucun favori ; s'il est vidé pendant qu'on y est : message « Tap the heart… ». `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
 - Apparition / disparition des onglets Favorites et Recently viewed animée (`Favs.setTabShown` : l’onglet s’ouvre en largeur et pousse les suivants, puis son texte apparaît en fondu ; l’inverse pour disparaître), sans animation au chargement de la page.
