@@ -3264,7 +3264,14 @@ a.reviews__tp-inline {
   .photos-modal { padding: 0; align-items: flex-end; }
   .photos-modal.is-open { background: transparent; }
 
+  /* Fixed and touching the bottom edge itself (like the chat sheet): iPhone Safari colours
+     the strip around its address bar from the fixed element there, and the transparent
+     .photos-modal alone gave a grey strip */
   .photos-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     flex-direction: column;
     max-width: none;
