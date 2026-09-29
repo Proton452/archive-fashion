@@ -9,7 +9,7 @@
      (400-800 KB): only the one shown and its neighbours are loaded.
    - Phones: full screen, slides up from the bottom, drag it down to close.
    - Styles (official photos of each colour / design, `m` in the data): two buttons
-     "Real photos (10) | Styles (16)" choose what the photo strip shows. With styles, a grid
+     "Styles (16) | Real photos (10)" choose what the photo strip shows. With styles, a grid
      of all of them sits under the buttons: a tap shows that style big in the strip.
      Items with only one of the two have no buttons.
 ============================================== */
@@ -79,8 +79,8 @@
         </div>
         <div class="photos-info">
           <div class="photos-tabs" role="tablist" hidden>
-            <button type="button" class="photos-tab" role="tab" data-set="qc"></button>
             <button type="button" class="photos-tab" role="tab" data-set="styles"></button>
+            <button type="button" class="photos-tab" role="tab" data-set="qc"></button>
           </div>
           <p class="photos-label" id="photosTitle"><span class="photos-label__main"></span> <span class="photos-label__qc">(QC)</span></p>
           <p class="photos-caption"></p>
@@ -402,7 +402,7 @@
     lastFocus = document.activeElement;
     modal.querySelector('.photos-styles').replaceChildren();
     if (styles.length) buildGrid();
-    showSet(data.q.length ? 'qc' : 'styles');   // real photos first when there are some
+    showSet(styles.length ? 'styles' : 'qc');   // styles first: pick one, then check the real photos
     sheet.style.transform = '';
     sheet.scrollTop = 0;
     modal.hidden = false;

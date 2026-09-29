@@ -3191,7 +3191,11 @@ a.reviews__tp-inline {
   flex-direction: column;
   gap: 14px;
   padding: 28px 24px 24px;
+  /* Its own scroll next to the photo (long styles grid): the grid row alone doesn't limit it */
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .photos-label {
@@ -3364,7 +3368,9 @@ a.reviews__tp-inline {
   }
 
   /* Extra room at the bottom: phone browsers draw their address bar over it */
-  .photos-info { padding: 18px 16px calc(24px + env(safe-area-inset-bottom)); overflow: visible; }
+  .photos-info { padding: 18px 16px calc(24px + env(safe-area-inset-bottom)); max-height: none; overflow: visible; }
+  /* A long styles grid makes the window scroll; without this the photo shrank to nothing instead */
+  .photos-gallery, .photos-info { flex-shrink: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
