@@ -5,9 +5,9 @@
    non-fashion tail (after `end`) stays at the end.
    Target mix while scrolling: winter 40 % / summer 5 % / all-year 55 % in winter,
    winter 5 % / summer 30 % / all-year 65 % in summer.
-   No off-season item in the first 12 cards. 95 % of the ties go after the
-   other clothes (PUSH_BACK). Same order for every visit
-   during a season (fixed seed per season).
+   No off-season item in the first 12 cards. Categories few people want
+   (PUSH_BACK: ties, household appliances, Women perfumes) mostly go to the end.
+   Same order for every visit during a season (fixed seed per season).
 ============================================== */
 
 (function () {
@@ -18,9 +18,16 @@
     summer: { winter: 0.05, summer: 0.30, all: 0.65 },
   };
   const FIRST_SCREEN = 12;   // no off-season item in the first 12 cards
-  const MAX_WEIGHT = 3;
-  // Categories few people want: this share of them goes after all the other clothes (the rest stays in the mix)
-  const PUSH_BACK = { 'ties': 0.95 };   // a small group (e.g. Women summer) doesn't all pile up at the top
+  const MAX_WEIGHT = 3;   // a small group (e.g. Women summer) doesn't all pile up at the top
+  // Categories few people want: `back` = share sent after all the other clothes (for a
+  // non-fashion category, left in the tail). The rest stays in the mix, picked among the
+  // `prefer` keywords (most attractive) first. `page` = only on that page.
+  const PUSH_BACK = {
+    'ties': { back: 0.95 },
+    'household appliances': { back: 0.70, prefer: ['airwrap', 'supersonic', 'ray-ban x meta', 'apple 16', 'apple 15', 's24', 'dyson', 'shark', 'babyliss', 'jbl'] },
+    'perfume': { back: 0.70, page: 'women', prefer: ['dior', 'louis vuitton', 'creed', 'chanel', 'tom ford', 'ysl', 'gucci'] },
+  };
+  const PAGE = typeof location !== 'undefined' && /women/.test(location.pathname) ? 'women' : 'men';
 
   const now = new Date();
   const m = now.getMonth() + 1, d = now.getDate();
@@ -42,9 +49,36 @@
     };
   }
 
+  const art = p => (p.article || '').toLowerCase().trim();
+  const rule = p => { const r = PUSH_BACK[art(p)]; return r && (!r.page || r.page === PAGE) ? r : null; };
+
+  // Which items of each PUSH_BACK category stay in the mix: picked at random among the
+  // `prefer` ones first (variety: not always the same brand), then among the others
+  function keepers(items, rng) {
+    const keep = new Set();
+    Object.keys(PUSH_BACK).forEach(c => {
+      const r = PUSH_BACK[c];
+      if (r.page && r.page !== PAGE) return;
+      const all = items.filter(p => art(p) === c);
+      const n = Math.round(all.length * (1 - r.back) + 1e-9);   // 1e-9: 5 × 0.3 must round to 2, not 1
+      const rank = p => (r.prefer || []).some(k => (p.name || '').toLowerCase().includes(k)) ? 0 : 1;
+      all.map(p => ({ p, r: rank(p), k: rng() }))
+        .sort((x, y) => x.r - y.r || x.k - y.k)
+        .slice(0, n).forEach(x => keep.add(x.p));
+    });
+    return keep;
+  }
+
   // Weighted shuffle (each item's key = random^(1/weight), highest first)
   function order(items, end) {
-    const head = items.slice(0, end), tail = items.slice(end);
+    const rng = mulberry32(seasonYear * 2 + (season === 'summer' ? 1 : 0));
+    const keep = keepers(items, rng);
+    const isBack = p => rule(p) && !keep.has(p);
+    const head = items.slice(0, end).filter(p => !isBack(p));
+    const back = items.slice(0, end).filter(isBack);
+    const tail = items.slice(end);
+    const fromTail = tail.filter(p => keep.has(p));   // non-fashion items kept in the mix
+
     const count = { winter: 0, summer: 0, all: 0 };
     head.forEach(p => count[group(p)]++);
     const weight = {};
@@ -52,7 +86,6 @@
       const share = count[g] / (head.length || 1);
       weight[g] = share ? Math.min(MAX_WEIGHT, TARGET[season][g] / share) : 1;
     });
-    const rng = mulberry32(seasonYear * 2 + (season === 'summer' ? 1 : 0));
     const sorted = head
       .map(p => ({ p, k: Math.pow(rng(), 1 / weight[group(p)]) }))
       .sort((a, b) => b.k - a.k)
@@ -66,21 +99,10 @@
       if (i < 0) break;
       inSeason.push(rest.splice(i, 1)[0]);
     }
-    return pushBack(inSeason.concat(moved, rest), rng).concat(tail);
-  }
-
-  // Exactly that share of each category goes back; the ones kept are picked at random
-  function pushBack(items, rng) {
-    const art = p => (p.article || '').toLowerCase().trim();
-    const keep = new Set();
-    Object.keys(PUSH_BACK).forEach(c => {
-      const all = items.filter(p => art(p) === c);
-      const n = Math.round(all.length * (1 - PUSH_BACK[c]));
-      all.map(p => ({ p, k: rng() })).sort((x, y) => x.k - y.k).slice(0, n).forEach(x => keep.add(x.p));
-    });
-    const kept = [], back = [];
-    items.forEach(p => (PUSH_BACK[art(p)] && !keep.has(p) ? back : kept).push(p));
-    return kept.concat(back);
+    const mixed = inSeason.concat(moved, rest);
+    // Kept non-fashion items: random places, below the first screen
+    fromTail.forEach(p => mixed.splice(FIRST_SCREEN + Math.floor(rng() * (mixed.length - FIRST_SCREEN + 1)), 0, p));
+    return mixed.concat(back, tail.filter(p => !keep.has(p)));
   }
 
   window.Season = { season, order };
