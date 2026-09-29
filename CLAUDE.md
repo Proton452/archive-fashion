@@ -65,7 +65,7 @@ archive-fashion/
 - Mobile : fenêtre à la hauteur de son contenu (max 92 %) qui monte du bas, catalogue visible au-dessus ; se ferme en la tirant vers le bas (poignée en haut). Ordinateur : simple fondu court, fond peu assombri (animations volontairement calmes, demandé par l'utilisateur).
 - Ordinateur : la carte dont on ouvre les photos garde son zoom tant que la fenêtre est ouverte (classe `.is-held`, retirée dans `hide()`), sinon elle se dézoomait derrière la fenêtre. Le survol du cœur / de « Photos » n'annule plus le zoom.
 - **img.theqcbook.com limite les rafales** (HTTP 429 par visiteur ; les images du catalogue viennent du même serveur). D'où : photo affichée chargée d'abord, voisines ensuite ; toute image refusée est redemandée 3 fois (après 0,8 / 2 / 4 s, avec `?retry=n`) avant « This photo couldn't be loaded » — pareil pour les images des cartes (`IMG_RETRY_MS` dans main.js / women.js).
-- Photos des modèles (`model_images`) : pas encore utilisées.
+- **Modèles** (`model_images` du CSV = photos officielles de chaque coloris / motif, fond transparent) : toujours `img.theqcbook.com/products/<image id>/<n>.webp?v5`, donc `build_catalog.py` ne garde que les numéros `n` (`m` dans `data/qc/*.json`, nombre en 8e champ du catalogue). Fenêtre : sous l'article, 4 vignettes (la 4e affiche « +N » s'il y en a plus), chargées une par une (limite du serveur), qui ouvrent une visionneuse plein écran blanche (`.styles-viewer`, défilement au doigt, flèches sur ordinateur, « 3 / 11 »). Un article sans photos QC mais avec des modèles ouvre aussi la fenêtre : la galerie montre alors les modèles (« Available styles », fond gris clair, image entière) et la pastille de la carte dit « Styles » au lieu de « Photos ».
 
 ## Favoris — js/favorites.js
 

@@ -288,5 +288,11 @@ window.I18N_DICT = {
  "Brand names belong to their owners and are only used to describe the products. Product photos belong to their respective owners. LovegoFinds is not affiliated with any brand listed on the site.": "أسماء العلامات التجارية ملك لأصحابها وتُستخدم فقط لوصف المنتجات. صور المنتجات ملك لأصحابها. LovegoFinds غير تابع لأي علامة تجارية معروضة على الموقع.",
  "10. Changes": "10. التغييرات",
  "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the bottom shows the latest version.": "قد نعدّل هذه الشروط في أي وقت. تسري التعديلات فور نشرها في هذه الصفحة، ويشير التاريخ في الأسفل إلى أحدث نسخة.",
- "Legal": "قانوني"
+ "Legal": "قانوني",
+ "See the styles": "عرض الموديلات",
+ "Styles": "موديلات",
+ "Style": "موديل",
+ "Available styles": "الموديلات المتاحة",
+ "Official photos of the styles available for this item.": "صور رسمية للموديلات المتاحة لهذا المنتج.",
+ "See all styles": "عرض كل الموديلات"
 };

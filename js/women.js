@@ -200,9 +200,10 @@ async function fetchCatalog(url) {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`Catalog HTTP ${r.status}`);
   const data = await r.json();
-  const items = data.items.map(([name, brand, article, priceCny, itemId, imageId, qcCount]) => ({
+  const items = data.items.map(([name, brand, article, priceCny, itemId, imageId, qcCount, stylesCount]) => ({
     id:    itemId,
-    qc:    qcCount || 0,   // real (QC) photos, shown by js/photos.js
+    qc:    qcCount || 0,       // real (QC) photos, shown by js/photos.js
+    styles: stylesCount || 0,  // official photos of each colour / design, same window
     name,
     brand,
     article,
@@ -593,7 +594,7 @@ function appendNextBatch() {
         <h3 class="product-card__name" data-tooltip="${escapeAttr(displayName)}">${escapeHTML(displayName)}</h3>
         <div class="product-card__row">
           ${price ? `<span class="product-card__price">${escapeHTML(price)}</span>` : ''}
-          ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${GALLERY_ICON}<span>${escapeHTML(t('Photos'))}</span></span>` : ''}
+          ${p.qc || p.styles ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(p.qc ? t('See real photos') : t('See the styles'))}">${GALLERY_ICON}<span>${escapeHTML(p.qc ? t('Photos') : t('Styles'))}</span></span>` : ''}
         </div>
       </div>
     `;

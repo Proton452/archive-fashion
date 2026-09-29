@@ -5,9 +5,11 @@ Usage:  python scripts/build_catalog.py [path/to/my-little-shop-produits.csv]
 
 Output format (compact, ~8k items):
   { "link": "...{id}...", "image": "...{id}...", "end": <index where non-fashion items start>,
-    "items": [[name, brand, category, price_cny, item_id, image_id, qc_count], ...] }
-Real (QC) photos go to data/qc/<last 2 digits of item_id>.json, loaded only when a
-visitor opens them: { item_id: { g, n, b, c, p, i, q: [urls] } }
+    "items": [[name, brand, category, price_cny, item_id, image_id, qc_count, styles_count], ...] }
+Real (QC) photos and styles (official photos of each colour / design, model_images in the CSV)
+go to data/qc/<last 2 digits of item_id>.json, loaded only when a visitor opens them:
+{ item_id: { g, n, b, c, p, i, q: [urls], m: [n, ...] } }. Style photos are always
+https://img.theqcbook.com/products/<image_id>/<n>.webp?v5, so only the numbers n are kept.
 """
 import csv, json, random, re, shutil, sys
 from pathlib import Path
@@ -19,6 +21,7 @@ LINK_RE  = re.compile(r'^https://www\.lovegobuy\.com/product\?id=(\d+)&shop_type
 IMAGE_RE = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)\.webp\?v5$')
 LINK_TPL  = 'https://www.lovegobuy.com/product?id={id}&shop_type=weidian&invite_code=500EUROSOFFERED'
 IMAGE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5'
+STYLE_RE  = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)/(\d+)\.webp\?v5$')
 
 # Partner categories that are duplicates / watch brands → one clean name
 WATCH_BRANDS = {
@@ -73,6 +76,11 @@ def main():
             continue
         qc = [u.strip() for u in r.get('qc_photos', '').split('|') if u.strip().startswith('https://')]
         qc = [BUNNY_QC.get(u, u) for u in qc]   # copies on Bunny (scripts/qc_to_bunny.py)
+        styles = []
+        for u in r.get('model_images', '').split('|'):
+            m = STYLE_RE.match(u.strip())
+            if m and m.group(1) == image.group(1):
+                styles.append(int(m.group(2)))
         item = [
             r['titre'].strip(),
             r['brand'].strip(),
@@ -81,11 +89,13 @@ def main():
             link.group(1),
             image.group(1),
             len(qc),
+            len(styles),
         ]
         out[gender].append(item)
-        if qc:
+        if qc or styles:
             qc_shards.setdefault(link.group(1)[-2:], {})[link.group(1)] = {
                 'g': gender, 'n': item[0], 'b': item[1], 'c': item[2], 'p': item[3], 'i': item[5], 'q': qc,
+                **({'m': styles} if styles else {}),
             }
 
     (ROOT / 'data').mkdir(exist_ok=True)
@@ -106,7 +116,7 @@ def main():
     for shard, entries in qc_shards.items():
         (qc_dir / f'{shard}.json').write_text(json.dumps(entries, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     sizes = [f.stat().st_size for f in qc_dir.iterdir()]
-    print(f'real photos: {sum(len(e) for e in qc_shards.values())} items in {len(sizes)} files '
+    print(f'real photos / styles: {sum(len(e) for e in qc_shards.values())} items in {len(sizes)} files '
           f'(largest {max(sizes) // 1024} KB) -> data/qc/')
 
 

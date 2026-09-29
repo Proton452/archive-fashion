@@ -288,5 +288,11 @@ window.I18N_DICT = {
  "Brand names belong to their owners and are only used to describe the products. Product photos belong to their respective owners. LovegoFinds is not affiliated with any brand listed on the site.": "Les noms de marques appartiennent à leurs propriétaires et servent uniquement à décrire les produits. Les photos des produits appartiennent à leurs détenteurs respectifs. LovegoFinds n'est affilié à aucune marque présente sur le site.",
  "10. Changes": "10. Modifications",
  "We may update these terms at any time. Changes apply as soon as they are published on this page, and the date at the bottom shows the latest version.": "Nous pouvons modifier ces conditions à tout moment. Les modifications s'appliquent dès leur publication sur cette page, et la date en bas indique la dernière version.",
- "Legal": "Informations légales"
+ "Legal": "Informations légales",
+ "See the styles": "Voir les modèles",
+ "Styles": "Modèles",
+ "Style": "Modèle",
+ "Available styles": "Modèles disponibles",
+ "Official photos of the styles available for this item.": "Photos officielles des modèles disponibles pour cet article.",
+ "See all styles": "Voir tous les modèles"
 };
