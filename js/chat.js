@@ -191,9 +191,9 @@
 
   const BUTTON_LABELS = {   // English; shown through t()
     signup:  'Sign up & get 500€ coupons →',
-    discord: 'Ask on Discord →',
-    howto:   'See the full ordering guide →',
-    faq:     'Read the FAQ →',
+    discord: 'Ask on Discord',
+    howto:   'See the full ordering guide',
+    faq:     'Read the FAQ',
   };
 
   // Site pages keep the creator slug (/faq/football) like the rest of the site
