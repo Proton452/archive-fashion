@@ -1313,7 +1313,7 @@ a.reviews__tp-inline {
   /* Same height as .product-card__info (2-line name + 6px + price row), so the page
      and its scrollbar don't grow when the products replace the placeholders */
   box-sizing: content-box;
-  height: calc(1.4 * 0.82rem + 4px + max(1.5 * 1.05rem, 32px));   /* price row: see .product-card__row */
+  height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 32px));   /* price row: see .product-card__row */
 }
 
 .skeleton-card__line {
@@ -1431,7 +1431,7 @@ a.reviews__tp-inline {
 @media (max-width: 480px) {
   /* Room for 3 bigger thumbnails next to the price: slimmer card padding */
   .product-card .product-card__info { padding: 0.75rem 0.7rem 0.9rem; }   /* .product-card: wins over the base rules further down */
-  .skeleton-card .skeleton-card__info { padding: 0.75rem 0.7rem 0.9rem; height: calc(1.4 * 0.82rem + 4px + max(1.5 * 1.05rem, 25px)); }
+  .skeleton-card .skeleton-card__info { padding: 0.75rem 0.7rem 0.9rem; height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 25px)); }
   .product-card .product-card__row { min-height: 25px; gap: 4px; }
   .card-styles { gap: 3px; }
   .card-style { width: 25px; height: 25px; border-radius: 6px; }
@@ -1469,7 +1469,7 @@ a.reviews__tp-inline {
 }
 
 .product-card__name {
-  font-size: 0.82rem;
+  font-size: 0.88rem;   /* goes with the bigger price */
   font-weight: 500;
   color: var(--text);
   margin-bottom: 4px;
