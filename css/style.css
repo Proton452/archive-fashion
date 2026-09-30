@@ -1407,9 +1407,8 @@ a.reviews__tp-inline {
   background: var(--bg-hover);
   overflow: hidden;
   cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s, color 0.2s, transform 0.16s var(--ease-out);
+  transition: background-color 0.2s, color 0.2s, transform 0.16s var(--ease-out);
 }
-.card-style { box-shadow: inset 0 0 0 1px transparent; }
 .card-style:active, .card-styles__more:active { transform: scale(0.92); }
 .card-style img {
   width: 100%;
@@ -1429,8 +1428,9 @@ a.reviews__tp-inline {
   color: var(--text-muted);
 }
 @media (hover: hover) {
-  .card-style:hover { box-shadow: inset 0 0 0 1px var(--text-muted); }
-  .card-styles__more:hover { background: #E6E6E6; color: var(--text); }
+  /* Just a slightly darker square (no outline): the card's image already shows the style */
+  .card-style:hover, .card-styles__more:hover { background: #E6E6E6; }
+  .card-styles__more:hover { color: var(--text); }
 }
 /* Big screens: wider cards, bigger thumbnails */
 @media (min-width: 1440px) {
