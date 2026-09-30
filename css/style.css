@@ -3051,7 +3051,8 @@ a.reviews__tp-inline {
 @media (hover: hover) {
   .product-card__fav:not(.is-on) { opacity: 0; transition: color 0.2s, transform 0.12s var(--ease-out), opacity 0.2s; }
   .product-card:hover .product-card__fav,
-  .product-card:focus-within .product-card__fav,
+  .product-card:focus-visible .product-card__fav,
+  .product-card:has(:focus-visible) .product-card__fav,   /* keyboard only: after a click the card keeps the focus */
   .product-card.is-held .product-card__fav { opacity: 1; }
 }
 
