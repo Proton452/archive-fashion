@@ -1430,10 +1430,10 @@ a.reviews__tp-inline {
   cursor: pointer;
   transition: color 0.2s;
 }
-.card-styles__more::after {   /* easy to click: a bigger invisible area around the text */
+.card-styles__more::after {   /* easy to click: from the text to the card's right edge, the whole row's height and the bottom padding */
   content: '';
   position: absolute;
-  inset: -12px -8px -12px -6px;
+  inset: -14px -24px -24px -8px;
 }
 .card-styles__more--phone { display: none; }
 @media (hover: hover) {

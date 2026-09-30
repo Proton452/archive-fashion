@@ -706,12 +706,13 @@ function appendNextBatch() {
         Favs.toggle(Favs.key(p));
         return;
       }
-      // Style thumbnail: open the photos window on that style
-      const style = e.target.closest('.card-style, .card-styles__more');
-      if (style) {
+      // Style thumbnails, "+N" or the space between them: open the photos window on that
+      // style (never Lovegobuy by a near miss)
+      if (e.target.closest('.card-styles')) {
         e.preventDefault();
+        const style = e.target.closest('.card-style, .card-styles__more');
         card.classList.add('is-held');
-        if (window.RealPhotos) RealPhotos.open(p.id, { style: +style.dataset.style });
+        if (window.RealPhotos) RealPhotos.open(p.id, { style: style ? +style.dataset.style : 0 });
         return;
       }
       // Camera badge: open the real photos instead of Lovegobuy
