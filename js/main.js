@@ -725,7 +725,7 @@ function appendNextBatch() {
       if (e.target.closest('.product-card__photos')) {
         e.preventDefault();
         card.classList.add('is-held');   // stays zoomed behind the window (the mouse is now on the window)
-        if (window.RealPhotos) RealPhotos.open(p.id);
+        if (window.RealPhotos) RealPhotos.open(p.id, { tab: 'qc' });   // Photos pill: straight to the real photos
         return;
       }
       gaEvent('click_product', { item_name: name, price, item_type: p.article });
@@ -855,7 +855,7 @@ grid.addEventListener('keydown', e => {
   if (!badge || (e.key !== 'Enter' && e.key !== ' ')) return;
   e.preventDefault();
   const card = badge.closest('.product-card');
-  if (card && card._product && window.RealPhotos) { card.classList.add('is-held'); RealPhotos.open(card._product.id); }
+  if (card && card._product && window.RealPhotos) { card.classList.add('is-held'); RealPhotos.open(card._product.id, { tab: 'qc' }); }
 });
 
 // ─── Football minimum spend, in the visitor's currency ─

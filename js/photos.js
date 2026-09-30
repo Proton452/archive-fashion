@@ -484,7 +484,9 @@
   }
 
   // ─── Open / close ─────────────────────────────
-  async function open(id, { fromHash = false, style = 0 } = {}) {   // style: open on that style (card thumbnails)
+  // style: open on that style (card thumbnails). tab: 'qc' opens on Real photos (the card's
+  // Photos pill), otherwise styles first
+  async function open(id, { fromHash = false, style = 0, tab = '' } = {}) {
     let data;
     try { data = await loadItem(String(id)); } catch (e) { data = null; }
     if (!data) { if (fromHash) clearHash(); return; }
@@ -507,12 +509,13 @@
     // what's around the item matters there, styles are just white), so every item's window
     // looks alike; the long grid scrolls inside. Then styles first: pick one, then check the
     // real photos.
-    if (styles.length) showSet('styles');
+    const onStyles = styles.length && !(tab === 'qc' && data.q.length);
+    if (onStyles) showSet('styles');
     fitSize();
     // The other button's first photo, fetched once the one shown is there (no burst)
     if (styles.length && data.q.length) {
       const first = track.querySelector('.photos-slide__img');
-      const later = () => { if (item === data) preloadFirst('qc'); };
+      const later = () => { if (item === data) preloadFirst(onStyles ? 'qc' : 'styles'); };
       if (first) first.addEventListener('load', later, { once: true });
     }
     goTo(showing === 'styles' ? style : 0, false);
