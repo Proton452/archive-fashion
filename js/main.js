@@ -711,6 +711,12 @@ function appendNextBatch() {
       if (e.target.closest('.card-styles')) {
         e.preventDefault();
         const style = e.target.closest('.card-style, .card-styles__more');
+        // Are the thumbnails used? (thumbnail / "+N" / space around them, phone or computer)
+        gaEvent('click_card_style', {
+          item_name: name,
+          target: !style ? 'around' : style.classList.contains('card-styles__more') ? 'more' : 'thumbnail',
+          device: window.matchMedia('(hover: hover)').matches ? 'computer' : 'phone',
+        });
         card.classList.add('is-held');
         if (window.RealPhotos) RealPhotos.open(p.id, { style: style ? +style.dataset.style : 0 });
         return;
