@@ -132,7 +132,7 @@ SERVER_KEYS = [
     'Missing message.',
     'Something went wrong. Please try again.',
     # English labels kept in tables and shown through t(variable)
-    'Sign up & get 500€ coupons →', 'Ask on Discord →', 'See the full ordering guide →', 'Read the FAQ →',   # chat.js BUTTON_LABELS
+    'Sign up & get 500€ coupons →', 'Ask on Discord', 'See the full ordering guide', 'Read the FAQ',   # chat.js BUTTON_LABELS
     'Stuck? Ask me, I reply instantly 👋', 'Need help ordering? 👋', 'Stuck on Lovegobuy? Ask me 👋',          # chat.js TEASER_TEXT
     'No info yet', 'Info received', 'In transit', 'Ready for pickup', 'Out for delivery', 'Delivered',       # track.js STATUS
     'Delivery failed', 'Alert', 'Expired',
