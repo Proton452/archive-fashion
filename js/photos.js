@@ -159,6 +159,7 @@
       const img = el('img', 'photos-slide__img');
       img.decoding = 'async';
       img.dataset.src = url;
+      if (showing === 'styles') img.crossOrigin = 'anonymous';   // to find the item in it (fitStyle)
       img.addEventListener('load', () => {
         slide.classList.remove('is-loading');
         fitPhoto(slide, img);
@@ -186,10 +187,47 @@
   // a very different shape keeps the whole photo (with the blurred copy around it)
   const MAX_ZOOM = 1.3;
   function fitPhoto(slide, img) {
-    if (showing === 'styles' || !img.naturalWidth || !slide.clientHeight) return;   // styles: always whole
+    if (showing === 'styles') return fitStyle(slide, img);
+    if (!img.naturalWidth || !slide.clientHeight) return;
     const photo = img.naturalWidth / img.naturalHeight;
     const frame = slide.clientWidth / slide.clientHeight;
     slide.classList.toggle('is-cover', Math.max(photo / frame, frame / photo) <= MAX_ZOOM);
+  }
+
+  // Style photos are 1200×1200 squares with the item in the middle: a wide item (shoes, shorts)
+  // looked small in the wider frame. Find the item (non-transparent pixels, on a small copy) and
+  // zoom so it fills the frame with a margin.
+  const STYLE_MARGIN = 32, STYLE_MAX_ZOOM = 2.5;   // margin: room for the counter and arrows
+  function itemBox(img) {
+    if (img._box !== undefined) return img._box;
+    img._box = null;
+    try {
+      const n = 64, c = document.createElement('canvas');
+      c.width = c.height = n;
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, n, n);
+      const a = ctx.getImageData(0, 0, n, n).data;
+      let x0 = n, y0 = n, x1 = -1, y1 = -1;
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+        if (a[(y * n + x) * 4 + 3] > 20) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+      }
+      if (x1 >= 0) img._box = { x0: x0 / n, y0: y0 / n, x1: (x1 + 1) / n, y1: (y1 + 1) / n };
+    } catch (e) { /* no CORS: the photo stays whole */ }
+    return img._box;
+  }
+
+  function fitStyle(slide, img) {
+    img.style.transform = '';
+    const W = slide.clientWidth, H = slide.clientHeight;
+    const box = img.naturalWidth && W && H && itemBox(img);
+    if (!box) return;
+    // Size and place of the photo inside the frame (object-fit: contain)
+    const r = img.naturalWidth / img.naturalHeight;
+    const pw = Math.min(W, H * r), ph = pw / r;
+    const bw = (box.x1 - box.x0) * pw, bh = (box.y1 - box.y0) * ph;
+    const k = Math.min(STYLE_MAX_ZOOM, (W - 2 * STYLE_MARGIN) / bw, (H - 2 * STYLE_MARGIN) / bh);
+    const cx = ((box.x0 + box.x1) / 2 - 0.5) * pw, cy = ((box.y0 + box.y1) / 2 - 0.5) * ph;
+    img.style.transform = `translate(${-cx * k}px, ${-cy * k}px) scale(${k})`;
   }
 
   // Load the photo shown first, then its neighbours (fewer requests at once: the server limits bursts)

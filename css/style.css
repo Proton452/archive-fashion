@@ -3303,7 +3303,8 @@ a.reviews__tp-inline {
 /* Items with styles but no real photos: the strip shows the styles, whole, on light grey */
 .photos-sheet.is-styles .photos-gallery { background: var(--bg-hover); }
 .photos-sheet.is-styles .photos-slide__bg { display: none; }
-.photos-sheet.is-styles .photos-slide__img { padding: 24px; }
+.photos-sheet.is-styles .photos-slide__img { padding: 24px; }   /* until fitStyle() (js/photos.js) zooms on the item */
+.photos-sheet.is-styles .photos-slide__img[style*="transform"] { padding: 0; }
 .photos-sheet.is-styles .photos-slide__spinner { border-color: rgba(13, 13, 13, 0.15); border-top-color: var(--text-muted); }
 
 
