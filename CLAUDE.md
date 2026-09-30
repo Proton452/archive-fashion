@@ -88,8 +88,8 @@ archive-fashion/
 
 ## Page légale — legal.html
 
-- Une seule page « Privacy & Terms » (`/legal`), même bandeau de titre que FAQ / Reviews (`page-hero`), puis deux cartes (confidentialité, conditions) avec parties numérotées et listes, contact et date « Last updated » en bas : confidentialité 1-5 (qui, données utilisées, services tiers, durée de conservation, droits RGPD), conditions 6-10 (acceptation, ce qu'est le site, responsabilité courte et rassurante, marques, modifications), contact Discord. Choix de l'utilisateur : pas de mentions légales (éditeur / hébergeur), pas de mention d'affiliation ni de « not operated by Lovegobuy ». Le chat enregistre les questions anonymisées (`logQuestion` dans api/chat.js) : c'est indiqué sur la page.
-- Si un service ou une donnée collectée change, mettre la page à jour (et la date « Last updated »). `legal` est dans `PAGE_NAMES` de partner.js (sinon pris pour un code partenaire) et dans vercel.json.
+- Une seule page « Privacy & Terms » (`/legal`), même bandeau de titre que FAQ / Reviews (`page-hero`), puis deux cartes (confidentialité, conditions) avec parties numérotées et listes, contact en bas (pas de date « Last updated » : retirée à la demande de l'utilisateur, la partie 10 ne parle plus de date) : confidentialité 1-5 (qui, données utilisées, services tiers, durée de conservation, droits RGPD), conditions 6-10 (acceptation, ce qu'est le site, responsabilité courte et rassurante, marques, modifications), contact Discord. Choix de l'utilisateur : pas de mentions légales (éditeur / hébergeur), pas de mention d'affiliation ni de « not operated by Lovegobuy ». Le chat enregistre les questions anonymisées (`logQuestion` dans api/chat.js) : c'est indiqué sur la page.
+- Si un service ou une donnée collectée change, mettre la page à jour. `legal` est dans `PAGE_NAMES` de partner.js (sinon pris pour un code partenaire) et dans vercel.json.
 
 ## Langues (js/i18n.js)
 
