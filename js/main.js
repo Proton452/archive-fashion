@@ -365,6 +365,20 @@ const SYNONYM_GROUPS = [
   ['vintage','retro','rétro','used'],
   ['streetwear','street','urban','urbain'],
   ['sport','sportswear','athletic','deportivo'],
+  // Brand nicknames people type
+  ['lv','louis vuitton'],
+  ['ysl','saint laurent'],
+  ['tnf','north face'],
+  ['cdg','comme des garcons'],
+  ['rl','ralph lauren'],
+  ['ow','off white'],
+  ['ch','chrome hearts'],
+  ['gd','gallery dept'],
+  ['mm6','margiela'],
+  ['nb','new balance'],
+  ['af1','air force 1'],
+  ['aj','air jordan'],
+  ['fog','fear of god'],
 ];
 
 const SYNONYM_MAP = new Map();
@@ -382,15 +396,33 @@ function normalizeBrand(str) {
   return normalizeTerm(str).replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-function expandSearchTerms(query) {
-  const rawWords  = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
-  const normWords = rawWords.map(normalizeTerm);
-  const expanded  = new Set(normWords);
-  rawWords.forEach((word, i) => {
-    const synonyms = SYNONYM_MAP.get(word) || SYNONYM_MAP.get(normWords[i]);
-    if (synonyms) synonyms.forEach(s => expanded.add(normalizeTerm(s)));
+// Search: every item gets a score, results come best first ("stone island jacket" → the
+// Stone Island jackets, then other Stone Island items and other jackets). Each word typed
+// counts as found when it (or a translation, SYNONYM_GROUPS) is in the name or the brand.
+function searchScorer(query) {
+  const normQuery = normalizeBrand(query);
+  const words     = normQuery.split(' ').filter(w => w.length >= 2);
+  const groups    = words.map(w => {
+    const synonyms = SYNONYM_MAP.get(w) || [];
+    return [...new Set([w, ...synonyms.map(normalizeBrand)])];
   });
-  return [...expanded];
+  const compact = normQuery.replace(/\s+/g, '');
+  // Short words (lv, cp...) must be whole words, longer ones can be part of a word
+  const found = (text, padded, term) => term.length >= 3 ? text.includes(term) : padded.includes(' ' + term + ' ');
+
+  return p => {
+    const text   = normalizeBrand((p.name || '') + ' ' + (p.brand || ''));
+    const padded = ' ' + text + ' ';
+    let hits = 0;
+    groups.forEach(g => { if (g.some(t => found(text, padded, t))) hits++; });
+    // "offwhite" for Off-White, "stoneisland" for Stone Island
+    const glued = compact.length >= 4 && text.replace(/\s+/g, '').includes(compact);
+    if (!hits && !glued) return 0;
+    let score = hits * 10;
+    if (glued || hits === groups.length) score += 100;                   // every word found
+    if (normQuery.length >= 3 && padded.includes(' ' + normQuery)) score += 50;   // the exact phrase
+    return score;
+  };
 }
 
 // ─── Load Products ───────────────────────────────
@@ -536,26 +568,15 @@ function applyFilters() {
 
   // 3. Search
   if (searchQuery) {
-    const terms        = expandSearchTerms(searchQuery);
-    const normQuery    = normalizeBrand(searchQuery);
-    const queryCompact = normQuery.replace(/\s+/g, '');
-
+    const score = searchScorer(searchQuery);
+    const scores = new Map();
     filtered = filtered.filter(p => {
-      const name         = normalizeTerm(p.name);
-      const brand        = normalizeBrand(p.brand);
-      const brandCompact = brand.replace(/\s+/g, '');
-      const queryWords   = normQuery.split(/\s+/).filter(w => w.length >= 2);
-
-      const brandMatch = queryWords.length > 0 && (
-        queryWords.every(w => brand.includes(w)) ||
-        (queryCompact.length >= 2 && brandCompact.includes(queryCompact))
-      );
-
-      const meaningfulTerms = terms.filter(t => t.length >= 3);
-      const termMatch = meaningfulTerms.some(t => name.includes(t));
-
-      return brandMatch || termMatch;
+      const s = score(p);
+      if (s) scores.set(p, s);
+      return s > 0;
     });
+    // Best matches first; equal scores keep the catalog's order (stable sort)
+    filtered.sort((a, b) => scores.get(b) - scores.get(a));
   }
 
   // 4. Sort by price
