@@ -69,7 +69,7 @@ archive-fashion/
 
 ## Favoris — js/favorites.js
 
-- Cœur en haut à droite de chaque carte (cœur seul, gris clair, sans rond, vert plein quand activé ; la pastille « Photos » est à côté du prix, hors de l’image ; sur téléphone, zone de toucher agrandie de 8 px pour les deux via ::after) et dans la fenêtre QC, à côté de la fiche produit (là aussi cœur seul, sans rond). Le clic sur le cœur n'ouvre pas Lovegobuy.
+- Cœur en haut à droite de chaque carte (cœur seul, gris clair, sans rond, vert plein quand activé ; la pastille « Photos » est à côté du prix, hors de l’image ; sur téléphone, zone de toucher agrandie de 8 px pour les deux via ::after) et dans la fenêtre QC, à côté de la fiche produit (là aussi cœur seul, sans rond). Le clic sur le cœur n'ouvre pas Lovegobuy. Ordinateur : le cœur vide n'apparaît qu'au survol de la carte (ou focus clavier) ; un favori garde toujours son cœur vert. Téléphone : toujours visible.
 - Gardés dans le navigateur (`localStorage`) : `favs-men` / `favs-women`, une liste par page. Clé = id Lovegobuy (maillots du sheet : leur lien).
 - Onglet « Favorites » (texte seul, sans cœur ni nombre) en 1re position, masqué tant qu'il n'y a aucun favori ; s'il est vidé pendant qu'on y est : message « Tap the heart… ». `inCurrentTab()` gère `favorites`. Un changement déclenche l'événement `favchange` (cartes, onglet et fenêtre QC se mettent à jour).
 - Au chargement, un petit script dans le HTML (juste après les onglets) affiche Favorites / Recently viewed avant le premier rendu (pas de saut). Ensuite, apparition / disparition animée (`Favs.setTabShown` : l’onglet s’ouvre en largeur et pousse les suivants, puis son texte apparaît en fondu ; l’inverse pour disparaître), sans animation au chargement de la page.
