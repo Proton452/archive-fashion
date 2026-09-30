@@ -1428,9 +1428,9 @@ a.reviews__tp-inline {
   color: var(--text-muted);
 }
 @media (hover: hover) {
-  /* Just a slightly darker square (no outline): the card's image already shows the style */
-  .card-style:hover, .card-styles__more:hover { background: #E6E6E6; }
-  .card-styles__more:hover { color: var(--text); }
+  /* Thumbnails: no hover effect, the card's image already shows the style. "+N": a slightly
+     darker square, the only sign it can be clicked */
+  .card-styles__more:hover { background: #E6E6E6; color: var(--text); }
 }
 /* Big screens: wider cards, bigger thumbnails */
 @media (min-width: 1440px) {
