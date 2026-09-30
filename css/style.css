@@ -3256,12 +3256,29 @@ a.reviews__tp-inline {
 
 /* ─── Real photos / Styles buttons (items with both) ─── */
 .photos-tabs {
+  position: relative;
   display: flex;
   gap: 4px;
   padding: 4px;
   border-radius: 12px;
   background: var(--bg-hover);
 }
+/* The white pill under the active button slides from one to the other */
+.photos-tabs::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  inset-inline-start: 4px;
+  width: calc(50% - 6px);
+  border-radius: 9px;
+  background: var(--bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.28s var(--ease-out);
+}
+.photos-tabs.is-single::before { width: calc(100% - 8px); }
+.photos-tabs.is-second::before { transform: translateX(calc(100% + 4px)); }
+[dir="rtl"] .photos-tabs.is-second::before { transform: translateX(calc(-100% - 4px)); }
 .photos-tab[hidden] { display: none; }
 .photos-tab {
   flex: 1;
@@ -3270,10 +3287,19 @@ a.reviews__tp-inline {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-muted);
-  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  position: relative;
+  z-index: 1;
+  transition: color 0.2s;
 }
 .photos-tab span { font-weight: 500; opacity: 0.7; }
-.photos-tab.is-active { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+.photos-tab.is-active { color: var(--text); }
+
+/* Switching Styles / Real photos: short fade out, then the new content fades in */
+.photos-track, .photos-counter, .photos-nav, .photos-caption, .photos-styles { transition: opacity 0.18s ease-out; }
+.photos-sheet.is-switching :is(.photos-track, .photos-counter, .photos-nav, .photos-caption, .photos-styles) {
+  opacity: 0;
+  transition-duration: 0.1s;
+}
 .photos-label[hidden] { display: none; }
 
 /* ─── Grid of all the styles: a tap shows that one big, outlined in green ─── */

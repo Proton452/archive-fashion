@@ -108,10 +108,23 @@
     modal.querySelector('.photos-nav--prev').addEventListener('click', () => goTo(index + (isRTL() ? 1 : -1)));
     modal.querySelector('.photos-nav--next').addEventListener('click', () => goTo(index + (isRTL() ? -1 : 1)));
     modal.querySelector('.photos-fav').addEventListener('click', () => { if (window.Favs) Favs.toggle(itemId); });
+    // Switching: the white pill slides to the button at once, the content fades out, changes,
+    // and fades back in (instant when the visitor asks for less motion)
+    let switching = false;
     modal.querySelectorAll('.photos-tab').forEach(tab => tab.addEventListener('click', () => {
-      if (tab.dataset.set === showing) return;
-      showSet(tab.dataset.set);
-      gaEvent('photos_tab', { item_name: item && item.n, tab: tab.dataset.set });
+      const set = tab.dataset.set;
+      if (set === showing || switching) return;
+      gaEvent('photos_tab', { item_name: item && item.n, tab: set });
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { showSet(set); return; }
+      switching = true;
+      markTabs(set);
+      sheet.classList.add('is-switching');
+      setTimeout(() => {
+        switching = false;
+        if (!item) return;
+        showSet(set);
+        requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.remove('is-switching')));
+      }, 110);
     }));
     modal.querySelector('.photos-buy').addEventListener('click', () => {
       gaEvent('click_product', { item_name: item && item.n, source: 'real_photos' });
@@ -281,11 +294,7 @@
     q('.photos-tab[data-set="styles"]').hidden = !styles.length;
     q('.photos-tab[data-set="qc"]').innerHTML = `${escapeText(t('Real photos'))} <span>${item.q.length}</span>`;
     q('.photos-tab[data-set="styles"]').innerHTML = `${escapeText(t('Styles'))} <span>${styles.length}</span>`;
-    modal.querySelectorAll('.photos-tab').forEach(tab => {
-      const on = tab.dataset.set === showing;
-      tab.classList.toggle('is-active', on);
-      tab.setAttribute('aria-selected', on);
-    });
+    markTabs(showing);
     q('.photos-label__main').textContent = onStyles ? t('Available styles') : t('Real photos');
     q('.photos-label__qc').hidden = onStyles;
     // No agent name: some photos come from other agents' warehouses (Hipobuy watermark)
@@ -366,6 +375,19 @@
     renderTexts();
     buildSlides();
     if (!modal.hidden) goTo(0, false);
+  }
+
+  // Active button + where the sliding white pill sits (one button: full width)
+  function markTabs(set) {
+    const both = !!(item.q.length && styles.length);
+    const box = modal.querySelector('.photos-tabs');
+    box.classList.toggle('is-single', !both);
+    box.classList.toggle('is-second', both && set === 'qc');
+    box.querySelectorAll('.photos-tab').forEach(tab => {
+      const on = tab.dataset.set === set;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on);
+    });
   }
 
   // Heart next to the product: same favorites as the cards (js/favorites.js)
@@ -481,6 +503,7 @@
 
   function hide() {
     if (!modal || modal.hidden) return;
+    sheet.classList.remove('is-switching');
     document.querySelectorAll('.product-card.is-held').forEach(c => c.classList.remove('is-held'));   // back to normal: zoomed only if the mouse is still on it
     modal.classList.remove('is-open');
     sheet.style.transform = '';
