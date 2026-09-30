@@ -3295,10 +3295,10 @@ a.reviews__tp-inline {
 .photos-tab.is-active { color: var(--text); }
 
 /* Switching Styles / Real photos: short fade out, then the new content fades in */
-.photos-track, .photos-counter, .photos-nav, .photos-caption, .photos-styles { transition: opacity 0.18s ease-out; }
+.photos-track, .photos-counter, .photos-nav, .photos-caption, .photos-styles { transition: opacity 0.15s ease-out; }
 .photos-sheet.is-switching :is(.photos-track, .photos-counter, .photos-nav, .photos-caption, .photos-styles) {
   opacity: 0;
-  transition-duration: 0.1s;
+  transition-duration: 0.08s;
 }
 .photos-label[hidden] { display: none; }
 

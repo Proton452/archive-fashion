@@ -118,13 +118,18 @@
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { showSet(set); return; }
       switching = true;
       markTabs(set);
-      sheet.classList.add('is-switching');
-      setTimeout(() => {
-        switching = false;
-        if (!item) return;
-        showSet(set);
-        requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.remove('is-switching')));
-      }, 110);
+      // The old photo stays until the new one is ready (no white frame while it downloads)
+      const opened = item;
+      preloadFirst(set).then(() => {
+        if (item !== opened) { switching = false; return; }
+        sheet.classList.add('is-switching');
+        setTimeout(() => {
+          switching = false;
+          if (item !== opened) return;
+          showSet(set);
+          requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.remove('is-switching')));
+        }, 80);
+      });
     }));
     modal.querySelector('.photos-buy').addEventListener('click', () => {
       gaEvent('click_product', { item_name: item && item.n, source: 'real_photos' });
@@ -377,6 +382,23 @@
     if (!modal.hidden) goTo(0, false);
   }
 
+  // First photo of a set, downloaded ahead (same request as the photo strip's, so it's cached).
+  // Resolves when ready, or after 600 ms at most.
+  const preloaded = new Map();
+  function preloadFirst(set) {
+    const url = (set === 'styles' ? styles : item.q)[0];
+    if (!url) return Promise.resolve();
+    if (!preloaded.has(url)) {
+      preloaded.set(url, new Promise(done => {
+        const img = new Image();
+        if (set === 'styles') img.crossOrigin = 'anonymous';
+        img.onload = img.onerror = () => done();
+        img.src = url;
+      }));
+    }
+    return Promise.race([preloaded.get(url), new Promise(done => setTimeout(done, 600))]);
+  }
+
   // Active button + where the sliding white pill sits (one button: full width)
   function markTabs(set) {
     const both = !!(item.q.length && styles.length);
@@ -487,6 +509,12 @@
     // real photos.
     if (styles.length) showSet('styles');
     fitSize();
+    // The other button's first photo, fetched once the one shown is there (no burst)
+    if (styles.length && data.q.length) {
+      const first = track.querySelector('.photos-slide__img');
+      const later = () => { if (item === data) preloadFirst('qc'); };
+      if (first) first.addEventListener('load', later, { once: true });
+    }
     goTo(0, false);
     requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
     // Computers: focus the window (keyboard users land inside it). Not on phones: like the
