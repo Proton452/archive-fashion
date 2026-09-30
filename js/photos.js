@@ -306,6 +306,19 @@
     loadThumb(0);
   }
 
+  // Items with styles: the window's height is the one it has without the styles grid (measured
+  // again after a resize, e.g. rotation), so the grid scrolls inside instead of growing it
+  function fitSize() {
+    sheet.style.height = '';
+    if (!styles.length || modal.hidden) return;
+    const grid = modal.querySelector('.photos-styles');
+    const shown = !grid.hidden;
+    grid.hidden = true;
+    const h = sheet.offsetHeight;
+    grid.hidden = !shown;
+    sheet.style.height = h + 'px';
+  }
+
   // What the photo strip shows: 'qc' (real photos) or 'styles'
   function showSet(set) {
     showing = set;
@@ -402,20 +415,18 @@
     lastFocus = document.activeElement;
     modal.querySelector('.photos-styles').replaceChildren();
     if (styles.length) buildGrid();
-    const both = !!(data.q.length && styles.length);
     sheet.style.height = '';
-    showSet(styles.length && !both ? 'styles' : 'qc');   // with both: real photos first, to measure them
+    showSet(data.q.length ? 'qc' : 'styles');
     sheet.style.transform = '';
     sheet.scrollTop = 0;
     modal.hidden = false;
     document.documentElement.classList.add('photos-open');
-    // Both: the window takes the size of the Real photos side (what's around the item matters
-    // there) and keeps it on Styles, whose long grid scrolls inside. Then styles first: pick
-    // one, then check the real photos.
-    if (both) {
-      sheet.style.height = sheet.offsetHeight + 'px';
-      showSet('styles');
-    }
+    // With styles, the window takes the size it has without their grid (the Real photos size:
+    // what's around the item matters there, styles are just white), so every item's window
+    // looks alike; the long grid scrolls inside. Then styles first: pick one, then check the
+    // real photos.
+    if (styles.length) showSet('styles');
+    fitSize();
     goTo(0, false);
     requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
     // Computers: focus the window (keyboard users land inside it). Not on phones: like the
@@ -472,12 +483,9 @@
   });
 
   // Keep the current photo in place if the window is resized (phone rotation)
-  let lastWidth = window.innerWidth;
   window.addEventListener('resize', () => {
-    const turned = window.innerWidth !== lastWidth;   // not the phone's address bar growing / shrinking
-    lastWidth = window.innerWidth;
     if (!item) return;
-    if (turned) sheet.style.height = '';   // measured for the old width: the window follows its content again
+    fitSize();
     goTo(index, false);
     [...track.children].forEach(sl => fitPhoto(sl, sl.querySelector('.photos-slide__img')));
   });
