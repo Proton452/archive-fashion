@@ -484,7 +484,7 @@
   }
 
   // ─── Open / close ─────────────────────────────
-  async function open(id, { fromHash = false } = {}) {
+  async function open(id, { fromHash = false, style = 0 } = {}) {   // style: open on that style (card thumbnails)
     let data;
     try { data = await loadItem(String(id)); } catch (e) { data = null; }
     if (!data) { if (fromHash) clearHash(); return; }
@@ -515,7 +515,7 @@
       const later = () => { if (item === data) preloadFirst('qc'); };
       if (first) first.addEventListener('load', later, { once: true });
     }
-    goTo(0, false);
+    goTo(showing === 'styles' ? style : 0, false);
     requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
     // Computers: focus the window (keyboard users land inside it). Not on phones: like the
     // chat, so iPhone Safari doesn't expand its address bar

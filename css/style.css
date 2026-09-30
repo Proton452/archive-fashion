@@ -1387,6 +1387,65 @@ a.reviews__tp-inline {
   .product-card.is-held .product-card__image img { transform: scale(1.03); }   /* is-held: its real photos window is open */
 }
 
+/* ─── Style thumbnails: a row under the image, 4 (phones: 3) then "+N" (js/card-styles.js).
+       Every card has the row, empty without styles, so the cards stay aligned. ─── */
+.card-styles {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  margin-bottom: 10px;
+}
+.card-style {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--bg-hover);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow 0.2s, transform 0.16s var(--ease-out);
+}
+.card-style:active { transform: scale(0.92); }
+.card-style img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.12);   /* style photos keep a margin around the item */
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.card-style.is-loaded img { opacity: 1; }
+.card-styles__more {
+  padding: 4px 2px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.card-styles__more--phone { display: none; }
+@media (hover: hover) {
+  .card-style:hover { box-shadow: inset 0 0 0 1px var(--text-muted); }
+  .card-styles__more:hover { color: var(--text); }
+}
+@media (max-width: 480px) {
+  .card-styles { gap: 4px; min-height: 30px; margin-bottom: 8px; }
+  .card-style { width: 30px; height: 30px; border-radius: 7px; }
+  .card-style[data-style="3"], .card-styles__more--wide { display: none; }
+  .card-styles__more--phone { display: inline; }
+}
+/* Computers: hovering a thumbnail shows that style over the card's image */
+.product-card .product-card__image .card-style-preview {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: #FFFFFF;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.product-card__image.is-previewing .card-style-preview { opacity: 1; }
+
 .product-card__image-placeholder {
   width: 100%;
   height: 100%;
