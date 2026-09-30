@@ -1313,7 +1313,7 @@ a.reviews__tp-inline {
   /* Same height as .product-card__info (2-line name + 6px + price row), so the page
      and its scrollbar don't grow when the products replace the placeholders */
   box-sizing: content-box;
-  height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 32px));   /* price row: see .product-card__row */
+  height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 36px));   /* price row: see .product-card__row */
 }
 
 .skeleton-card__line {
@@ -1387,26 +1387,30 @@ a.reviews__tp-inline {
   .product-card.is-held .product-card__image img { transform: scale(1.03); }   /* is-held: its real photos window is open */
 }
 
-/* ─── Style thumbnails in the price row, on the right: 4 (phones: 3) then "+N" (js/card-styles.js) ─── */
+/* ─── Style thumbnails in the price row, on the right: 3, then a "+N" square of the same size
+       (easy to hit) (js/card-styles.js) ─── */
 .card-styles {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 4px;
+  flex: 1 1 auto;
   min-width: 0;
-  overflow: hidden;   /* a very long price squeezes the thumbnails instead of breaking the row */
 }
-.card-style {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 7px;
+.product-card__row .product-card__price { flex-shrink: 0; }   /* the thumbnails shrink, never the price */
+.card-style, .card-styles__more {
+  /* Square, 36 px, but a bit smaller when a long price (e.g. in zł) needs the room */
+  flex: 0 1 36px;
+  min-width: 0;
+  aspect-ratio: 1;
+  border-radius: 8px;
   background: var(--bg-hover);
   overflow: hidden;
   cursor: pointer;
-  box-shadow: inset 0 0 0 1px transparent;
-  transition: box-shadow 0.2s, transform 0.16s var(--ease-out);
+  transition: background-color 0.2s, box-shadow 0.2s, color 0.2s, transform 0.16s var(--ease-out);
 }
-.card-style:active { transform: scale(0.92); }
+.card-style { box-shadow: inset 0 0 0 1px transparent; }
+.card-style:active, .card-styles__more:active { transform: scale(0.92); }
 .card-style img {
   width: 100%;
   height: 100%;
@@ -1417,27 +1421,31 @@ a.reviews__tp-inline {
 }
 .card-style.is-loaded img { opacity: 1; }
 .card-styles__more {
-  padding: 4px 0 4px 2px;
-  font-size: 0.72rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--text-muted);
-  cursor: pointer;
 }
-.card-styles__more--phone { display: none; }
 @media (hover: hover) {
   .card-style:hover { box-shadow: inset 0 0 0 1px var(--text-muted); }
-  .card-styles__more:hover { color: var(--text); }
+  .card-styles__more:hover { background: #E6E6E6; color: var(--text); }
+}
+/* Big screens: wider cards, bigger thumbnails */
+@media (min-width: 1440px) {
+  .card-style, .card-styles__more { flex-basis: 40px; }
+  .product-card .product-card__row { min-height: 40px; }
+  .skeleton-card .skeleton-card__info { height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 40px)); }
 }
 @media (max-width: 480px) {
-  /* Room for 3 bigger thumbnails next to the price: slimmer card padding */
+  /* Room for the thumbnails next to the price: slimmer card padding */
   .product-card .product-card__info { padding: 0.75rem 0.7rem 0.9rem; }   /* .product-card: wins over the base rules further down */
   .skeleton-card .skeleton-card__info { padding: 0.75rem 0.7rem 0.9rem; height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 25px)); }
   .product-card .product-card__row { min-height: 25px; gap: 4px; }
   .card-styles { gap: 3px; }
-  .card-style { width: 25px; height: 25px; border-radius: 6px; }
-  .card-styles__more { font-size: 0.68rem; padding-left: 1px; }
-  .card-style[data-style="3"], .card-styles__more--wide { display: none; }
-  .card-styles__more--phone { display: inline; }
+  .card-style, .card-styles__more { flex-basis: 25px; border-radius: 6px; }
+  .card-styles__more { font-size: 0.66rem; }
 }
 
 /* Computers: hovering a thumbnail shows that style over the card's image */
@@ -2961,7 +2969,7 @@ a.reviews__tp-inline {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  min-height: 32px;   /* the style thumbnails' height, on every card (with or without) so the grid stays even */
+  min-height: 36px;   /* the style thumbnails' height, on every card (with or without) so the grid stays even */
 }
 
 .product-card__photos {
