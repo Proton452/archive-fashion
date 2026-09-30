@@ -3262,7 +3262,7 @@ a.reviews__tp-inline {
   border-radius: 12px;
   background: var(--bg-hover);
 }
-.photos-tabs[hidden] { display: none; }
+.photos-tab[hidden] { display: none; }
 .photos-tab {
   flex: 1;
   padding: 9px 8px;

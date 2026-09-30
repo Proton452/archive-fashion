@@ -11,7 +11,7 @@
    - Styles (official photos of each colour / design, `m` in the data): two buttons
      "Styles (16) | Real photos (10)" choose what the photo strip shows. With styles, a grid
      of all of them sits under the buttons: a tap shows that style big in the strip.
-     Items with only one of the two have no buttons.
+     Items with only one of the two show just that button (same look, no title).
 ============================================== */
 
 (function () {
@@ -78,11 +78,11 @@
           <span class="photos-counter" aria-live="polite"></span>
         </div>
         <div class="photos-info">
-          <div class="photos-tabs" role="tablist" hidden>
+          <div class="photos-tabs" role="tablist">
             <button type="button" class="photos-tab" role="tab" data-set="styles"></button>
             <button type="button" class="photos-tab" role="tab" data-set="qc"></button>
           </div>
-          <p class="photos-label" id="photosTitle"><span class="photos-label__main"></span> <span class="photos-label__qc">(QC)</span></p>
+          <p class="photos-label" id="photosTitle" hidden><span class="photos-label__main"></span> <span class="photos-label__qc">(QC)</span></p>
           <p class="photos-caption"></p>
           <div class="photos-styles" hidden></div>
           <div class="photos-product">
@@ -238,9 +238,9 @@
     q('.photos-nav--prev').setAttribute('aria-label', t('Previous photo'));
     q('.photos-nav--next').setAttribute('aria-label', t('Next photo'));
     const onStyles = showing === 'styles';
-    const tabs = item.q.length && styles.length;   // both: buttons instead of the title
-    q('.photos-tabs').hidden = !tabs;
-    q('.photos-label').hidden = !!tabs;
+    // The buttons always replace the title (same look for every item); only the sets it has
+    q('.photos-tab[data-set="qc"]').hidden = !item.q.length;
+    q('.photos-tab[data-set="styles"]').hidden = !styles.length;
     q('.photos-tab[data-set="qc"]').innerHTML = `${escapeText(t('Real photos'))} <span>${item.q.length}</span>`;
     q('.photos-tab[data-set="styles"]').innerHTML = `${escapeText(t('Styles'))} <span>${styles.length}</span>`;
     modal.querySelectorAll('.photos-tab').forEach(tab => {
