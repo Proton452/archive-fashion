@@ -200,12 +200,10 @@ async function fetchCatalog(url) {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`Catalog HTTP ${r.status}`);
   const data = await r.json();
-  const items = data.items.map(([name, brand, article, priceCny, itemId, imageId, qcCount, stylesCount, firstStyles]) => ({
+  const items = data.items.map(([name, brand, article, priceCny, itemId, imageId, qcCount, stylesCount]) => ({
     id:    itemId,
     qc:    qcCount || 0,       // real (QC) photos, shown by js/photos.js
     styles: stylesCount || 0,  // official photos of each colour / design, same window
-    firstStyles,               // first 3 style numbers when not 0, 1, 2 (js/card-styles.js)
-    imageId,
     name,
     brand,
     article,
@@ -573,14 +571,6 @@ function appendNextBatch() {
         Favs.toggle(Favs.key(p));
         return;
       }
-      // Style thumbnail: open the photos window on that style
-      const style = e.target.closest('.card-style');
-      if (style) {
-        e.preventDefault();
-        card.classList.add('is-held');
-        if (window.RealPhotos) RealPhotos.open(p.id, { style: +style.dataset.style });
-        return;
-      }
       // Camera badge: open the real photos instead of Lovegobuy
       if (e.target.closest('.product-card__photos')) {
         e.preventDefault();
@@ -599,7 +589,6 @@ function appendNextBatch() {
           : `<div class="product-card__image-placeholder">No image</div>`
         }
         ${Favs.badge(p)}
-        ${window.CardStyles ? CardStyles.html(p) : ''}
       </div>
       <div class="product-card__info">
         <h3 class="product-card__name" data-tooltip="${escapeAttr(displayName)}">${escapeHTML(displayName)}</h3>
@@ -625,7 +614,6 @@ function appendNextBatch() {
       fadeObserver.observe(el);
     }
     if (batchStart + i >= 8) preloadObserver.observe(el);
-    if (window.CardStyles) CardStyles.observe(el);
   });
 
   if (displayedCount < visibleProducts.length) {
@@ -682,7 +670,7 @@ document.querySelectorAll('.nav__cta, .btn--primary').forEach(el => {
 const IMG_RETRY_MS = [800, 2000, 4000];
 grid.addEventListener('error', e => {
   const img = e.target;
-  if (img.tagName !== 'IMG' || 'noretry' in img.dataset) return;   // style thumbnails: no retry (js/card-styles.js)
+  if (img.tagName !== 'IMG') return;
   const tries = +(img.dataset.tries || 0);
   if (tries >= IMG_RETRY_MS.length) return;
   img.dataset.tries = tries + 1;
@@ -703,13 +691,6 @@ grid.addEventListener('keydown', e => {
   if (fav && (e.key === 'Enter' || e.key === ' ')) {
     e.preventDefault();
     Favs.toggle(fav.dataset.fav);
-    return;
-  }
-  const style = e.target.closest('.card-style');
-  if (style && (e.key === 'Enter' || e.key === ' ')) {
-    e.preventDefault();
-    const card = style.closest('.product-card');
-    if (card && card._product && window.RealPhotos) { card.classList.add('is-held'); RealPhotos.open(card._product.id, { style: +style.dataset.style }); }
     return;
   }
   const badge = e.target.closest('.product-card__photos');

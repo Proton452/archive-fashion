@@ -5,9 +5,7 @@ Usage:  python scripts/build_catalog.py [path/to/my-little-shop-produits.csv]
 
 Output format (compact, ~8k items):
   { "link": "...{id}...", "image": "...{id}...", "end": <index where non-fashion items start>,
-    "items": [[name, brand, category, price_cny, item_id, image_id, qc_count, styles_count, (first_styles)], ...] }
-  first_styles (only when they aren't 0, 1, 2): numbers of the first 3 styles, for the
-  thumbnails on the catalog cards (js/card-styles.js).
+    "items": [[name, brand, category, price_cny, item_id, image_id, qc_count, styles_count], ...] }
 Real (QC) photos and styles (official photos of each colour / design, model_images in the CSV)
 go to data/qc/<last 2 digits of item_id>.json, loaded only when a visitor opens them:
 { item_id: { g, n, b, c, p, i, q: [urls], m: [n, ...] } }. Style photos are always
@@ -93,8 +91,6 @@ def main():
             len(qc),
             len(styles),
         ]
-        if styles[:3] != list(range(min(3, len(styles)))):
-            item.append(styles[:3])
         out[gender].append(item)
         if qc or styles:
             qc_shards.setdefault(link.group(1)[-2:], {})[link.group(1)] = {
