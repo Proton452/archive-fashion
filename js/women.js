@@ -573,8 +573,8 @@ function appendNextBatch() {
         Favs.toggle(Favs.key(p));
         return;
       }
-      // "13 styles" / style thumbnail (computers): open the photos window on that style
-      const style = e.target.closest('.card-style, .product-card__styles');
+      // Style thumbnail: open the photos window on that style
+      const style = e.target.closest('.card-style');
       if (style) {
         e.preventDefault();
         card.classList.add('is-held');
@@ -599,13 +599,13 @@ function appendNextBatch() {
           : `<div class="product-card__image-placeholder">No image</div>`
         }
         ${Favs.badge(p)}
+        ${window.CardStyles ? CardStyles.html(p) : ''}
       </div>
       <div class="product-card__info">
         <h3 class="product-card__name" data-tooltip="${escapeAttr(displayName)}">${escapeHTML(displayName)}</h3>
-        ${window.CardStyles ? CardStyles.meta(p, t(p.article.charAt(0).toUpperCase() + p.article.slice(1))) : ''}
         <div class="product-card__row">
           ${price ? `<span class="product-card__price">${escapeHTML(price)}</span>` : ''}
-          ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${GALLERY_ICON}<span>${escapeHTML(t('Photos'))}</span></span>` : ''}
+          ${p.qc || p.styles ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(p.qc ? t('See real photos') : t('See the styles'))}">${GALLERY_ICON}<span>${escapeHTML(p.qc ? t('Photos') : t('Styles'))}</span></span>` : ''}
         </div>
       </div>
     `;
@@ -625,6 +625,7 @@ function appendNextBatch() {
       fadeObserver.observe(el);
     }
     if (batchStart + i >= 8) preloadObserver.observe(el);
+    if (window.CardStyles) CardStyles.observe(el);
   });
 
   if (displayedCount < visibleProducts.length) {
@@ -704,7 +705,7 @@ grid.addEventListener('keydown', e => {
     Favs.toggle(fav.dataset.fav);
     return;
   }
-  const style = e.target.closest('.product-card__styles');
+  const style = e.target.closest('.card-style');
   if (style && (e.key === 'Enter' || e.key === ' ')) {
     e.preventDefault();
     const card = style.closest('.product-card');

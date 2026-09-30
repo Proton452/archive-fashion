@@ -1,34 +1,37 @@
 /* ==============================================
-   Styles on the catalog cards (Men / Women)
-   - Every card has a quiet line under the name: its category, then "· 13 styles" when it
-     has styles (official photos of each colour / design). A tap on "13 styles" opens the
-     photos window on the Styles side (js/photos.js).
-   - Computers only, while the mouse is on the card: the first 3 styles appear as thumbnails
-     at the bottom of the image ("+N" after), hovering one shows it in the card's image, a
-     click opens the window on it. Nothing over the image otherwise, and nothing on phones:
-     the photos still come from img.theqcbook.com (heavy, refuses bursts), so they load only
-     then, 2 at a time. When they're copied to Bunny, only url() changes.
+   Style thumbnails on the catalog cards (Men / Women): the first 3 styles (colours /
+   designs) at the bottom left of the card's image, then "+N" when there are more.
+   - A tap opens the photos window on that style (js/photos.js); "+N" on the 4th.
+   - Computers: hovering a thumbnail shows that style in the card's image.
+   - The style photos still come from img.theqcbook.com, which refuses bursts (HTTP 429):
+     a card's thumbnails load only once it's on screen and its own image is there, 2 at a
+     time for the whole page, and one that's refused stays an empty grey square (no retry).
+     When they're copied to Bunny, only url() changes.
 ============================================== */
 
 (function () {
   const SHOWN = 3;
   const MAX_AT_ONCE = 2;
-  const hover = window.matchMedia('(hover: hover)');
 
   const url = (imageId, n) => `https://img.theqcbook.com/products/${imageId}/${n}.webp?v5`;
-  const firstStyles = p => p.firstStyles || [0, 1, 2].slice(0, Math.min(SHOWN, p.styles));
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // "Sneakers · 13 styles" (the category alone when the item has no styles)
-  function meta(p, category) {
-    const count = p.styles === 1 ? t('1 style') : t('{n} styles').replace('{n}', p.styles);
-    const styles = p.styles
-      ? ` · <span class="product-card__styles" role="button" tabindex="0" data-style="0">${esc(count)}</span>`
+  // Numbers of the first styles: 0, 1, 2 unless the catalog says otherwise (9th field)
+  const firstStyles = p => p.firstStyles || [0, 1, 2].slice(0, Math.min(SHOWN, p.styles));
+
+  function html(p) {
+    if (!p.styles || !p.imageId) return '';
+    const nums = firstStyles(p);
+    const more = p.styles - nums.length;
+    const thumbs = nums.map((n, i) =>
+      `<span class="card-style" role="button" tabindex="0" data-style="${i}" aria-label="${t('Style')} ${i + 1}">` +
+      `<img alt="" decoding="async" data-noretry data-src="${url(p.imageId, n)}"></span>`).join('');
+    const plus = more > 0
+      ? `<span class="card-style card-style--more" role="button" tabindex="0" data-style="${nums.length}" aria-label="${t('See the styles')}">+${more}</span>`
       : '';
-    return `<p class="product-card__meta">${esc(category)}${styles}</p>`;
+    return `<div class="card-styles">${thumbs}${plus}</div>`;
   }
 
-  // ─── Computers: thumbnails while hovering the card ───
+  // ─── Loading: on screen, after the card's image, 2 at a time ───
   const queue = [];
   let active = 0;
 
@@ -49,48 +52,50 @@
     }
   }
 
-  function thumbs(card) {
-    const p = card._product;
-    const box = card.querySelector('.product-card__image');
-    if (!p || !p.styles || !p.imageId || !box || box.querySelector('.card-styles')) return;
-    const nums = firstStyles(p);
-    const more = p.styles - nums.length;
-    const row = document.createElement('div');
-    row.className = 'card-styles';
-    row.innerHTML = nums.map((n, i) =>
-      `<span class="card-style" role="button" data-style="${i}" aria-label="${esc(t('Style'))} ${i + 1}">` +
-      `<img alt="" decoding="async" data-noretry data-src="${url(p.imageId, n)}"></span>`).join('') +
-      (more > 0 ? `<span class="card-style card-style--more" role="button" data-style="${nums.length}" aria-label="${esc(t('See the styles'))}">+${more}</span>` : '');
-    box.append(row);
-    row.querySelectorAll('img').forEach(img => queue.push(img));
-    pump();
+  const seen = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const card = entry.target;
+    seen.unobserve(card);
+    const main = card.querySelector('.product-card__image > img');
+    const start = () => {
+      card.querySelectorAll('.card-style img[data-src]:not([src])').forEach(img => queue.push(img));
+      pump();
+    };
+    if (!main || main.complete) start();
+    else {
+      main.addEventListener('load', start, { once: true });
+      main.addEventListener('error', start, { once: true });
+    }
+  }), { rootMargin: '100px 0px' });
+
+  function observe(card) {
+    if (card.querySelector('.card-styles')) seen.observe(card);
   }
 
-  document.addEventListener('mouseover', e => {
-    if (!hover.matches || !e.target.closest) return;
-    const card = e.target.closest('.product-card');
-    if (card) thumbs(card);
-    // Hovering a thumbnail: that style over the card's image
-    const thumb = e.target.closest('.card-style:not(.card-style--more)');
-    if (!thumb || !thumb.classList.contains('is-loaded')) return;
-    const box = thumb.closest('.product-card__image');
-    let preview = box.querySelector('.card-style-preview');
-    if (!preview) {
-      preview = document.createElement('img');
-      preview.className = 'card-style-preview';
-      preview.alt = '';
-      preview.dataset.noretry = '';
-      box.insertBefore(preview, thumb.parentElement);
-    }
-    preview.src = thumb.querySelector('img').src;
-    box.classList.add('is-previewing');
-  });
-  document.addEventListener('mouseout', e => {
-    const thumb = e.target.closest && e.target.closest('.card-style');
-    if (!thumb || (e.relatedTarget && thumb.contains(e.relatedTarget))) return;
-    const box = thumb.closest('.product-card__image');
-    if (box) box.classList.remove('is-previewing');
-  });
+  // ─── Computers: hovering a thumbnail shows that style in the card's image ───
+  if (window.matchMedia('(hover: hover)').matches) {
+    document.addEventListener('mouseover', e => {
+      const thumb = e.target.closest && e.target.closest('.card-style:not(.card-style--more)');
+      if (!thumb || !thumb.classList.contains('is-loaded')) return;
+      const box = thumb.closest('.product-card__image');
+      let preview = box.querySelector('.card-style-preview');
+      if (!preview) {
+        preview = document.createElement('img');
+        preview.className = 'card-style-preview';
+        preview.alt = '';
+        preview.dataset.noretry = '';
+        box.insertBefore(preview, thumb.parentElement);
+      }
+      preview.src = thumb.querySelector('img').src;
+      box.classList.add('is-previewing');
+    });
+    document.addEventListener('mouseout', e => {
+      const thumb = e.target.closest && e.target.closest('.card-style');
+      if (!thumb || (e.relatedTarget && thumb.contains(e.relatedTarget))) return;
+      const box = thumb.closest('.product-card__image');
+      if (box) box.classList.remove('is-previewing');
+    });
+  }
 
-  window.CardStyles = { meta };
+  window.CardStyles = { html, observe };
 })();

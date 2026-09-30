@@ -293,7 +293,5 @@ window.I18N_DICT = {
  "Styles": "Modelos",
  "Style": "Modelo",
  "Available styles": "Modelos disponibles",
- "Every colour and design you can order.": "Todos los colores y diseños que puedes pedir.",
- "{n} styles": "{n} modelos",
- "1 style": "1 modelo"
+ "Every colour and design you can order.": "Todos los colores y diseños que puedes pedir."
 };

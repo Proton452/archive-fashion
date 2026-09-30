@@ -293,7 +293,5 @@ window.I18N_DICT = {
  "Styles": "موديلات",
  "Style": "موديل",
  "Available styles": "الموديلات المتاحة",
- "Every colour and design you can order.": "كل الألوان والتصاميم التي يمكنك طلبها.",
- "{n} styles": "{n} موديلات",
- "1 style": "موديل واحد"
+ "Every colour and design you can order.": "كل الألوان والتصاميم التي يمكنك طلبها."
 };
