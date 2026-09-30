@@ -1,7 +1,7 @@
 /* ==============================================
    Style thumbnails on the catalog cards (Men / Women), in the price row on the right (the
-   Photos pill sits on the image, top right): the first 3 styles (colours / designs), then
-   a "+N" square of the same size (easy to hit).
+   Photos pill sits on the image, top right): the first styles (colours / designs) — 4 on
+   computers, 3 on phones — then "+N" as text, with a big invisible click area.
    - A tap opens the photos window on that style (js/photos.js); "+N" on the next one.
    - Computers: hovering a thumbnail shows that style in the card's image.
    - The style photos still come from img.theqcbook.com, which refuses bursts (HTTP 429):
@@ -11,14 +11,14 @@
 ============================================== */
 
 (function () {
-  const SHOWN = 3;
+  const SHOWN = 4;          // computers; phones hide the 4th (CSS) and show their own "+N"
   const MAX_AT_ONCE = 2;
 
   const url = (imageId, n) => `https://img.theqcbook.com/products/${imageId}/${n}.webp?v5`;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // Numbers of the first styles: 0, 1, 2 unless the catalog says otherwise (9th field)
-  const firstStyles = p => (p.firstStyles || [0, 1, 2]).slice(0, Math.min(SHOWN, p.styles));
+  // Numbers of the first styles: 0, 1, 2, 3 unless the catalog says otherwise (9th field)
+  const firstStyles = p => (p.firstStyles || [0, 1, 2, 3]).slice(0, Math.min(SHOWN, p.styles));
 
   function html(p) {
     if (!p.styles || !p.imageId) return '';
@@ -26,10 +26,11 @@
     const thumbs = nums.map((n, i) =>
       `<span class="card-style" role="button" tabindex="0" data-style="${i}" aria-label="${esc(t('Style'))} ${i + 1}">` +
       `<img alt="" decoding="async" data-noretry data-src="${url(p.imageId, n)}"></span>`).join('');
-    const more = p.styles > nums.length
-      ? `<span class="card-styles__more" role="button" tabindex="0" data-style="${nums.length}" aria-label="${esc(t('See the styles'))}">+${p.styles - nums.length}</span>`
+    // "+N" counts what isn't shown: one more on phones (3 thumbnails)
+    const more = (shown, cls) => p.styles > shown
+      ? `<span class="card-styles__more ${cls}" role="button" tabindex="0" data-style="${shown}" aria-label="${esc(t('See the styles'))}">+${p.styles - shown}</span>`
       : '';
-    return `<div class="card-styles">${thumbs}${more}</div>`;
+    return `<div class="card-styles">${thumbs}${more(nums.length, 'card-styles__more--wide')}${more(Math.min(3, nums.length), 'card-styles__more--phone')}</div>`;
   }
 
   // ─── Loading: on screen, after the card's image, 2 at a time ───

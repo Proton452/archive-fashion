@@ -1313,7 +1313,7 @@ a.reviews__tp-inline {
   /* Same height as .product-card__info (2-line name + 6px + price row), so the page
      and its scrollbar don't grow when the products replace the placeholders */
   box-sizing: content-box;
-  height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 36px));   /* price row: see .product-card__row */
+  height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 34px));   /* price row: see .product-card__row */
 }
 
 .skeleton-card__line {
@@ -1387,8 +1387,9 @@ a.reviews__tp-inline {
   .product-card.is-held .product-card__image img { transform: scale(1.03); }   /* is-held: its real photos window is open */
 }
 
-/* ─── Style thumbnails in the price row, on the right: 3, then a "+N" square of the same size
-       (easy to hit) (js/card-styles.js) ─── */
+/* ─── Style thumbnails in the price row, on the right: 4 (phones: 3), then "+N" as text with
+       a big invisible click area (js/card-styles.js). A grey "+N" square looked like an
+       empty thumbnail. ─── */
 .card-styles {
   display: flex;
   align-items: center;
@@ -1398,18 +1399,18 @@ a.reviews__tp-inline {
   min-width: 0;
 }
 .product-card__row .product-card__price { flex-shrink: 0; }   /* the thumbnails shrink, never the price */
-.card-style, .card-styles__more {
-  /* Square, 36 px, but a bit smaller when a long price (e.g. in zł) needs the room */
-  flex: 0 1 36px;
+.card-style {
+  /* Square, 34 px, but a bit smaller when a long price (e.g. in zł) needs the room */
+  flex: 0 1 34px;
   min-width: 0;
   aspect-ratio: 1;
   border-radius: 8px;
   background: var(--bg-hover);
   overflow: hidden;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, transform 0.16s var(--ease-out);
+  transition: transform 0.16s var(--ease-out);
 }
-.card-style:active, .card-styles__more:active { transform: scale(0.92); }
+.card-style:active { transform: scale(0.92); }
 .card-style img {
   width: 100%;
   height: 100%;
@@ -1420,23 +1421,29 @@ a.reviews__tp-inline {
 }
 .card-style.is-loaded img { opacity: 1; }
 .card-styles__more {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  padding: 0 0 0 2px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s;
 }
+.card-styles__more::after {   /* easy to click: a bigger invisible area around the text */
+  content: '';
+  position: absolute;
+  inset: -12px -8px -12px -6px;
+}
+.card-styles__more--phone { display: none; }
 @media (hover: hover) {
-  /* Thumbnails: no hover effect, the card's image already shows the style. "+N": a slightly
-     darker square, the only sign it can be clicked */
-  .card-styles__more:hover { background: #E6E6E6; color: var(--text); }
+  .card-styles__more:hover { color: var(--text); }   /* thumbnails: no hover effect, the card's image shows the style */
 }
 /* Big screens: wider cards, bigger thumbnails */
 @media (min-width: 1440px) {
-  .card-style, .card-styles__more { flex-basis: 40px; }
-  .product-card .product-card__row { min-height: 40px; }
-  .skeleton-card .skeleton-card__info { height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 40px)); }
+  .card-style { flex-basis: 38px; }
+  .product-card .product-card__row { min-height: 38px; }
+  .skeleton-card .skeleton-card__info { height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 38px)); }
 }
 @media (max-width: 480px) {
   /* Room for the thumbnails next to the price: slimmer card padding */
@@ -1444,8 +1451,9 @@ a.reviews__tp-inline {
   .skeleton-card .skeleton-card__info { padding: 0.75rem 0.7rem 0.9rem; height: calc(1.4 * 0.88rem + 4px + max(1.5 * 1.05rem, 25px)); }
   .product-card .product-card__row { min-height: 25px; gap: 4px; }
   .card-styles { gap: 3px; }
-  .card-style, .card-styles__more { flex-basis: 25px; border-radius: 6px; }
-  .card-styles__more { font-size: 0.66rem; }
+  .card-style { flex-basis: 25px; border-radius: 6px; }
+  .card-style[data-style="3"], .card-styles__more--wide { display: none; }
+  .card-styles__more--phone { display: inline; font-size: 0.68rem; }
 }
 
 /* Computers: hovering a thumbnail shows that style over the card's image */
@@ -2969,7 +2977,7 @@ a.reviews__tp-inline {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  min-height: 36px;   /* the style thumbnails' height, on every card (with or without) so the grid stays even */
+  min-height: 34px;   /* the style thumbnails' height, on every card (with or without) so the grid stays even */
 }
 
 .product-card__photos {
