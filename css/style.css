@@ -1313,7 +1313,7 @@ a.reviews__tp-inline {
   /* Same height as .product-card__info (2-line name + 6px + price row), so the page
      and its scrollbar don't grow when the products replace the placeholders */
   box-sizing: content-box;
-  height: calc(2 * 1.4 * 0.82rem + 6px + max(1.5 * 0.98rem, 28px));   /* price row: see .product-card__row */
+  height: calc(1.4 * 0.82rem + 4px + max(1.5 * 1.05rem, 32px));   /* price row: see .product-card__row */
 }
 
 .skeleton-card__line {
@@ -1393,11 +1393,12 @@ a.reviews__tp-inline {
   align-items: center;
   gap: 4px;
   min-width: 0;
+  overflow: hidden;   /* a very long price squeezes the thumbnails instead of breaking the row */
 }
 .card-style {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 7px;
   background: var(--bg-hover);
   overflow: hidden;
@@ -1428,8 +1429,13 @@ a.reviews__tp-inline {
   .card-styles__more:hover { color: var(--text); }
 }
 @media (max-width: 480px) {
+  /* Room for 3 bigger thumbnails next to the price: slimmer card padding */
+  .product-card .product-card__info { padding: 0.75rem 0.7rem 0.9rem; }   /* .product-card: wins over the base rules further down */
+  .skeleton-card .skeleton-card__info { padding: 0.75rem 0.7rem 0.9rem; height: calc(1.4 * 0.82rem + 4px + max(1.5 * 1.05rem, 25px)); }
+  .product-card .product-card__row { min-height: 25px; gap: 4px; }
   .card-styles { gap: 3px; }
-  .card-style { width: 24px; height: 24px; border-radius: 6px; }
+  .card-style { width: 25px; height: 25px; border-radius: 6px; }
+  .card-styles__more { font-size: 0.68rem; padding-left: 1px; }
   .card-style[data-style="3"], .card-styles__more--wide { display: none; }
   .card-styles__more--phone { display: inline; }
 }
@@ -1466,14 +1472,13 @@ a.reviews__tp-inline {
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--text);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   line-height: 1.4;
-  min-height: calc(2 * 1.4em);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  /* One line ("…" when too long, full name in the tooltip on computers): two reserved
+     lines left a blank line under short names */
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-tooltip {
@@ -1498,7 +1503,7 @@ a.reviews__tp-inline {
   display: block;
   line-height: 1.5;
   font-family: var(--sans);
-  font-size: 0.98rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--text);
   letter-spacing: 0;
@@ -2957,7 +2962,7 @@ a.reviews__tp-inline {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  min-height: 28px;   /* the style thumbnails' height, on every card (with or without) so the grid stays even */
+  min-height: 32px;   /* the style thumbnails' height, on every card (with or without) so the grid stays even */
 }
 
 .product-card__photos {
