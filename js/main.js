@@ -740,13 +740,13 @@ function appendNextBatch() {
           : `<div class="product-card__image-placeholder">No image</div>`
         }
         ${Favs.badge(p)}
+        ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${GALLERY_ICON}<span>${escapeHTML(t('Photos'))}</span></span>` : ''}
       </div>
       <div class="product-card__info">
-        ${window.CardStyles ? CardStyles.html(p) : ''}
         <h3 class="product-card__name" data-tooltip="${escapeAttr(displayName)}">${escapeHTML(displayName)}</h3>
         <div class="product-card__row">
           ${price ? `<span class="product-card__price">${escapeHTML(price)}</span>` : ''}
-          ${p.qc ? `<span class="product-card__photos" role="button" tabindex="0" aria-label="${escapeAttr(t('See real photos'))}">${GALLERY_ICON}<span>${escapeHTML(t('Photos'))}</span></span>` : ''}
+          ${window.CardStyles ? CardStyles.html(p) : ''}
         </div>
       </div>
     `;

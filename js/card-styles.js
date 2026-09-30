@@ -1,9 +1,9 @@
 /* ==============================================
-   Style thumbnails on the catalog cards (Men / Women): a row under the image with the
-   first styles (colours / designs) — 4 on computers, 3 on phones — then "+N".
+   Style thumbnails on the catalog cards (Men / Women), in the price row on the right (the
+   Photos pill sits on the image, top right): the first styles (colours / designs) — 4 on
+   computers, 3 on phones — then "+N".
    - A tap opens the photos window on that style (js/photos.js); "+N" on the next one.
    - Computers: hovering a thumbnail shows that style in the card's image.
-   - Every card has the row (empty without styles), so the cards stay aligned.
    - The style photos still come from img.theqcbook.com, which refuses bursts (HTTP 429):
      a card's thumbnails load only once it's on screen and its own image is there, 2 at a
      time for the whole page, and one that's refused stays an empty grey square (no retry).
@@ -21,7 +21,7 @@
   const firstStyles = p => p.firstStyles || [0, 1, 2, 3].slice(0, Math.min(SHOWN, p.styles));
 
   function html(p) {
-    if (!p.styles || !p.imageId) return '<div class="card-styles" aria-hidden="true"></div>';
+    if (!p.styles || !p.imageId) return '';
     const nums = firstStyles(p);
     const thumbs = nums.map((n, i) =>
       `<span class="card-style" role="button" tabindex="0" data-style="${i}" aria-label="${esc(t('Style'))} ${i + 1}">` +

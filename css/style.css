@@ -1387,20 +1387,18 @@ a.reviews__tp-inline {
   .product-card.is-held .product-card__image img { transform: scale(1.03); }   /* is-held: its real photos window is open */
 }
 
-/* ─── Style thumbnails: a row under the image, 4 (phones: 3) then "+N" (js/card-styles.js).
-       Every card has the row, empty without styles, so the cards stay aligned. ─── */
+/* ─── Style thumbnails in the price row, on the right: 4 (phones: 3) then "+N" (js/card-styles.js) ─── */
 .card-styles {
   display: flex;
   align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  margin-bottom: 10px;
+  gap: 4px;
+  min-width: 0;
 }
 .card-style {
   flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
   background: var(--bg-hover);
   overflow: hidden;
   cursor: pointer;
@@ -1418,8 +1416,8 @@ a.reviews__tp-inline {
 }
 .card-style.is-loaded img { opacity: 1; }
 .card-styles__more {
-  padding: 4px 2px;
-  font-size: 0.75rem;
+  padding: 4px 0 4px 2px;
+  font-size: 0.72rem;
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
@@ -1430,11 +1428,12 @@ a.reviews__tp-inline {
   .card-styles__more:hover { color: var(--text); }
 }
 @media (max-width: 480px) {
-  .card-styles { gap: 4px; min-height: 30px; margin-bottom: 8px; }
-  .card-style { width: 30px; height: 30px; border-radius: 7px; }
+  .card-styles { gap: 3px; }
+  .card-style { width: 24px; height: 24px; border-radius: 6px; }
   .card-style[data-style="3"], .card-styles__more--wide { display: none; }
   .card-styles__more--phone { display: inline; }
 }
+
 /* Computers: hovering a thumbnail shows that style over the card's image */
 .product-card .product-card__image .card-style-preview {
   position: absolute;
@@ -2958,7 +2957,7 @@ a.reviews__tp-inline {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  min-height: 28px;   /* the pill's height, on every card (with or without photos) so the grid stays even */
+  min-height: 28px;   /* the style thumbnails' height, on every card (with or without) so the grid stays even */
 }
 
 .product-card__photos {
@@ -2987,6 +2986,13 @@ a.reviews__tp-inline {
 }
 
 .product-card__photos:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* On the image, top right (the heart is top left) */
+.product-card__image .product-card__photos {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  z-index: 1;
+}
 /* Small press, like the site's other buttons */
 .product-card__photos { transition: background-color 0.2s, transform 0.12s var(--ease-out); }
 .product-card__photos:active { transform: scale(0.92); }
@@ -2997,7 +3003,7 @@ a.reviews__tp-inline {
 .product-card__fav {
   position: absolute;
   top: 8px;
-  inset-inline-end: 8px;
+  inset-inline-start: 8px;   /* top left: the Photos pill is top right */
   z-index: 1;
   display: flex;
   align-items: center;
