@@ -1387,7 +1387,7 @@ a.reviews__tp-inline {
   .product-card.is-held .product-card__image img { transform: scale(1.03); }   /* is-held: its real photos window is open */
 }
 
-/* ─── Style thumbnails at the bottom left of the image (js/card-styles.js) ─── */
+/* ─── Computers, card hovered: style thumbnails at the bottom left of the image (js/card-styles.js) ─── */
 .card-styles {
   position: absolute;
   bottom: 8px;
@@ -1395,7 +1395,10 @@ a.reviews__tp-inline {
   z-index: 1;
   display: flex;
   gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
+.product-card:hover .card-styles { opacity: 1; }
 .card-style {
   display: flex;
   align-items: center;
@@ -1433,11 +1436,6 @@ a.reviews__tp-inline {
   .card-style:hover { border-color: var(--text-muted); }
   .card-style--more:hover { color: var(--text); }
 }
-@media (max-width: 480px) {
-  .card-styles { bottom: 6px; inset-inline-start: 6px; gap: 3px; }
-  .card-style { width: 26px; height: 26px; border-radius: 6px; }
-  .card-style--more { min-width: 26px; padding: 0 5px; }
-}
 /* Computers: hovering a thumbnail shows that style over the card's image */
 .product-card .product-card__image .card-style-preview {
   position: absolute;
@@ -1466,11 +1464,33 @@ a.reviews__tp-inline {
   border-top: 1px solid var(--border);
 }
 
+/* Quiet line under the name: category · 13 styles (js/card-styles.js) */
+.product-card__meta {
+  margin-bottom: 8px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.product-card__styles {
+  color: var(--text);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s;
+}
+@media (hover: hover) {
+  .product-card__styles:hover { text-decoration-color: currentColor; }
+}
+
 .product-card__name {
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--text);
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   line-height: 1.4;
   min-height: calc(2 * 1.4em);
   display: -webkit-box;

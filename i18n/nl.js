@@ -293,5 +293,7 @@ window.I18N_DICT = {
  "Styles": "Varianten",
  "Style": "Variant",
  "Available styles": "Beschikbare varianten",
- "Every colour and design you can order.": "Alle kleuren en designs die je kunt bestellen."
+ "Every colour and design you can order.": "Alle kleuren en designs die je kunt bestellen.",
+ "{n} styles": "{n} varianten",
+ "1 style": "1 variant"
 };
