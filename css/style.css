@@ -605,6 +605,7 @@ html { scrollbar-gutter: stable; }
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--border);
+  background: radial-gradient(ellipse 80% 60% at 50% -5%, rgba(0,168,107,0.10) 0%, transparent 65%);
 }
 
 .hero__content {
@@ -2344,6 +2345,7 @@ a.reviews__tp-inline {
 .page-hero {
   padding: calc(var(--nav-h) + 3rem) var(--pad-x) 2.5rem;
   text-align: center;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,168,107,0.08) 0%, transparent 65%);
   border-bottom: 1px solid var(--border);
 }
 
