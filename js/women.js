@@ -440,6 +440,9 @@ function applyFilters() {
     );
   }
 
+  // Best Sellers: in the order of the sheet (a search or price sort still applies on top)
+  if (currentCategoryTab === 'best-sellers') filtered = BestSellers.order(filtered);
+
   if (searchQuery) {
     const score = searchScorer(searchQuery);
     const scores = new Map();
