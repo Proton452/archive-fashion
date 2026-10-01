@@ -2,6 +2,7 @@
    LOVEGOBUY FINDS — Main Script
    Data: /data/men.json (built from the partner CSV by scripts/build_catalog.py)
          + the jerseys of the Google Sheet (/api/jerseys, cached by Vercel)
+         + the best sellers picked in the sheet (/api/best-sellers, js/best-sellers.js)
 ============================================== */
 
 const CATALOG_URL = '/data/men.json';
@@ -433,7 +434,8 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    const [catalog, jerseys] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys()]);
+    const [catalog, jerseys, best] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys(), BestSellers.load()]);
+    BestSellers.mark(catalog.items, best);   // picked in the sheet (js/best-sellers.js)
     allProducts = deduplicateProducts(mixIn(Season.order(catalog.items, catalog.end), jerseys, catalog.end));
 
     loading.style.display = 'none';

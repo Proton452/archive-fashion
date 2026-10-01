@@ -310,7 +310,8 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    const catalog = await fetchCatalog(CATALOG_URL);
+    const [catalog, best] = await Promise.all([fetchCatalog(CATALOG_URL), BestSellers.load()]);
+    BestSellers.mark(catalog.items, best);   // picked in the sheet (js/best-sellers.js)
     allProducts = Season.order(catalog.items, catalog.end);   // in-season clothes first (js/season.js)
 
     loading.style.display = 'none';

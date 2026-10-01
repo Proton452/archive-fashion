@@ -14,10 +14,12 @@ const CATALOGS = [
 
 const SHEET_ID  = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const BEST_URL  = `${SHEET_URL}&sheet=${encodeURIComponent('Best sellers')}`;
 const CACHE_MS  = 5 * 60 * 1000;
 
 let fileProducts = null;
 let sheetCache   = { at: 0, products: [] };
+let bestCache    = { at: 0, ids: new Set() };
 
 // ─── CSV ─────────────────────────────────────────
 function parseCSV(text) {
@@ -122,6 +124,7 @@ function loadFiles() {
       const link = data.link.replace('{id}', itemId);
       return {
         id:       shortId(name + '|' + link),
+        itemId,
         gender,
         name:     formatName(name),
         brand,
@@ -139,6 +142,26 @@ async function loadSheetJerseys() {
   return (await loadSheet({ gender: 'men', url: SHEET_URL })).filter(p => p.type === 'jersey');
 }
 
+// Item ids of the "Best sellers" tab of the sheet: one Lovegobuy link (or bare id) per row,
+// any column. A row without an id (a title) is skipped.
+// Google answers with the 1st sheet when the tab doesn't exist (or is renamed): no best sellers then.
+async function loadBestSellerIds() {
+  const [best, first] = await Promise.all([BEST_URL, SHEET_URL].map(async url => {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`Sheet HTTP ${r.status}`);
+    return r.text();
+  }));
+  const ids = new Set();
+  if (best === first) return ids;
+  for (const row of parseCSV(best)) {
+    for (const cell of row) {
+      const m = cell.match(/[?&]id=(\d+)/) || cell.trim().match(/^(\d{6,})$/);
+      if (m) ids.add(m[1]);
+    }
+  }
+  return ids;
+}
+
 async function getCatalog() {
   if (!fileProducts) fileProducts = loadFiles();
   if (Date.now() - sheetCache.at >= CACHE_MS) {
@@ -147,6 +170,14 @@ async function getCatalog() {
       sheetCache = { at: Date.now(), products: jerseys };
     } catch (err) {
       console.warn('[catalog] sheet jerseys not loaded:', err.message);
+    }
+  }
+  if (Date.now() - bestCache.at >= CACHE_MS) {
+    try {
+      bestCache = { at: Date.now(), ids: await loadBestSellerIds() };
+      for (const p of fileProducts) p.bestSeller = bestCache.ids.has(p.itemId);
+    } catch (err) {
+      console.warn('[catalog] best sellers not loaded:', err.message);
     }
   }
   return sheetCache.products.concat(fileProducts);
@@ -202,4 +233,4 @@ function searchProducts(products, { query = '', gender, maxCny } = {}) {
   return scored.slice(0, 6).map(s => s.p);
 }
 
-module.exports = { getCatalog, searchProducts, loadSheetJerseys };
+module.exports = { getCatalog, searchProducts, loadSheetJerseys, loadBestSellerIds };
