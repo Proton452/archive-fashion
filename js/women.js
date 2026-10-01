@@ -382,6 +382,10 @@ function generateFilterDropdown() {
     filterDropdown.appendChild(div);
   });
 
+  // Best Sellers: a short hand-picked list, no category to choose
+  const hidePicker = currentCategoryTab === 'best-sellers';
+  filterDropdown.parentElement.hidden = hidePicker;
+
   const filterBtn = document.getElementById('filterBtn');
   const filterCount = document.getElementById('filterCount');
   if (filterCount) filterCount.textContent = selectedFilters.size ? `(${selectedFilters.size})` : '';
@@ -390,7 +394,7 @@ function generateFilterDropdown() {
   // Chips: only inside a tab, and only when there is a choice to make
   const chips = document.getElementById('catChips');
   if (chips) {
-    const show = currentCategoryTab !== 'all' && categories.length >= 2;
+    const show = currentCategoryTab !== 'all' && !hidePicker && categories.length >= 2;
     const scrollLeft = chips.scrollLeft;
     chips.innerHTML = '';
     if (show) {
