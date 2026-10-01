@@ -27,7 +27,7 @@
     const nums = firstStyles(p);
     const thumbs = nums.map((n, i) =>
       `<span class="card-style" role="button" tabindex="0" data-style="${i}" aria-label="${esc(t('Style'))} ${i + 1}">` +
-      `<img alt="" decoding="async" data-noretry data-src="${bunny(p.imageId, n)}?width=102" data-full="${bunny(p.imageId, n)}" data-fallback="${source(p.imageId, n)}"></span>`).join('');
+      `<img alt="" decoding="async" data-noretry data-src="${bunny(p.imageId, n)}?width=102" data-full="${bunny(p.imageId, n)}?width=600" data-fallback="${source(p.imageId, n)}"></span>`).join('');
     // "+N" counts what isn't shown: one more on phones (3 thumbnails)
     const more = (shown, cls) => p.styles > shown
       ? `<span class="card-styles__more ${cls}" role="button" tabindex="0" data-style="${shown}" aria-label="${esc(t('See the styles'))}">+${p.styles - shown}</span>`

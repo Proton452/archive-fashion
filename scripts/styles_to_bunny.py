@@ -1,13 +1,14 @@
 """
-Style photos (first 4 of each item) → Bunny.net
+Style photos (every style of every item) → Bunny.net
 
-The catalog cards show the first styles of each item as thumbnails (js/card-styles.js):
-4 on computers, 3 on phones. This copies exactly those photos from img.theqcbook.com
-(which refuses bursts, HTTP 429) to the Bunny storage zone, as WebP of max 600 px
-(enough for the hover preview in the card image; thumbnails ask Bunny for ?width=).
+The catalog cards show the first styles of each item as thumbnails (js/card-styles.js)
+and the photos window shows them all (js/photos.js). This copies them from
+img.theqcbook.com (which refuses bursts, HTTP 429) to the Bunny storage zone, as WebP
+of 1200 px (the original size, for the big window; thumbnails ask Bunny for ?width=).
+The first 4 of each item go last: they were already there in 600 px for the cards.
 
 Addresses are fixed, so the site needs no list: <CDN>/styles/<imageId>/<n>.webp
-Resumable: scripts/styles_bunny.json keeps the "<imageId>/<n>" already uploaded.
+Resumable: scripts/styles_bunny.json keeps the "<imageId>/<n>" already uploaded in 1200 px.
 
 Usage:  python scripts/styles_to_bunny.py            (all)
         python scripts/styles_to_bunny.py --limit 5  (a quick test)
@@ -27,7 +28,7 @@ ROOT      = Path(__file__).resolve().parent.parent
 DONE_FILE = ROOT / 'scripts' / 'styles_bunny.json'
 FOLDER    = 'styles'
 SHOWN     = 4          # same as js/card-styles.js
-qc.MAX_SIDE = 600
+qc.MAX_SIDE = 1200
 
 # Count the partner's refusals (HTTP 429), shown with the progress
 REFUSED = [0]
@@ -43,15 +44,14 @@ SOURCE = 'https://img.theqcbook.com/products/{id}/{n}.webp?v5'
 
 
 def wanted():
-    keys = []
-    for f in ('men.json', 'women.json'):
-        for it in json.loads((ROOT / 'data' / f).read_text(encoding='utf-8'))['items']:
-            count = it[7] if len(it) > 7 else 0
-            if not count or not it[5]:
-                continue
-            first = (it[8] if len(it) > 8 and it[8] else [0, 1, 2, 3])[:min(SHOWN, count)]
-            keys += [f'{it[5]}/{n}' for n in first]
-    return list(dict.fromkeys(keys))
+    """Every style, the ones shown on the cards (already in 600 px) last"""
+    rest, first = [], []
+    for f in sorted((ROOT / 'data' / 'qc').glob('*.json')):
+        for item in json.loads(f.read_text(encoding='utf-8')).values():
+            shown = set(item.get('m', [])[:SHOWN])
+            for n in item.get('m', []):
+                (first if n in shown else rest).append(f"{item['i']}/{n}")
+    return list(dict.fromkeys(rest + first))
 
 
 def upload(data, key):

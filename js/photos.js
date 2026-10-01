@@ -18,7 +18,13 @@
   const LINK_TPL  = 'https://www.lovegobuy.com/product?id={id}&shop_type=weidian&invite_code=500EUROSOFFERED';
   const IMAGE_TPL = 'https://archivefashion.b-cdn.net/products/{id}.webp?width=400&quality=75&format=auto';   // = the card's (js/main.js)
   const SOURCE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5';
-  const STYLE_TPL = 'https://img.theqcbook.com/products/{id}/{n}.webp?v5';
+  const STYLE_TPL = 'https://archivefashion.b-cdn.net/styles/{id}/{n}.webp';   // scripts/styles_to_bunny.py
+  const STYLE_SOURCE_TPL = 'https://img.theqcbook.com/products/{id}/{n}.webp?v5';
+  // A style not on Bunny yet (new CSV, copy not run): the partner's photo instead
+  const styleSource = url => {
+    const m = url.match(/^https:\/\/archivefashion\.b-cdn\.net\/styles\/(\d+)\/(\d+)\.webp/);
+    return m ? STYLE_SOURCE_TPL.replace('{id}', m[1]).replace('{n}', m[2]) : null;
+  };
   const HASH_RE = /^#p=(\d+)$/;
   const phone = window.matchMedia('(max-width: 700px)');
 
@@ -159,6 +165,8 @@
   function loadWithRetry(img, url, onFail) {
     let tries = 0;
     img.addEventListener('error', () => {
+      const source = styleSource(url);
+      if (source) { url = source; img.src = url; return; }
       if (tries < RETRY_MS.length) {
         const wait = RETRY_MS[tries++];
         setTimeout(() => { img.src = url + (url.includes('?') ? '&' : '?') + 'retry=' + tries; }, wait);
@@ -186,6 +194,8 @@
       });
       let tries = 0;
       img.addEventListener('error', () => {
+        const source = styleSource(url);
+        if (source) { url = source; img.src = url; return; }
         // The photo server refuses bursts (HTTP 429, often after browsing the catalogue, same
         // server): try again a little later before giving up
         if (tries < RETRY_MS.length) {
@@ -356,7 +366,7 @@
         loadThumb(i + 1);
       };
       img.addEventListener('load', () => done(false), { once: true });
-      loadWithRetry(img, styles[i], () => done(true));
+      loadWithRetry(img, styles[i] + (styleSource(styles[i]) ? '?width=300' : ''), () => done(true));
     };
     loadThumb(0);
   }
