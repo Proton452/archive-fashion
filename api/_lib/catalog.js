@@ -16,6 +16,7 @@ const SHEET_ID  = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 const BEST_URL  = `${SHEET_URL}&sheet=${encodeURIComponent('Best sellers')}`;
 const CACHE_MS  = 5 * 60 * 1000;
+const BEST_CACHE_MS = 30 * 1000;   // same as /api/best-sellers
 
 let fileProducts = null;
 let sheetCache   = { at: 0, products: [] };
@@ -172,7 +173,7 @@ async function getCatalog() {
       console.warn('[catalog] sheet jerseys not loaded:', err.message);
     }
   }
-  if (Date.now() - bestCache.at >= CACHE_MS) {
+  if (Date.now() - bestCache.at >= BEST_CACHE_MS) {
     try {
       bestCache = { at: Date.now(), ids: await loadBestSellerIds() };
       for (const p of fileProducts) p.bestSeller = bestCache.ids.has(p.itemId);
