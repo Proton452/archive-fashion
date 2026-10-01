@@ -4,17 +4,19 @@
    computers, 3 on phones — then "+N" as text, with a big invisible click area.
    - A tap opens the photos window on that style (js/photos.js); "+N" on the next one.
    - Computers: hovering a thumbnail shows that style in the card's image.
-   - The style photos still come from img.theqcbook.com, which refuses bursts (HTTP 429):
-     a card's thumbnails load only once it's on screen and its own image is there, 2 at a
-     time for the whole page, and one that's refused stays an empty grey square (no retry).
-     When they're copied to Bunny, only url() changes.
+   - The photos come from Bunny (copied by scripts/styles_to_bunny.py: the first 4 of each
+     item), thumbnails resized by Bunny. One not there yet (new CSV) falls back once to
+     img.theqcbook.com, which refuses bursts (HTTP 429): that's why a card's thumbnails load
+     only once it's on screen and its own image is there, a few at a time, and one that's
+     refused stays an empty grey square.
 ============================================== */
 
 (function () {
   const SHOWN = 4;          // computers; phones hide the 4th (CSS) and show their own "+N"
-  const MAX_AT_ONCE = 2;
+  const MAX_AT_ONCE = 6;
 
-  const url = (imageId, n) => `https://img.theqcbook.com/products/${imageId}/${n}.webp?v5`;
+  const bunny  = (imageId, n) => `https://archivefashion.b-cdn.net/styles/${imageId}/${n}.webp`;
+  const source = (imageId, n) => `https://img.theqcbook.com/products/${imageId}/${n}.webp?v5`;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   // Numbers of the first styles: 0, 1, 2, 3 unless the catalog says otherwise (9th field)
@@ -25,7 +27,7 @@
     const nums = firstStyles(p);
     const thumbs = nums.map((n, i) =>
       `<span class="card-style" role="button" tabindex="0" data-style="${i}" aria-label="${esc(t('Style'))} ${i + 1}">` +
-      `<img alt="" decoding="async" data-noretry data-src="${url(p.imageId, n)}"></span>`).join('');
+      `<img alt="" decoding="async" data-noretry data-src="${bunny(p.imageId, n)}?width=102" data-full="${bunny(p.imageId, n)}" data-fallback="${source(p.imageId, n)}"></span>`).join('');
     // "+N" counts what isn't shown: one more on phones (3 thumbnails)
     const more = (shown, cls) => p.styles > shown
       ? `<span class="card-styles__more ${cls}" role="button" tabindex="0" data-style="${shown}" aria-label="${esc(t('See the styles'))}">+${p.styles - shown}</span>`
@@ -50,7 +52,12 @@
         pump();
       };
       img.onload = () => done(true);
-      img.onerror = () => done(false);
+      img.onerror = () => {
+        if (!img.dataset.fallback) return done(false);
+        img.dataset.full = img.dataset.fallback;   // not on Bunny yet: the partner's photo, once
+        delete img.dataset.fallback;
+        img.src = img.dataset.full;
+      };
       img.src = img.dataset.src;
     }
   }
@@ -89,7 +96,8 @@
         preview.dataset.noretry = '';
         box.append(preview);
       }
-      preview.src = thumb.querySelector('img').src;
+      const img = thumb.querySelector('img');
+      preview.src = img.dataset.full || img.src;
       box.classList.add('is-previewing');
     });
     document.addEventListener('mouseout', e => {
