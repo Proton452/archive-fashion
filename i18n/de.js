@@ -43,7 +43,7 @@ window.I18N_DICT = {
  "Interested in working with us? Get paid to create. 100+ creators already partnered.": "<strong>Lust auf eine Zusammenarbeit?</strong> Lass dich fürs Erstellen bezahlen. Schon über 100 Creator sind dabei.",
  "Open a collab ticket": "Collab-Ticket öffnen",
  "Footer navigation": "Fußzeilen-Navigation",
- "© 2026 Lovegobuy · All rights reserved": "© 2026 Lovegobuy · Alle Rechte vorbehalten",
+ "Lovegobuy · All rights reserved": "Lovegobuy · Alle Rechte vorbehalten",
  "Back to top": "Nach oben",
  "Couldn't load the items. Please refresh the page.": "Die Artikel konnten nicht geladen werden. Bitte lade die Seite neu.",
  "Nothing found for \"{query}\".": "Keine Ergebnisse für „{query}“.",

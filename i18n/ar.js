@@ -43,7 +43,7 @@ window.I18N_DICT = {
  "Interested in working with us? Get paid to create. 100+ creators already partnered.": "<strong>هل تريد العمل معنا؟</strong> احصل على أجر مقابل صناعة المحتوى. أكثر من 100 صانع محتوى شركاء معنا بالفعل.",
  "Open a collab ticket": "افتح تذكرة تعاون",
  "Footer navigation": "روابط أسفل الصفحة",
- "© 2026 Lovegobuy · All rights reserved": "© 2026 Lovegobuy · جميع الحقوق محفوظة",
+ "Lovegobuy · All rights reserved": "Lovegobuy · جميع الحقوق محفوظة",
  "Back to top": "العودة إلى الأعلى",
  "Couldn't load the items. Please refresh the page.": "تعذّر تحميل المنتجات. يُرجى تحديث الصفحة.",
  "Nothing found for \"{query}\".": "لا توجد نتائج لـ «{query}».",

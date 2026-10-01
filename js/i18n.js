@@ -392,6 +392,8 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     DICTS[lang] = window.I18N_DICT || null;
+    // Footer "© <year> Lovegobuy": the current year (the HTML's is only a fallback)
+    document.querySelectorAll('.footer__year').forEach(y => { y.textContent = new Date().getFullYear(); });
     translatePage();
     localizeLinks();
     buildPicker();

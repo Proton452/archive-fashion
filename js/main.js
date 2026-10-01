@@ -507,8 +507,8 @@ function generateFilterDropdown() {
     filterDropdown.appendChild(div);
   });
 
-  // Best Sellers: a short hand-picked list, no category to choose
-  const hidePicker = currentCategoryTab === 'best-sellers';
+  // Best Sellers (a short hand-picked list) and Recently viewed: no category to choose
+  const hidePicker = currentCategoryTab === 'best-sellers' || currentCategoryTab === 'recent';
   filterDropdown.parentElement.hidden = hidePicker;
 
   const filterBtn = document.getElementById('filterBtn');
