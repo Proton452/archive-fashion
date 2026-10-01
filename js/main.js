@@ -163,11 +163,14 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
   update();
 })();
 
-// Product images: the image server refuses bursts (HTTP 429) — try again a little later
+// Product images (Bunny; theqcbook refuses bursts, HTTP 429) — try again a little later
 const IMG_RETRY_MS = [800, 2000, 4000];
 grid.addEventListener('error', e => {
   const img = e.target;
   if (img.tagName !== 'IMG' || 'noretry' in img.dataset) return;   // style thumbnails: no retry (js/card-styles.js)
+  // Not on Bunny yet (new CSV, scripts/products_to_bunny.py not run): the partner's photo
+  const onBunny = img.src.match(/^https:\/\/archivefashion\.b-cdn\.net\/products\/(\d+)\.webp/);
+  if (onBunny) { img.src = `https://img.theqcbook.com/products/${onBunny[1]}.webp?v5`; return; }
   const tries = +(img.dataset.tries || 0);
   if (tries >= IMG_RETRY_MS.length) return;
   img.dataset.tries = tries + 1;

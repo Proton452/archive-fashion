@@ -131,7 +131,7 @@ function loadFiles() {
         brand,
         type:     type.toLowerCase(),
         cny:      priceCny,
-        image:    data.image.replace('{id}', imageId),
+        image:    optimizeImage(data.image.replace('{id}', imageId)),
         link,
         bestSeller: false,
       };

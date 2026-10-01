@@ -16,7 +16,8 @@
 
 (function () {
   const LINK_TPL  = 'https://www.lovegobuy.com/product?id={id}&shop_type=weidian&invite_code=500EUROSOFFERED';
-  const IMAGE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5';
+  const IMAGE_TPL = 'https://archivefashion.b-cdn.net/products/{id}.webp?width=400&quality=75&format=auto';   // = the card's (js/main.js)
+  const SOURCE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5';
   const STYLE_TPL = 'https://img.theqcbook.com/products/{id}/{n}.webp?v5';
   const HASH_RE = /^#p=(\d+)$/;
   const phone = window.matchMedia('(max-width: 700px)');
@@ -307,7 +308,9 @@
       ? t('Every colour and design you can order.')
       : t('Real photos of this item, taken at the warehouse.');
     modal.querySelectorAll('.photos-style').forEach((b, i) => b.setAttribute('aria-label', t('Style') + ' ' + (i + 1)));
-    q('.photos-product__img').src = IMAGE_TPL.replace('{id}', item.i);
+    const productImg = q('.photos-product__img');
+    productImg.onerror = () => { productImg.onerror = null; productImg.src = SOURCE_TPL.replace('{id}', item.i); };   // not on Bunny yet
+    productImg.src = IMAGE_TPL.replace('{id}', item.i);
     q('.photos-product__name').textContent = niceName(item.n);
     q('.photos-product__meta').textContent = [item.b, catLabel(item.c)].filter(Boolean).join(' · ');
     q('.photos-product__price').textContent = Prices.format(item.p);

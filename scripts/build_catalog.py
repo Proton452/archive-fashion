@@ -23,6 +23,8 @@ LINK_RE  = re.compile(r'^https://www\.lovegobuy\.com/product\?id=(\d+)&shop_type
 IMAGE_RE = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)\.webp\?v5$')
 LINK_TPL  = 'https://www.lovegobuy.com/product?id={id}&shop_type=weidian&invite_code=500EUROSOFFERED'
 IMAGE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5'
+# Served from Bunny (copied by scripts/products_to_bunny.py); the pages fall back to IMAGE_TPL
+BUNNY_IMAGE_TPL = 'https://archivefashion.b-cdn.net/products/{id}.webp'
 STYLE_RE  = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)/(\d+)\.webp\?v5$')
 
 # Partner categories that are duplicates / watch brands → one clean name
@@ -109,10 +111,16 @@ def main():
         end_pool  = [i for i in items if i[2] in PUSH_TO_END]
         rng.shuffle(main_pool)
         rng.shuffle(end_pool)
-        payload = {'link': LINK_TPL, 'image': IMAGE_TPL, 'end': len(main_pool), 'items': main_pool + end_pool}
+        payload = {'link': LINK_TPL, 'image': BUNNY_IMAGE_TPL, 'end': len(main_pool), 'items': main_pool + end_pool}
         path = ROOT / 'data' / f'{gender}.json'
         path.write_text(json.dumps(payload, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
         print(f'{gender}: {len(items)} items -> {path.relative_to(ROOT)} ({path.stat().st_size // 1024} KB)')
+
+    on_bunny = Path(__file__).resolve().parent / 'products_bunny.json'
+    on_bunny = set(json.loads(on_bunny.read_text(encoding='utf-8'))) if on_bunny.exists() else set()
+    missing = {i[5] for items in out.values() for i in items if i[5] and i[5] not in on_bunny}
+    if missing:
+        print(f'! {len(missing)} item photos not on Bunny yet (theqcbook meanwhile): run python scripts/products_to_bunny.py')
 
     qc_dir = ROOT / 'data' / 'qc'
     shutil.rmtree(qc_dir, ignore_errors=True)
