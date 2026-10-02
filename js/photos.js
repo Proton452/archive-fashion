@@ -259,15 +259,12 @@
     img.style.transform = `translate(${-cx * k}px, ${-cy * k}px) scale(${k})`;
   }
 
-  // Load the photo shown first, then its neighbours (fewer requests at once: the server limits bursts)
+  // Load the photo shown and, at the same time, the next two and the previous one, so a
+  // swipe finds them ready (all on Bunny, which takes many requests at once)
   function ensureLoaded(i) {
     const imgAt = j => track.children[j] && track.children[j].querySelector('.photos-slide__img');
     const load = img => { if (img && !img.getAttribute('src')) img.src = img.dataset.src; };
-    const current = imgAt(i);
-    load(current);
-    const neighbours = () => { load(imgAt(i + 1)); load(imgAt(i - 1)); };
-    if (!current || current.complete) neighbours();
-    else current.addEventListener('load', neighbours, { once: true });
+    [i, i + 1, i - 1, i + 2].forEach(j => load(imgAt(j)));
   }
 
   function setIndex(i) {
@@ -354,21 +351,25 @@
       return btn;
     });
     grid.replaceChildren(...thumbs);
-    // One after the other: the server refuses bursts, and the big photos load at the same time.
+    // A few at a time, in order (the first ones are seen first): Bunny takes many requests at
+    // once; a style not copied there yet falls back to theqcbook, which refuses bursts.
     // A thumbnail that still fails stays an empty grey square (a tap still shows the style).
-    const loadThumb = i => {
+    const AT_ONCE = 8;
+    let next = 0;
+    const loadThumb = () => {
+      const i = next++;
       const btn = thumbs[i];
-      if (!btn || !btn.isConnected) return;   // another item was opened since
+      if (!btn || !btn.isConnected) return;   // all started, or another item was opened since
       const img = btn.querySelector('img');
       const done = failed => {
         btn.classList.remove('is-loading');
         btn.classList.toggle('is-failed', failed);
-        loadThumb(i + 1);
+        loadThumb();
       };
       img.addEventListener('load', () => done(false), { once: true });
       loadWithRetry(img, styles[i] + (styleSource(styles[i]) ? '?width=300' : ''), () => done(true));
     };
-    loadThumb(0);
+    for (let k = 0; k < AT_ONCE; k++) loadThumb();
   }
 
   // Items with styles: the window's height is the one it has without the styles grid (measured
