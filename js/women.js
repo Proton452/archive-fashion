@@ -310,9 +310,9 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    const [catalog, best] = await Promise.all([fetchCatalog(CATALOG_URL), BestSellers.load()]);
+    const [catalog, best, pins] = await Promise.all([fetchCatalog(CATALOG_URL), BestSellers.load(), Positions.load()]);
     BestSellers.mark(catalog.items, best);   // picked in the sheet (js/best-sellers.js)
-    allProducts = Season.order(catalog.items, catalog.end);   // in-season clothes first (js/season.js)
+    allProducts = Positions.apply(Season.order(catalog.items, catalog.end), pins, catalog.end);   // in-season clothes first (js/season.js), then the places chosen in the sheet (js/positions.js)
 
     loading.style.display = 'none';
     generateFilterDropdown();

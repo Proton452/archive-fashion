@@ -129,6 +129,7 @@ Sheet ID : `1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M`
 |-------------|---------------|
 | 1re feuille | Maillots Men (`main.js`, `api/_lib/catalog.js`) — seules les lignes ARTICLE = jersey |
 | `Best sellers` | Best sellers du catalogue CSV, Men + Women : un lien Lovegobuy (ou un ID) par ligne, n'importe quelle colonne ; affichés dans l'ordre du sheet (maillots « best » après). Lu par `/api/best-sellers` (cache 30 s) → `js/best-sellers.js` ; aussi par le chatbot. Si l'onglet n'existe pas, aucun best seller (Google renverrait sinon la 1re feuille) |
+| `Positions` | Places choisies à la main : un numéro puis le lien Lovegobuy dans la colonne d'après (Men A-B, Women C-D). Lu par `/api/positions` (cache 30 s) → `js/positions.js` : l'article prend cette place dans l'ordre de la page, celui qui y était part à une place fixe au hasard après la 100e, les autres ne bougent pas |
 | `Feuille 2` | Plus utilisée |
 | `Codes`     | Slugs partenaires → codes d'invitation (`partner.js`) |
 

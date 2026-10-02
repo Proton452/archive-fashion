@@ -3,6 +3,7 @@
    Data: /data/men.json (built from the partner CSV by scripts/build_catalog.py)
          + the jerseys of the Google Sheet (/api/jerseys, cached by Vercel)
          + the best sellers picked in the sheet (/api/best-sellers, js/best-sellers.js)
+         + the places chosen in the sheet (/api/positions, js/positions.js)
 ============================================== */
 
 const CATALOG_URL = '/data/men.json';
@@ -437,9 +438,10 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    const [catalog, jerseys, best] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys(), BestSellers.load()]);
+    const [catalog, jerseys, best, pins] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys(), BestSellers.load(), Positions.load()]);
     BestSellers.mark(catalog.items, best);   // picked in the sheet (js/best-sellers.js)
-    allProducts = deduplicateProducts(mixIn(Season.order(catalog.items, catalog.end), jerseys, catalog.end));
+    const ordered = Positions.apply(Season.order(catalog.items, catalog.end), pins, catalog.end);   // places chosen in the sheet (js/positions.js)
+    allProducts = deduplicateProducts(mixIn(ordered, jerseys, catalog.end));
 
     loading.style.display = 'none';
     generateFilterDropdown();

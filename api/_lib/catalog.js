@@ -15,6 +15,7 @@ const CATALOGS = [
 const SHEET_ID  = '1w2N8A0f_xnmU3O1l-tFTiaC3Kp6GyjVBpjVscvCDk8M';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 const BEST_URL  = `${SHEET_URL}&sheet=${encodeURIComponent('Best sellers')}`;
+const POSITIONS_URL = `${SHEET_URL}&sheet=Positions`;
 const CACHE_MS  = 5 * 60 * 1000;
 const BEST_CACHE_MS = 30 * 1000;   // same as /api/best-sellers
 
@@ -143,24 +144,44 @@ async function loadSheetJerseys() {
   return (await loadSheet({ gender: 'men', url: SHEET_URL })).filter(p => p.type === 'jersey');
 }
 
-// Item ids of the "Best sellers" tab of the sheet: one Lovegobuy link (or bare id) per row,
-// any column. A row without an id (a title) is skipped.
-// Google answers with the 1st sheet when the tab doesn't exist (or is renamed): no best sellers then.
-async function loadBestSellerIds() {
-  const [best, first] = await Promise.all([BEST_URL, SHEET_URL].map(async url => {
-    const r = await fetch(url);
+// A tab of the sheet as CSV rows. Google answers with the 1st sheet when the tab doesn't
+// exist (or is renamed): no rows then.
+async function loadTab(url) {
+  const [tab, first] = await Promise.all([url, SHEET_URL].map(async u => {
+    const r = await fetch(u);
     if (!r.ok) throw new Error(`Sheet HTTP ${r.status}`);
     return r.text();
   }));
+  return tab === first ? [] : parseCSV(tab);
+}
+
+const itemIdIn = cell => (cell.match(/[?&]id=(\d+)/) || cell.trim().match(/^(\d{6,})$/) || [])[1];
+
+// Item ids of the "Best sellers" tab of the sheet: one Lovegobuy link (or bare id) per row,
+// any column. A row without an id (a title) is skipped.
+async function loadBestSellerIds() {
   const ids = new Set();
-  if (best === first) return ids;
-  for (const row of parseCSV(best)) {
+  for (const row of await loadTab(BEST_URL)) {
     for (const cell of row) {
-      const m = cell.match(/[?&]id=(\d+)/) || cell.trim().match(/^(\d{6,})$/);
-      if (m) ids.add(m[1]);
+      const id = itemIdIn(cell);
+      if (id) ids.add(id);
     }
   }
   return ids;
+}
+
+// "Positions" tab: a number, then the Lovegobuy link in the next column (Men: A-B,
+// Women: C-D; any pair works, the item's page is found from its id) → [[position, id], ...]
+async function loadPositions() {
+  const pins = [];
+  for (const row of await loadTab(POSITIONS_URL)) {
+    row.forEach((cell, i) => {
+      const id = i > 0 && itemIdIn(cell);
+      const pos = id && parseInt((row[i - 1].match(/\d+/) || [])[0], 10);
+      if (pos >= 1) pins.push([pos, id]);
+    });
+  }
+  return pins;
 }
 
 async function getCatalog() {
@@ -234,4 +255,4 @@ function searchProducts(products, { query = '', gender, maxCny } = {}) {
   return scored.slice(0, 6).map(s => s.p);
 }
 
-module.exports = { getCatalog, searchProducts, loadSheetJerseys, loadBestSellerIds };
+module.exports = { getCatalog, searchProducts, loadSheetJerseys, loadBestSellerIds, loadPositions };
