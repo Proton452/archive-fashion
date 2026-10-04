@@ -370,7 +370,10 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
+  // Called right after the navbar in each page (before the first paint, so the button
+  // doesn't pop in on every page change), then again on DOMContentLoaded to translate its label
   function buildPicker() {
+    if (btn) { updateButton(); return; }
     const right = document.querySelector('.nav__right');
     if (!right || !window.Prices) return;
     btn = el('button', 'locale__btn');
@@ -387,6 +390,7 @@
     t,
     setLanguage,
     setCurrency,
+    mountPicker: buildPicker,
   };
   window.t = t;
 
