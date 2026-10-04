@@ -56,7 +56,8 @@ async function fetchStyles(itemId) {
   const teams = {};
   for (const [name, , category, , id] of items) {
     if (category !== 'Jersey') continue;
-    const found = Football.classify([name, ...(cache[id] || [])].join(' | '));
+    const found = Football.classify([name, ...(cache[id] || [])].join(' | '))
+      .filter(team => !(Football.EXCLUDE[id] || []).includes(team));
     if (found.length) teams[id] = found;
   }
   fs.writeFileSync(path.join(ROOT, 'data', 'football.json'), JSON.stringify(teams));

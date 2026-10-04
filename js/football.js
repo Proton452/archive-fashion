@@ -19,7 +19,6 @@
     ['saudi', 'Saudi Pro League'],
     ['brasileirao', 'Brasileirão'],
     ['liga-mx', 'Liga MX'],
-    ['mls', 'MLS'],
     ['other', 'Other clubs'],
   ];
 
@@ -92,9 +91,8 @@
     ['chivas', 'Chivas', 'liga-mx', 'chivas|guadalajara|芝华士'],
     ['leon', 'Club León', 'liga-mx', 'club le[oó]n|莱昂'],
     ['monterrey', 'Monterrey', 'liga-mx', 'monterrey|蒙特雷'],
-    // ─── MLS
-    ['inter-miami', 'Inter Miami', 'mls', 'miami|迈阿密'],
-    ['minnesota', 'Minnesota United', 'mls', 'minnesota|明尼苏达'],
+    ['inter-miami', 'Inter Miami', 'other', 'miami|迈阿密'],
+    ['minnesota', 'Minnesota United', 'other', 'minnesota|明尼苏达'],
     // ─── Other clubs
     ['ajax', 'Ajax', 'other', '\\bajax\\b|阿贾克斯'],
     ['celtic', 'Celtic', 'other', 'celtic|凯尔特人'],
@@ -128,10 +126,8 @@
     ['switzerland', 'Switzerland', 'international', 'switzerland|swiss|瑞士'],
     ['norway', 'Norway', 'international', 'norway|挪威'],
     ['scotland', 'Scotland', 'international', 'scotland|苏格兰'],
-    ['ireland', 'Ireland', 'international', 'ireland|爱尔兰'],
     ['greece', 'Greece', 'international', 'greece|希腊'],
     ['albania', 'Albania', 'international', 'albania|阿尔巴尼亚'],
-    ['serbia', 'Serbia', 'international', 'serbia|塞尔维亚'],
     ['japan', 'Japan', 'international', 'japan|tokyo|日本'],
     ['korea', 'South Korea', 'international', 'korea|韩国'],
     ['china', 'China', 'international', '\\bchina\\b|中国队'],
@@ -143,7 +139,6 @@
     ['usa', 'USA', 'international', '\\busa\\b|united states|美国'],
     ['canada', 'Canada', 'international', 'canada|加拿大'],
     ['jamaica', 'Jamaica', 'international', 'jamaica|牙买加'],
-    ['panama', 'Panama', 'international', 'panama|巴拿马'],
     ['costa-rica', 'Costa Rica', 'international', 'costa rica|哥斯达黎加'],
     ['curacao', 'Curaçao', 'international', 'cura[cç]ao|库拉索'],
     ['colombia', 'Colombia', 'international', 'colombia|哥伦比亚'],
@@ -162,6 +157,13 @@
     ['ivory-coast', 'Ivory Coast', 'international', 'ivory coast|c[ôo]te d.ivoire|科特迪瓦'],
   ].map(([id, name, league, pattern]) => ({ id, name, league, re: new RegExp(pattern, 'i') }));
 
+  // Teams removed by hand from a CSV jersey (Lovegobuy item id → team ids), e.g. a
+  // listing with many styles where that team is only a minor one
+  const EXCLUDE = {
+    '7805994667': ['palestine'],   // Adidas Jersey (mostly Brazil)
+    '7805941517': ['nigeria'],     // Many Brand Jersey
+  };
+
   const BY_ID = new Map(TEAMS.map(t => [t.id, t]));
 
   // Team ids found in a text (title, style names…), in the order of TEAMS
@@ -175,6 +177,7 @@
     TEAMS,
     team: id => BY_ID.get(id),
     classify,
+    EXCLUDE,
   };
 
   if (typeof module === 'object' && module.exports) module.exports = api;
