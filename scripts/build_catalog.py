@@ -13,7 +13,7 @@ go to data/qc/<last 2 digits of item_id>.json, loaded only when a visitor opens 
 { item_id: { g, n, b, c, p, i, q: [urls], m: [n, ...] } }. Style photos are always
 https://img.theqcbook.com/products/<image_id>/<n>.webp?v5, so only the numbers n are kept.
 """
-import csv, json, random, re, shutil, sys
+import csv, json, random, re, shutil, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -130,6 +130,12 @@ def main():
     sizes = [f.stat().st_size for f in qc_dir.iterdir()]
     print(f'real photos / styles: {sum(len(e) for e in qc_shards.values())} items in {len(sizes)} files '
           f'(largest {max(sizes) // 1024} KB) -> data/qc/')
+
+    # Football tab: club / league of each jersey (style names fetched from Weidian, new items only)
+    try:
+        subprocess.run(['node', str(ROOT / 'scripts' / 'jersey_skus.js')], check=True)
+    except (OSError, subprocess.CalledProcessError) as e:
+        print('! football teams not updated (run node scripts/jersey_skus.js):', e)
 
 
 if __name__ == '__main__':

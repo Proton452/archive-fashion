@@ -17,6 +17,8 @@ window.I18N_DICT = {
  "How it works": "Como funciona",
  "600+ reviews": "600+ avaliações",
  "Best Sellers": "Mais vendidos",
+ "International": "Seleções",
+ "Other clubs": "Outros clubes",
  "All": "Tudo",
  "ALL": "TUDO",
  "Football": "Futebol",

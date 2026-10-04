@@ -10,6 +10,8 @@ const CATALOG_URL = '/data/men.json';
 // The Google Sheet still provides the football jerseys (with their best seller marks)
 const JERSEYS_URL = '/api/jerseys';
 const JERSEYS_TIMEOUT_MS = 3000;   // never hold the grid back longer than this for them
+// Teams of the CSV jerseys, for the Football tab's league / club chips (scripts/jersey_skus.js, js/football.js)
+const FOOTBALL_URL = '/data/football.json';
 
 // ─── Category Tab → partner categories (exact names, lowercase) ────────
 const CATEGORY_MAP = {
@@ -28,6 +30,8 @@ const CATEGORY_MAP = {
 let allProducts      = [];
 let currentCategoryTab = 'all';
 let selectedFilters  = new Set();
+let footballLeague   = null;   // Football tab: chosen league chip, then club chip
+let footballTeam     = null;
 let searchQuery      = '';
 let sortOrder        = null;
 const MIN_CATEGORY_COUNT = 5;   // smallest category listed in "All"
@@ -139,6 +143,7 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
     tab.classList.add('is-active');
 
     selectedFilters.clear();
+    footballLeague = footballTeam = null;
     searchQuery = '';
     searchInput.value = '';
     sortOrder = null;
@@ -416,7 +421,7 @@ function searchScorer(query) {
   const found = (text, padded, term) => term.length >= 3 ? text.includes(term) : padded.includes(' ' + term + ' ');
 
   return p => {
-    const text   = normalizeBrand((p.name || '') + ' ' + (p.brand || ''));
+    const text   = normalizeBrand((p.name || '') + ' ' + (p.brand || '') + ' ' + (p.teamNames || ''));
     const padded = ' ' + text + ' ';
     let hits = 0;
     groups.forEach(g => { if (g.some(t => found(text, padded, t))) hits++; });
@@ -438,8 +443,13 @@ async function loadProducts() {
   grid.innerHTML = '';
 
   try {
-    const [catalog, jerseys, best, pins] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys(), BestSellers.load(), Positions.load()]);
+    const footballTeams = fetch(FOOTBALL_URL).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+    const [catalog, jerseys, best, pins, teams] = await Promise.all([fetchCatalog(CATALOG_URL), fetchSheetJerseys(), BestSellers.load(), Positions.load(), footballTeams]);
     BestSellers.mark(catalog.items, best);   // picked in the sheet (js/best-sellers.js)
+    catalog.items.forEach(p => { if (teams[p.id]) p.teams = teams[p.id]; });
+    jerseys.forEach(p => { p.teams = Football.classify(p.name); });
+    // Search: "chelsea" also finds the CSV jerseys only called "Adidas Jersey"
+    [...catalog.items, ...jerseys].forEach(p => { if (p.teams) p.teamNames = p.teams.map(id => Football.team(id).name).join(' '); });
     const ordered = Positions.apply(Season.order(catalog.items, catalog.end), pins, catalog.end);   // places chosen in the sheet (js/positions.js)
     allProducts = deduplicateProducts(mixIn(ordered, jerseys, catalog.end));
 
@@ -523,7 +533,9 @@ function generateFilterDropdown() {
 
   // Chips: only inside a tab, and only when there is a choice to make
   const chips = document.getElementById('catChips');
-  if (chips) {
+  if (currentCategoryTab === 'football') renderFootballChips(chips);
+  else showChipRow(document.getElementById('clubChips'), false);
+  if (chips && currentCategoryTab !== 'football') {
     const show = currentCategoryTab !== 'all' && !hidePicker && categories.length >= 2;
     const scrollLeft = chips.scrollLeft;
     chips.innerHTML = '';
@@ -563,6 +575,77 @@ function generateFilterDropdown() {
   }
 }
 
+// ─── Football tab: league chips, then the clubs of the chosen league ───
+// Only here, not in the "Category" menu. Teams come from js/football.js.
+const leaguesOf = p => new Set((p.teams || []).map(id => Football.team(id).league));
+
+function showChipRow(row, show) {
+  if (!row || row.hidden === !show) return;
+  row.hidden = !show;
+  window.dispatchEvent(new Event('resize'));   // the sticky bar changed height
+}
+
+function fillChipRow(row, entries, isActive, onPick) {
+  const scrollLeft = row.scrollLeft;
+  row.innerHTML = '';
+  entries.forEach(([value, text]) => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-chip' + (isActive(value) ? ' is-active' : '');
+    btn.textContent = text;
+    btn.addEventListener('click', () => onPick(value));
+    row.appendChild(btn);
+  });
+  row.scrollLeft = scrollLeft;
+}
+
+function renderFootballChips(leagueRow) {
+  const clubRow = document.getElementById('clubChips');
+  if (!leagueRow || !clubRow) return;
+  const jerseys = allProducts.filter(inCurrentTab);
+
+  const leagueCounts = {};
+  jerseys.forEach(p => leaguesOf(p).forEach(l => { leagueCounts[l] = (leagueCounts[l] || 0) + 1; }));
+  const leagues = Football.LEAGUES.filter(([id]) => leagueCounts[id]);
+  if (footballLeague && !leagueCounts[footballLeague]) footballLeague = footballTeam = null;
+
+  const pick = (league, team) => {
+    footballLeague = league;
+    footballTeam = team;
+    if (team) gaEvent('click_football_club', { club: team });
+    else if (league) gaEvent('click_football_league', { league });
+    generateFilterDropdown();
+    applyFilters();
+  };
+
+  fillChipRow(leagueRow, [[null, t('All')], ...leagues.map(([id, name]) => [id, t(name)])],
+    id => id === footballLeague, id => pick(id === footballLeague ? null : id, null));
+  showChipRow(leagueRow, leagues.length >= 2);
+
+  // Clubs of the chosen league, the most stocked first
+  const teamCounts = {};
+  if (footballLeague) {
+    jerseys.forEach(p => (p.teams || []).forEach(id => {
+      if (Football.team(id).league === footballLeague) teamCounts[id] = (teamCounts[id] || 0) + 1;
+    }));
+  }
+  const teams = Object.keys(teamCounts).sort((a, b) => teamCounts[b] - teamCounts[a]);
+  const leagueName = (Football.LEAGUES.find(([id]) => id === footballLeague) || [])[1];
+  fillChipRow(clubRow, [[null, t('All') + (leagueName ? ' · ' + t(leagueName) : '')], ...teams.map(id => [id, Football.team(id).name])],
+    id => id === footballTeam, id => pick(footballLeague, id === footballTeam ? null : id));
+  showChipRow(clubRow, teams.length >= 2);
+}
+
+// Football chips: keep the jerseys of the chosen league / club; the ones that are
+// only that club (or league) come before the listings with many teams
+function filterFootball(products) {
+  if (currentCategoryTab !== 'football' || !footballLeague) return products;
+  const only = footballTeam
+    ? p => p.teams.every(id => id === footballTeam)
+    : p => leaguesOf(p).size === 1;
+  const kept = products.filter(p => footballTeam ? (p.teams || []).includes(footballTeam) : leaguesOf(p).has(footballLeague));
+  return [...kept.filter(only), ...kept.filter(p => !only(p))];
+}
+
 // ─── Apply All Filters ───────────────────────────
 function applyFilters() {
   let filtered = allProducts;
@@ -576,6 +659,7 @@ function applyFilters() {
       selectedFilters.has((p.article || '').toLowerCase().trim())
     );
   }
+  filtered = filterFootball(filtered);
 
   // Best Sellers: in the order of the sheet (a search or price sort still applies on top)
   if (currentCategoryTab === 'best-sellers') filtered = BestSellers.order(filtered);

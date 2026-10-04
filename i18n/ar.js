@@ -17,6 +17,8 @@ window.I18N_DICT = {
  "How it works": "كيف يعمل",
  "600+ reviews": "أكثر من 600 تقييم",
  "Best Sellers": "الأكثر مبيعًا",
+ "International": "المنتخبات",
+ "Other clubs": "أندية أخرى",
  "All": "الكل",
  "ALL": "الكل",
  "Football": "كرة القدم",
