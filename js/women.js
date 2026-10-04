@@ -122,7 +122,7 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
     searchInput.value = '';
     sortOrder = null;
     sortBtn.classList.remove('is-asc', 'is-desc');
-    sortBtn.querySelector('.toolbar__sort-chevron').textContent = '↕';
+    sortBtn.querySelector('.toolbar__sort-chevron').textContent = '↕︎';
     gaEvent('click_category', { category: chosen });
     generateFilterDropdown();
     applyFilters();
