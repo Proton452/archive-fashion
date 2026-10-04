@@ -1797,7 +1797,7 @@ a.reviews__tp-inline {
 .tl-step {
   position: relative;
   display: grid;
-  grid-template-columns: 36px 1fr;
+  grid-template-columns: 36px minmax(0, 1fr);
   gap: 1.1rem;
   padding-bottom: 1.75rem;
 }
@@ -2000,7 +2000,7 @@ a.reviews__tp-inline {
 
 /* Stack on tablet / mobile */
 @media (max-width: 900px) {
-  .how-to-order__inner { grid-template-columns: 1fr; gap: 2.5rem; max-width: 640px; }
+  .how-to-order__inner { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; max-width: 640px; }
   .order-aside { position: static; }
 }
 
