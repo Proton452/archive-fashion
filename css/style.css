@@ -917,16 +917,19 @@ a.reviews__tp-inline {
   .cat-page-link {
     display: block;
     flex-shrink: 0;
-    margin-inline-end: 6px;
-    padding-block: 14px;
-    padding-inline-end: 16px;
-    border-inline-end: 1px solid var(--border);
+    margin-inline-end: 8px;
+    padding: 6px 14px;
+    background: var(--accent-bg);
+    border: 1px solid rgba(0, 168, 107, 0.22);
+    border-radius: 100px;
     font-family: var(--sans);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: var(--accent);
+    color: var(--accent-dark);
     white-space: nowrap;
+    transition: transform 0.16s var(--ease-out);
   }
+  .cat-page-link:active { transform: scale(0.95); }
 }
 
 /* Sub-category chips of the current tab */
