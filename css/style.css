@@ -810,7 +810,7 @@ a.reviews__tp-inline {
   .gender-switch {
     display: inline-flex;
     gap: 2px;
-    padding: 4px;
+    padding: 3px;
     background: var(--bg);
     border: 1.5px solid var(--border);
     border-radius: 100px;
@@ -819,12 +819,12 @@ a.reviews__tp-inline {
 }
 
 .gender-switch__opt {
-  min-width: 96px;
-  padding: 9px 22px;
+  min-width: 84px;
+  padding: 7px 18px;
   border: 1.5px solid transparent;
   border-radius: 100px;
   font-family: var(--sans);
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 500;
   color: var(--text-muted);
   text-align: center;
