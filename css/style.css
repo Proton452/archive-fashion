@@ -917,19 +917,28 @@ a.reviews__tp-inline {
   .cat-page-link {
     display: block;
     flex-shrink: 0;
-    margin-inline-end: 8px;
-    padding: 6px 14px;
-    background: var(--accent-bg);
-    border: 1px solid rgba(0, 168, 107, 0.22);
-    border-radius: 100px;
+    position: relative;
+    margin-inline-end: 4px;
+    padding: 14px 18px;
+    padding-inline-start: 0;
     font-family: var(--sans);
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 600;
-    color: var(--accent-dark);
+    color: var(--text);
     white-space: nowrap;
     transition: transform 0.16s var(--ease-out);
   }
-  .cat-page-link:active { transform: scale(0.95); }
+  /* Short divider: sets it apart from the tabs (they filter this page, this one changes page) */
+  .cat-page-link::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: 0;
+    top: 50%;
+    height: 16px;
+    border-inline-end: 1.5px solid var(--border);
+    transform: translateY(-50%);
+  }
+  .cat-page-link:active { transform: scale(0.96); }
 }
 
 /* Sub-category chips of the current tab */
