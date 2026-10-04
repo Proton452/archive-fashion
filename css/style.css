@@ -1755,6 +1755,24 @@ a.reviews__tp-inline {
 .flag--es { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2' preserveAspectRatio='none'%3E%3Cpath fill='%23AA151B' d='M0 0h3v2H0z'/%3E%3Cpath fill='%23F1BF00' d='M0 .5h3v1H0z'/%3E%3C/svg%3E"); }
 .flag--gb { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30' preserveAspectRatio='none'%3E%3Cpath fill='%23012169' d='M0 0h60v30H0z'/%3E%3Cpath stroke='%23fff' stroke-width='6' d='M0 0l60 30M60 0L0 30'/%3E%3Cpath stroke='%23C8102E' stroke-width='2' d='M0 0l60 30M60 0L0 30'/%3E%3Cpath stroke='%23fff' stroke-width='10' d='M30 0v30M0 15h60'/%3E%3Cpath stroke='%23C8102E' stroke-width='6' d='M30 0v30M0 15h60'/%3E%3C/svg%3E"); }
 
+/* Phones: the phone's own flag emoji (iPhone / Android draw them; Windows doesn't, hence the drawings above) */
+@media (hover: none) and (pointer: coarse) {
+  .flag {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    vertical-align: baseline;
+    background: none;
+    box-shadow: none;
+    line-height: 1;
+  }
+  .flag--fr::before { content: "\1F1EB\1F1F7"; }
+  .flag--nl::before { content: "\1F1F3\1F1F1"; }
+  .flag--de::before { content: "\1F1E9\1F1EA"; }
+  .flag--es::before { content: "\1F1EA\1F1F8"; }
+  .flag--gb::before { content: "\1F1EC\1F1E7"; }
+}
+
 
 /* ================================================
    HOW TO ORDER
