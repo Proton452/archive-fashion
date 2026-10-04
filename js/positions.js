@@ -5,7 +5,9 @@
      its category in the other tabs).
    - The item that was there goes to a random place after the 100th — the same one at
      every visit (from its id), so it doesn't jump around.
-   - Every other item keeps its order.
+   - Every other item of the first 100 places keeps its exact place (a hand-placed item
+     that came from there leaves a hole, filled by the next item after the 100th); after
+     that, every other item keeps its order.
    Positions.load() never holds the grid back: after 3 s (or an error) → none.
 ============================================== */
 
@@ -45,14 +47,28 @@ const Positions = (() => {
 
     // The items that held those places (unless they are placed by hand themselves)
     const pushed = new Set(wanted.map(([pos]) => items[pos - 1]).filter(p => !usedId.has(p)));
-    const rest = items.filter(p => !usedId.has(p) && !pushed.has(p));
 
-    const last = Math.max(PUSHED_AFTER, Math.min(rest.length, end - wanted.length - pushed.size));
-    for (const p of pushed) {
-      rest.splice(PUSHED_AFTER + hash(String(p.id)) % (last - PUSHED_AFTER + 1), 0, p);
-    }
-    wanted.sort((a, b) => a[0] - b[0]).forEach(([pos, p]) => rest.splice(pos - 1, 0, p));
-    return rest;
+    // Chosen places first, then the untouched items of the first 100 places keep theirs:
+    // an item placed by hand that came from up there leaves a hole, but nothing moves up
+    const out = new Array(items.length);
+    wanted.forEach(([pos, p]) => { out[pos - 1] = p; });
+    items.slice(0, PUSHED_AFTER).forEach((p, i) => {
+      if (!out[i] && !usedId.has(p) && !pushed.has(p)) out[i] = p;
+    });
+    const kept = new Set(out);
+    const rest = items.filter(p => !usedId.has(p) && !pushed.has(p) && !kept.has(p));
+
+    // Holes of the first 100 places take the next items in rest, so pushed items go after them
+    let holes = 0;
+    for (let i = 0; i < Math.min(PUSHED_AFTER, out.length); i++) if (!out[i]) holes++;
+    const tail = items.slice(end).filter(p => !usedId.has(p) && !pushed.has(p) && !kept.has(p)).length;   // non-fashion end: pushed items stay before it
+    const last = Math.max(holes, rest.length - tail);
+    for (const p of pushed) rest.splice(holes + hash(String(p.id)) % (last - holes + 1), 0, p);
+
+    // Everything else fills the free places in order
+    let j = 0;
+    for (let i = 0; i < out.length; i++) if (!out[i]) out[i] = rest[j++];
+    return out;
   }
 
   return { load, apply };
