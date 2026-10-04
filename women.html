@@ -78,7 +78,7 @@
       <div class="hero__content">
         <!-- Men / Women switch: phones and tablets only, where the nav links sit in the burger menu -->
         <div class="gender-switch">
-          <a href="index.html" class="gender-switch__opt">Men</a>
+          <a href="index.html" class="gender-switch__opt" data-gender-link="hero">Men</a>
           <a href="women.html" class="gender-switch__opt is-active" aria-current="page">Women</a>
         </div>
         <h1 class="hero__title">Women's fits &amp; trending finds<br><span class="hero__title-accent">top quality, unbeatable prices</span></h1>
@@ -103,6 +103,7 @@
       <!-- CATEGORY TABS -->
       <div class="cat-tabs-wrapper" id="catTabsWrapper">
         <div class="cat-tabs" id="catTabs">
+          <a href="index.html" class="cat-page-link" data-gender-link="tabs">Men <span aria-hidden="true">→</span></a>
           <button class="cat-tab" data-cat="favorites" hidden>Favorites</button>
           <button class="cat-tab" data-cat="recent" hidden>Recently viewed</button>
           <button class="cat-tab" data-cat="best-sellers">Best Sellers</button>

@@ -909,6 +909,26 @@ a.reviews__tp-inline {
   border-bottom-color: var(--accent);
 }
 
+/* Link to the other page (Men / Women), first in the tabs row: phones and tablets only,
+   where the nav links sit in the burger menu. Stays reachable while scrolling the items */
+.cat-page-link { display: none; }
+
+@media (max-width: 1279px) {
+  .cat-page-link {
+    display: block;
+    flex-shrink: 0;
+    margin-inline-end: 6px;
+    padding-block: 14px;
+    padding-inline-end: 16px;
+    border-inline-end: 1px solid var(--border);
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+}
+
 /* Sub-category chips of the current tab */
 .cat-chips {
   display: flex;

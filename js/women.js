@@ -702,6 +702,14 @@ document.querySelectorAll('.nav__cta, .btn--primary').forEach(el => {
   el.addEventListener('click', () => gaEvent('click_signup'));
 });
 
+// Men / Women links on phones and tablets (hero switch, first link of the tabs row): are they used?
+document.querySelectorAll('[data-gender-link]').forEach(el => {
+  el.addEventListener('click', () => gaEvent('click_gender_switch', {
+    to: /women/.test(el.getAttribute('href')) ? 'women' : 'men',
+    from: el.dataset.genderLink,
+  }));
+});
+
 // ─── Category tabs: right-edge fade while more tabs are off-screen ───
 (function () {
   const wrapper = document.getElementById('catTabsWrapper');
