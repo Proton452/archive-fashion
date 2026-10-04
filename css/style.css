@@ -793,6 +793,7 @@ a.reviews__tp-inline {
 .hero__content > *:nth-child(2) { animation-delay: 0.18s; }
 .hero__content > *:nth-child(3) { animation-delay: 0.30s; }
 .hero__content > *:nth-child(4) { animation-delay: 0.42s; }
+.hero__content > *:nth-child(5) { animation-delay: 0.54s; }
 
 .page-hero > * {
   animation: hero-fade-in 0.7s var(--ease-out) both;
@@ -801,6 +802,41 @@ a.reviews__tp-inline {
 .page-hero > *:nth-child(1) { animation-delay: 0.05s; }
 .page-hero > *:nth-child(2) { animation-delay: 0.18s; }
 .page-hero > *:nth-child(3) { animation-delay: 0.30s; }
+
+/* Men / Women switch at the top of the hero: shown only while the nav links are in the burger menu */
+.gender-switch { display: none; }
+
+@media (max-width: 1279px) {
+  .gender-switch {
+    display: inline-flex;
+    gap: 2px;
+    padding: 4px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+}
+
+.gender-switch__opt {
+  min-width: 96px;
+  padding: 9px 22px;
+  border: 1.5px solid transparent;
+  border-radius: 100px;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: center;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.gender-switch__opt.is-active {
+  color: var(--text);
+  font-weight: 600;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(0, 168, 107, 0.28);
+}
 
 /* ================================================
    CATEGORY TABS
