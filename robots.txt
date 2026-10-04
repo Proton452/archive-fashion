@@ -2,7 +2,8 @@ User-agent: *
 Allow: /
 
 # AI crawlers (training data) and AI assistants opening the site on demand (e.g. "copy this site"):
-# they may read every page's text, but not the CSS, JS or catalog files needed to copy the site.
+# they may read every page's text and copy the catalog (/catalog/*.md, links with the invite code),
+# but not the CSS, JS or data files needed to copy the site's design.
 User-agent: GPTBot
 User-agent: ClaudeBot
 User-agent: anthropic-ai
@@ -22,6 +23,7 @@ User-agent: Claude-Web
 User-agent: Perplexity-User
 User-agent: MistralAI-User
 User-agent: Meta-ExternalFetcher
+Allow: /catalog/
 Disallow: /css/
 Disallow: /js/
 Disallow: /data/

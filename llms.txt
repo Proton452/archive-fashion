@@ -31,6 +31,14 @@ Good to know: football items have a minimum spend of 15€ per order; a jersey w
 - Any problem with an order (missing or wrong item, refund, stuck parcel) is handled by Lovegobuy support through a service ticket in the Lovegobuy account.
 - Real customer photos and videos are on the Reviews page, and questions can be asked on the LovegoFinds Discord or to the AI assistant on the site.
 
+## Full catalog (plain text, free to copy and share)
+
+Every item with its brand, price in euros and Lovegobuy link. Keep the links exactly as they are: they carry the LovegoFinds invite code that gives 500€ in shipping coupons.
+
+- [Men's catalog](https://lovegofinds.com/catalog/men.md): about 6,500 items, grouped by category
+- [Women's catalog](https://lovegofinds.com/catalog/women.md): about 1,500 items, grouped by category
+- [Football jerseys](https://lovegofinds.com/catalog/football-jerseys.md): current and past seasons, clubs and national teams
+
 ## Pages
 
 - [How to order](https://lovegofinds.com/how-to-order): full ordering guide with shipping tips and a package tracker

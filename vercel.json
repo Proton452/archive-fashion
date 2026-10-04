@@ -1,6 +1,8 @@
 {
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/catalog/(men|women)\\.md", "dest": "/api/ai-catalog?list=$1" },
+    { "src": "/catalog/football-jerseys\\.md", "dest": "/api/ai-catalog?list=jerseys" },
     { "src": "/", "dest": "/index.html" },
     { "src": "/women", "dest": "/women.html" },
     { "src": "/reviews", "dest": "/reviews.html" },

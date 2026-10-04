@@ -86,6 +86,11 @@ archive-fashion/
 - Onglet « Recently viewed » juste après « Favorites », masqué tant qu'il est vide. Les 20 derniers articles ouverts (clic vers Lovegobuy ou fenêtre QC), du plus récent au plus ancien (`Recent.order()` dans `applyFilters`, le tri par prix passe par-dessus).
 - `localStorage` : `recent-men` / `recent-women`, même clé que les favoris (`Favs.key`).
 
+## Catalogue pour les IA — api/ai-catalog.js
+
+- L'utilisateur touche une commission sur chaque lien : les IA **peuvent copier le catalogue** mais **pas le design**. `/catalog/men.md`, `/catalog/women.md`, `/catalog/football-jerseys.md` (routes dans vercel.json → `/api/ai-catalog?list=…`, cache 5 min) : texte simple par catégorie, nom (marque) — prix en € (`Prices.format`) — lien Lovegobuy avec `invite_code`. Générés à la demande depuis `data/*.json` et le sheet, donc rien à refaire après un nouveau CSV.
+- Signalés dans `llms.txt` et par un `<link rel="alternate" type="text/markdown">` dans index.html / women.html. `robots.txt` : `Allow: /catalog/` pour les robots IA, mais `/css/`, `/js/`, `/data/`, `/api/` restent interdits (respecté par les IA sérieuses, mais un humain ou un robot qui ignore robots.txt peut toujours tout voir : impossible à empêcher sur le web).
+
 ## Page légale — legal.html
 
 - Une seule page « Privacy & Terms » (`/legal`), même bandeau de titre que FAQ / Reviews (`page-hero`), puis deux cartes (confidentialité, conditions) avec parties numérotées et listes, contact en bas (pas de date « Last updated » : retirée à la demande de l'utilisateur, la partie 10 ne parle plus de date) : confidentialité 1-5 (qui, données utilisées, services tiers, durée de conservation, droits RGPD), conditions 6-10 (acceptation, ce qu'est le site, responsabilité courte et rassurante, marques, modifications), contact Discord. Choix de l'utilisateur : pas de mentions légales (éditeur / hébergeur), pas de mention d'affiliation ni de « not operated by Lovegobuy ». Le chat enregistre les questions anonymisées (`logQuestion` dans api/chat.js) : c'est indiqué sur la page.
