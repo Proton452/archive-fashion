@@ -795,6 +795,10 @@ a.reviews__tp-inline {
 .hero__content > *:nth-child(4) { animation-delay: 0.42s; }
 .hero__content > *:nth-child(5) { animation-delay: 0.54s; }
 
+/* Page reached with the Men / Women switch: the switch stays put, the rest just fades in quickly */
+.from-switch .hero__content > * { animation: hero-fade-in-soft 0.3s var(--ease-out) both; }
+.from-switch .hero__content > .gender-switch { animation: none; }
+
 .page-hero > * {
   animation: hero-fade-in 0.7s var(--ease-out) both;
 }

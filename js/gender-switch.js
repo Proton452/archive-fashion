@@ -45,6 +45,7 @@
     place(i);
     mark(i);
     if (i === current) return;
+    try { sessionStorage.setItem('gender-switch', '1'); } catch (e) {}   // next page: no full entrance animation
     const wait = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300;   // let the spring land
     setTimeout(() => { location.href = opts[i].getAttribute('href'); }, wait);
   }
