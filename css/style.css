@@ -824,7 +824,9 @@ a.reviews__tp-inline {
   }
 }
 
-/* Green outline under the current page; dragged with the finger to change page */
+/* Green outline under the current page; dragged with the finger to change page.
+   Feels like the iPhone switch: shrinks a little while pressed, springs into place
+   with a slight overshoot (translate and scale are separate so each keeps its own timing) */
 .gender-switch__thumb {
   position: absolute;
   top: 3px;
@@ -835,12 +837,13 @@ a.reviews__tp-inline {
   border-radius: 100px;
   box-shadow: 0 0 8px rgba(0, 168, 107, 0.28);
   pointer-events: none;
-  transition: transform 0.3s var(--ease-out);
+  transition: translate 0.45s cubic-bezier(0.34, 1.45, 0.64, 1), scale 0.3s cubic-bezier(0.34, 1.45, 0.64, 1);
 }
 
-.gender-switch__thumb.is-dragging { transition: none; }
-.gender-switch.is-second .gender-switch__thumb { transform: translateX(calc(100% + 2px)); }   /* Women page */
-[dir="rtl"] .gender-switch.is-second .gender-switch__thumb { transform: translateX(calc(-100% - 2px)); }
+.gender-switch__thumb.is-dragging { transition: scale 0.3s cubic-bezier(0.34, 1.45, 0.64, 1); }
+.gender-switch__thumb.is-pressed { scale: 0.94; transition-duration: 0.45s, 0.15s; }
+.gender-switch.is-second .gender-switch__thumb { translate: calc(100% + 2px) 0; }   /* Women page */
+[dir="rtl"] .gender-switch.is-second .gender-switch__thumb { translate: calc(-100% - 2px) 0; }
 
 .gender-switch__opt {
   position: relative;
@@ -862,7 +865,9 @@ a.reviews__tp-inline {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gender-switch__thumb { transition: none; }
+  .gender-switch__thumb,
+  .gender-switch__thumb.is-dragging { transition: none; }
+  .gender-switch__thumb.is-pressed { scale: none; }
 }
 
 /* ================================================
