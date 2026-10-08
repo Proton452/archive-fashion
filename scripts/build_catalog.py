@@ -26,6 +26,10 @@ IMAGE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5'
 # Served from Bunny (copied by scripts/products_to_bunny.py); the pages fall back to IMAGE_TPL
 BUNNY_IMAGE_TPL = 'https://archivefashion.b-cdn.net/products/{id}.webp'
 STYLE_RE  = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)/(\d+)\.webp\?v5$')
+# Card photo replaced by one of the item's styles (picked by hand): {item_id: style number}
+COVERS = {
+    '7844468138': 1,   # Nike CBF Jersey Jacket: 2nd style
+}
 
 # Partner categories that are duplicates / watch brands → one clean name
 WATCH_BRANDS = {
@@ -112,6 +116,9 @@ def main():
         rng.shuffle(main_pool)
         rng.shuffle(end_pool)
         payload = {'link': LINK_TPL, 'image': BUNNY_IMAGE_TPL, 'end': len(main_pool), 'items': main_pool + end_pool}
+        covers = {i[4]: COVERS[i[4]] for i in items if i[4] in COVERS}
+        if covers:
+            payload['covers'] = covers
         path = ROOT / 'data' / f'{gender}.json'
         path.write_text(json.dumps(payload, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
         print(f'{gender}: {len(items)} items -> {path.relative_to(ROOT)} ({path.stat().st_size // 1024} KB)')
