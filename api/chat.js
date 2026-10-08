@@ -5,6 +5,9 @@
    questions and can search the catalog / track a package.
    Product links only come from the catalog: the model refers to
    products as [[p:ID]] and the server turns them into cards.
+   The reply is streamed (NDJSON, one event per line) so it shows up
+   while Gemini writes it: { t: 'blocks', blocks } as it grows, then
+   { t: 'done', blocks, text } or { t: 'error', error }.
    If CHAT_LOG_URL is set, questions are logged anonymously
    (emails, phone and tracking numbers masked).
 ============================================== */
@@ -14,7 +17,7 @@ const Prices = require('../js/prices.js');
 const { lookup, cleanNumber, isValidNumber } = require('./_lib/track17');
 
 const MODEL        = 'gemini-3.8-flash';
-const API_URL      = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+const API_URL      = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`;
 const MAX_HISTORY  = 12;   // messages sent to the model
 const MAX_CHARS    = 500;  // per user message
 const MAX_TOOL_ROUNDS = 3;
@@ -133,7 +136,9 @@ async function runTool(call, found, currency) {
   return { error: 'Unknown tool.' };
 }
 
-async function callGemini(contents, systemText) {
+// Streams one model turn: onText gets each new piece of visible text.
+// Returns every part of the turn as received (thought signatures included).
+async function streamGemini(contents, systemText, onText) {
   const r = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
@@ -144,13 +149,41 @@ async function callGemini(contents, systemText) {
       generationConfig: { maxOutputTokens: 800, thinkingConfig: { thinkingLevel: 'low' } },
     }),
   });
-  const data = await r.json().catch(() => ({}));
   if (!r.ok) {
+    const data = await r.json().catch(() => ({}));
     const err = new Error((data.error && data.error.message) || `Gemini HTTP ${r.status}`);
     err.status = r.status;
     throw err;
   }
-  return data;
+  const parts = [];
+  const decoder = new TextDecoder();
+  let buffer = '';
+  const onLine = line => {
+    if (!line.startsWith('data:')) return;
+    let data;
+    try { data = JSON.parse(line.slice(5)); } catch (e) { return; }
+    const content = data.candidates && data.candidates[0] && data.candidates[0].content;
+    ((content && content.parts) || []).forEach(p => {
+      parts.push(p);
+      if (typeof p.text === 'string' && p.text && !p.thought) onText(p.text);
+    });
+  };
+  for await (const chunk of r.body) {
+    buffer += decoder.decode(chunk, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop();
+    lines.forEach(l => onLine(l.trim()));
+  }
+  onLine(buffer.trim());
+  return parts;
+}
+
+// Text that can be shown while it is still being written: a tag or a
+// **bold** that isn't finished yet waits for the next piece
+function settledText(text) {
+  text = text.replace(/\[\[?[a-z0-9:]*\]?$/i, '');
+  if ((text.match(/\*\*/g) || []).length % 2) text = text.slice(0, text.lastIndexOf('**'));
+  return text.replace(/\*$/, '');
 }
 
 // Turn the model text into ordered blocks, keeping products and buttons where the
@@ -247,24 +280,46 @@ VISITOR
 - Currency: ${currency} (${Prices.CURRENCIES[currency].symbol}). search_products returns prices in ${currency}: quote them as given, never convert them. max_price is in ${currency}.
 - Football minimum spend in ${currency}: ${Prices.formatMinimum(Prices.FOOTBALL_MIN_EUR, currency)} per order.`;
 
+  res.writeHead(200, {
+    'Content-Type': 'application/x-ndjson; charset=utf-8',
+    'Cache-Control': 'no-cache, no-transform',
+    'X-Accel-Buffering': 'no',
+  });
+  const send = event => res.write(JSON.stringify(event) + '\n');
+
   const found = new Map();
+  let text = '';        // every round's text, as the visitor sees it
+  let sent = '';        // last blocks sent
+  let newRound = false;
+  const onText = piece => {
+    if (newRound && text.trim()) text += '\n\n';
+    newRound = false;
+    text += piece;
+    const blocks = buildReply(settledText(text), found).blocks;
+    const json = JSON.stringify(blocks);
+    if (blocks.length && json !== sent) {
+      sent = json;
+      send({ t: 'blocks', blocks });
+    }
+  };
+
   try {
     for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
-      const data = await callGemini(contents, systemText);
-      const content = data.candidates && data.candidates[0] && data.candidates[0].content;
-      const parts = (content && content.parts) || [];
+      newRound = true;
+      const parts = await streamGemini(contents, systemText, onText);
       const calls = parts.filter(p => p.functionCall).map(p => p.functionCall);
 
       if (!calls.length || round === MAX_TOOL_ROUNDS) {
-        const text = parts.filter(p => typeof p.text === 'string' && !p.thought).map(p => p.text).join('').trim();
-        let reply = buildReply(text, found);
+        let reply = buildReply(text.trim(), found);
         if (!reply.blocks.length) reply = buildReply("Sorry, I couldn't answer that. You can ask on our Discord.\n[[discord]]", found);
+        send({ t: 'done', blocks: reply.blocks, text: reply.text });
+        // The visitor already has the answer: the log no longer makes them wait
         await logQuestion(contents.filter(c => c.role === 'user' && c.parts[0].text).pop().parts[0].text, reply);
-        return res.status(200).json({ blocks: reply.blocks, text: reply.text });
+        return res.end();
       }
 
       // Keep the model turn as-is (it carries the thought signatures), then answer every call
-      contents.push(content);
+      contents.push({ role: 'model', parts });
       const responses = await Promise.all(calls.map(async call => ({
         functionResponse: { name: call.name, response: await runTool(call, found, currency).catch(() => ({ error: 'Tool failed.' })) },
       })));
@@ -272,8 +327,10 @@ VISITOR
     }
   } catch (err) {
     const busy = err.status === 429 || err.status === 503;
-    return res.status(busy ? 503 : 502).json({
+    send({
+      t: 'error',
       error: busy ? 'The assistant is busy right now. Please try again in a minute.' : 'The assistant is unavailable right now. Please try again later.',
     });
+    res.end();
   }
 };

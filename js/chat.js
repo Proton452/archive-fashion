@@ -231,24 +231,71 @@
     return blocks;
   }
 
+  function blockEl(b, role) {
+    if (b.type === 'text') {
+      const bubbleEl = el('div', 'chat-msg__bubble');
+      bubbleEl.append(role === 'user' ? document.createTextNode(b.text) : richText(b.text));
+      return bubbleEl;
+    }
+    if (b.type === 'products' && b.items && b.items.length) {
+      const wrap = el('div', 'chat-msg__products');
+      b.items.forEach(p => wrap.append(productCard(p)));
+      return wrap;
+    }
+    if (b.type === 'button' && BUTTON_LABELS[b.kind]) {
+      const wrap = el('div', 'chat-msg__actions');
+      wrap.append(actionButton(b.kind));
+      return wrap;
+    }
+    return document.createComment('');   // unknown block: keeps the indexes aligned
+  }
+
   function renderMessage(m) {
     const row = el('div', 'chat-msg chat-msg--' + (m.role === 'user' ? 'user' : 'bot') + (m.error ? ' chat-msg--error' : ''));
-    blocksOf(m).forEach(b => {
-      if (b.type === 'text') {
-        const bubbleEl = el('div', 'chat-msg__bubble');
-        bubbleEl.append(m.role === 'user' ? document.createTextNode(b.text) : richText(b.text));
-        row.append(bubbleEl);
-      } else if (b.type === 'products' && b.items && b.items.length) {
-        const wrap = el('div', 'chat-msg__products');
-        b.items.forEach(p => wrap.append(productCard(p)));
-        row.append(wrap);
-      } else if (b.type === 'button' && BUTTON_LABELS[b.kind]) {
-        const wrap = el('div', 'chat-msg__actions');
-        wrap.append(actionButton(b.kind));
-        row.append(wrap);
-      }
-    });
+    blocksOf(m).forEach(b => row.append(blockEl(b, m.role)));
     return row;
+  }
+
+  // Reply being streamed (api/chat.js): updated in place as it grows, so the
+  // text already shown and the product photos don't flash on every piece
+  let live = null;   // { row, keys: [] }
+  function updateLive(blocks) {
+    const first = !live;
+    if (first) live = { row: el('div', 'chat-msg chat-msg--bot'), keys: [] };
+    const nodes = live.row.childNodes;
+    blocks.forEach((b, i) => {
+      const key = JSON.stringify(b);
+      if (live.keys[i] === key) return;
+      const node = blockEl(b, 'model');
+      if (nodes[i]) nodes[i].replaceWith(node);
+      else live.row.append(node);
+      live.keys[i] = key;
+    });
+    while (nodes.length > blocks.length) live.row.lastChild.remove();
+    live.keys.length = blocks.length;
+    if (first) render();
+    else list.scrollTop = list.scrollHeight;
+  }
+
+  // Reads the NDJSON stream; resolves with the final reply as soon as it is complete
+  async function readReply(r) {
+    const reader = r.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    for (;;) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const lines = buffer.split('\n');
+      buffer = done ? '' : lines.pop();
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const ev = JSON.parse(line);
+        if (ev.t === 'blocks') updateLive(ev.blocks);
+        else if (ev.t === 'done') return ev;
+        else if (ev.t === 'error') throw new Error(ev.error || 'error');
+      }
+      if (done) throw new Error('error');   // cut before the end
+    }
   }
 
   function render() {
@@ -276,7 +323,8 @@
 
     state.messages.forEach(m => list.append(renderMessage(m)));
 
-    if (sending) {
+    if (sending && live) list.append(live.row);
+    else if (sending) {
       const typing = el('div', 'chat-msg chat-msg--bot');
       const dots = el('div', 'chat-msg__bubble chat-typing');
       dots.setAttribute('aria-label', 'Assistant is typing');
@@ -454,7 +502,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: history, currency: Prices.current(), lang: I18N.lang }),
       });
-      const data = await r.json().catch(() => ({}));
+      const streamed = r.ok && (r.headers.get('content-type') || '').includes('ndjson');
+      const data = streamed ? await readReply(r) : await r.json().catch(() => ({}));
       if (!r.ok || data.error) throw new Error(data.error || 'error');
       state.messages.push({ role: 'model', text: data.text || '', blocks: data.blocks || [] });
     } catch (err) {
@@ -464,6 +513,7 @@
       state.messages.push({ role: 'model', text: msg, error: true });
     } finally {
       sending = false;
+      live = null;
       save();
       render();
       if (window.matchMedia('(hover: hover)').matches) input.focus();

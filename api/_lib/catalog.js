@@ -132,7 +132,9 @@ function loadFiles() {
         brand,
         type:     type.toLowerCase(),
         cny:      priceCny,
-        image:    optimizeImage(data.image.replace('{id}', imageId)),
+        image:    optimizeImage(data.covers && data.covers[itemId] != null   // a style picked by hand (COVERS in build_catalog.py)
+          ? `https://archivefashion.b-cdn.net/styles/${imageId}/${data.covers[itemId]}.webp`
+          : data.image.replace('{id}', imageId)),
         link,
         bestSeller: false,
       };
