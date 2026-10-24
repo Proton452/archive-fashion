@@ -200,7 +200,7 @@ window.I18N_DICT = {
  "Pay for your item": "Paga o teu artigo",
  "2–5 days": "2–5 dias",
  "Once paid, sellers ship it to the warehouse. Delivery time varies by seller, usually 2 to 5 days.": "Depois de pago, o vendedor envia-o para o armazém. O prazo depende do vendedor, normalmente 2 a 5 dias.",
- "On your phone? Your cart and orders are also in the Lovegobuy app: just log in with the same account. Handy for paying shipping and following your package.": "No telemóvel? O teu carrinho e as tuas encomendas também estão na app Lovegobuy: inicia sessão com a mesma conta. Prático para pagar o envio e seguir a tua encomenda.",
+ "Your cart is also in the Lovegobuy app: just log in.": "O teu carrinho também está na app Lovegobuy: basta iniciar sessão.",
  "Pay for shipping": "Paga o envio",
  "~10 days": "~10 dias",
  "Once everything's in the warehouse, pick your shipping line and apply your coupons. Takes about 10 days depending on the line you choose.": "Quando estiver tudo no armazém, escolhe a linha de envio e aplica os teus cupões. Demora cerca de 10 dias, conforme a linha escolhida.",
