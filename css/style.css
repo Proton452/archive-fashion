@@ -1951,7 +1951,6 @@ a.reviews__tp-inline {
 /* App note in step 3, touch screens only: item links don't open the app, and an
    account made in the app may miss the invite code */
 .tl-step__tip { font-size: 0.86rem; color: var(--text-muted); line-height: 1.65; }
-.tl-step__tip strong { font-weight: 600; color: var(--text); }
 .tl-step__tip--touch { display: none; }
 @media (hover: none) and (pointer: coarse) { .tl-step__tip--touch { display: block; } }
 
