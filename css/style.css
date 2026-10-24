@@ -2112,6 +2112,23 @@ a.reviews__tp-inline {
 
 .video-placeholder p { font-size: 0.85rem; color: var(--text-muted); }
 
+/* Phones: vertical tutorial (iPhone screen recording), computers: 16:9 */
+.how-to-order__video--phone { display: none; }
+@media (max-width: 768px) {
+  .how-to-order__video--pc { display: none; }
+  .how-to-order__video--phone { display: block; }
+  .video-placeholder,
+  .how-to-order__video iframe {
+    aspect-ratio: 9/16;
+    width: 100%;
+    max-width: 300px;
+    margin-inline: auto;
+    display: flex;
+  }
+  .how-to-order__video iframe { display: block; }
+  .video-placeholder p { text-align: center; padding: 0 1.25rem; }
+}
+
 .order-aside__ctas { display: flex; flex-direction: column; gap: 0.6rem; }
 .order-aside__ctas .btn { width: 100%; justify-content: center; }
 
