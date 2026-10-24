@@ -200,7 +200,7 @@ window.I18N_DICT = {
  "Pay for your item": "ادفع ثمن منتجك",
  "2–5 days": "2–5 أيام",
  "Once paid, sellers ship it to the warehouse. Delivery time varies by seller, usually 2 to 5 days.": "بعد الدفع يشحنه البائع إلى المستودع. تختلف مدة التوصيل حسب البائع، وعادةً من 2 إلى 5 أيام.",
- "Ordering from the app? Log in with your account from step 1, then paste the item link there.": "<strong>تطلب من التطبيق؟</strong> سجّل الدخول بحسابك من الخطوة 1، ثم الصق رابط المنتج هناك.",
+ "Ordering from the app? Log in with your account from step 1, then paste the item link there.": "<strong>تطلب من التطبيق؟</strong> سجّل الدخول <a href=\"https://www.lovegobuy.com/login/signup/?invite_code=500EUROSOFFERED\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"tl-step__link\">بحسابك من الخطوة 1</a>، ثم الصق رابط المنتج هناك.",
  "Pay for shipping": "ادفع تكلفة الشحن",
  "~10 days": "~10 أيام",
  "Once everything's in the warehouse, pick your shipping line and apply your coupons. Takes about 10 days depending on the line you choose.": "عندما يصبح كل شيء في المستودع، اختر خط الشحن وطبّق قسائمك. يستغرق الأمر نحو 10 أيام حسب الخط الذي تختاره.",
