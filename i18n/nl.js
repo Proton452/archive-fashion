@@ -200,7 +200,6 @@ window.I18N_DICT = {
  "Pay for your item": "Betaal je artikel",
  "2–5 days": "2–5 dagen",
  "Once paid, sellers ship it to the warehouse. Delivery time varies by seller, usually 2 to 5 days.": "Na betaling stuurt de verkoper het naar het magazijn. De levertijd hangt af van de verkoper, meestal 2 tot 5 dagen.",
- "Check that the invite code field says 500EUROSOFFERED.": "Controleer dat er in het veld voor de uitnodigingscode 500EUROSOFFERED staat.",
  "Ordering from the app? Create your account with this link first, then log in to the app with it.": "Bestel je via de app? Maak eerst je account aan met deze link en log daarna in de app in met dat account.",
  "Pay for shipping": "Betaal de verzending",
  "~10 days": "~10 dagen",
