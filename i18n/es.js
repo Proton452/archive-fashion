@@ -200,7 +200,7 @@ window.I18N_DICT = {
  "Pay for your item": "Paga tu artículo",
  "2–5 days": "2–5 días",
  "Once paid, sellers ship it to the warehouse. Delivery time varies by seller, usually 2 to 5 days.": "Una vez pagado, el vendedor lo envía al almacén. El plazo depende del vendedor, normalmente de 2 a 5 días.",
- "Ordering from the app? Create your account with this link first, then log in to the app with it.": "¿Pides desde la app? Crea primero tu cuenta con este enlace y luego inicia sesión con ella en la app.",
+ "Using the app? Log in with the account from step 1 and paste the item link.": "¿Usas la app? Inicia sesión con la cuenta del paso 1 y pega el enlace del artículo.",
  "Pay for shipping": "Paga el envío",
  "~10 days": "~10 días",
  "Once everything's in the warehouse, pick your shipping line and apply your coupons. Takes about 10 days depending on the line you choose.": "Cuando todo esté en el almacén, elige tu línea de envío y aplica tus cupones. Tarda unos 10 días según la línea que elijas.",

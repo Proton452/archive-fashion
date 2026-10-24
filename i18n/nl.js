@@ -200,7 +200,7 @@ window.I18N_DICT = {
  "Pay for your item": "Betaal je artikel",
  "2–5 days": "2–5 dagen",
  "Once paid, sellers ship it to the warehouse. Delivery time varies by seller, usually 2 to 5 days.": "Na betaling stuurt de verkoper het naar het magazijn. De levertijd hangt af van de verkoper, meestal 2 tot 5 dagen.",
- "Ordering from the app? Create your account with this link first, then log in to the app with it.": "Bestel je via de app? Maak eerst je account aan met deze link en log daarna in de app in met dat account.",
+ "Using the app? Log in with the account from step 1 and paste the item link.": "Gebruik je de app? Log in met het account uit stap 1 en plak de link van het artikel.",
  "Pay for shipping": "Betaal de verzending",
  "~10 days": "~10 dagen",
  "Once everything's in the warehouse, pick your shipping line and apply your coupons. Takes about 10 days depending on the line you choose.": "Zodra alles in het magazijn ligt, kies je je verzendlijn en gebruik je je coupons. Duurt ongeveer 10 dagen, afhankelijk van de gekozen lijn.",
