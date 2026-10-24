@@ -200,7 +200,7 @@ window.I18N_DICT = {
  "Pay for your item": "Betaal je artikel",
  "2–5 days": "2–5 dagen",
  "Once paid, sellers ship it to the warehouse. Delivery time varies by seller, usually 2 to 5 days.": "Na betaling stuurt de verkoper het naar het magazijn. De levertijd hangt af van de verkoper, meestal 2 tot 5 dagen.",
- "Your cart is also in the Lovegobuy app: just log in.": "Je winkelwagen staat ook in de Lovegobuy-app: gewoon inloggen.",
+ "Ordering from the app? Create your account with this link first, then log in to the app with it.": "Bestel je via de app? Maak eerst je account aan met deze link en log daarna in de app in met dat account.",
  "Pay for shipping": "Betaal de verzending",
  "~10 days": "~10 dagen",
  "Once everything's in the warehouse, pick your shipping line and apply your coupons. Takes about 10 days depending on the line you choose.": "Zodra alles in het magazijn ligt, kies je je verzendlijn en gebruik je je coupons. Duurt ongeveer 10 dagen, afhankelijk van de gekozen lijn.",

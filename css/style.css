@@ -1948,16 +1948,14 @@ a.reviews__tp-inline {
 
 .tl-step__desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.65; }
 
-/* App tip: touch screens only (item links don't open the app, so it's for after the cart) */
+/* App note under the step 1 button: touch screens only. An account made in the
+   app may miss the invite code, so it's made with the link first */
 .tl-step__tip {
   display: none;
-  font-size: 0.8rem;
-  color: var(--accent-dark);
-  background: var(--accent-bg);
-  border-radius: 10px;
-  padding: 0.6rem 0.8rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
   line-height: 1.55;
-  margin-top: 0.2rem;
+  margin-top: 0.35rem;
 }
 @media (hover: none) and (pointer: coarse) { .tl-step__tip { display: block; } }
 
