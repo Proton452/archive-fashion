@@ -200,6 +200,7 @@ window.I18N_DICT = {
  "Pay for your item": "ادفع ثمن منتجك",
  "2–5 days": "2–5 أيام",
  "Once paid, sellers ship it to the warehouse. Delivery time varies by seller, usually 2 to 5 days.": "بعد الدفع يشحنه البائع إلى المستودع. تختلف مدة التوصيل حسب البائع، وعادةً من 2 إلى 5 أيام.",
+ "Check that the invite code field says 500EUROSOFFERED.": "تأكد من أن خانة رمز الدعوة تعرض 500EUROSOFFERED.",
  "Ordering from the app? Create your account with this link first, then log in to the app with it.": "تطلب من التطبيق؟ أنشئ حسابك أولًا بهذا الرابط، ثم سجّل الدخول به في التطبيق.",
  "Pay for shipping": "ادفع تكلفة الشحن",
  "~10 days": "~10 أيام",

@@ -1948,16 +1948,17 @@ a.reviews__tp-inline {
 
 .tl-step__desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.65; }
 
-/* App note under the step 1 button: touch screens only. An account made in the
-   app may miss the invite code, so it's made with the link first */
+/* Notes under the step 1 button. The app one is for touch screens only: an
+   account made in the app may miss the invite code, so it's made with the link first */
 .tl-step__tip {
-  display: none;
   font-size: 0.78rem;
   color: var(--text-muted);
   line-height: 1.55;
   margin-top: 0.35rem;
 }
-@media (hover: none) and (pointer: coarse) { .tl-step__tip { display: block; } }
+.tl-step__tip + .tl-step__tip { margin-top: 0; }
+.tl-step__tip--touch { display: none; }
+@media (hover: none) and (pointer: coarse) { .tl-step__tip--touch { display: block; } }
 
 .tl-step__link { color: var(--accent); font-weight: 500; text-decoration: underline; text-underline-offset: 2px; }
 
