@@ -281,7 +281,7 @@ async function fetchCatalog(url) {
     cny:   priceCny,
     price: Prices.format(priceCny),
     image: data.covers && data.covers[itemId] != null   // a style picked by hand (COVERS in build_catalog.py)
-      ? `https://archivefashion.b-cdn.net/styles/${imageId}/${data.covers[itemId]}.webp`
+      ? `https://archivefashion.b-cdn.net/styles/${imageId}/${data.covers[itemId]}.webp?v=2`   // v: new address after a photo is replaced on Bunny (caches keep the old one)
       : data.image.replace('{id}', imageId),
     lien:  data.link.replace('{id}', itemId),
     isBestSeller: false,

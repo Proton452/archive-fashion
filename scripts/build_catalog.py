@@ -30,10 +30,6 @@ STYLE_RE  = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)/(\d+)\.webp
 COVERS = {
     '7844468138': 1,   # Nike CBF Jersey Jacket: 2nd style
 }
-# Styles moved to the front, in this order (card thumbnails + photos window): {item_id: [style numbers]}
-STYLES_FIRST = {
-    '7844468138': [1, 2],   # Nike CBF Jersey Jacket: the cover (mint), then the black one
-}
 
 # Partner categories that are duplicates / watch brands → one clean name
 WATCH_BRANDS = {
@@ -93,8 +89,6 @@ def main():
             m = STYLE_RE.match(u.strip())
             if m and m.group(1) == image.group(1):
                 styles.append(int(m.group(2)))
-        first = [n for n in STYLES_FIRST.get(link.group(1), []) if n in styles]
-        styles = first + [n for n in styles if n not in first]
         item = [
             r['titre'].strip(),
             r['brand'].strip(),
