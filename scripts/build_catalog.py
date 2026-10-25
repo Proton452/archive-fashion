@@ -30,6 +30,11 @@ STYLE_RE  = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)/(\d+)\.webp
 COVERS = {
     '7844468138': 1,   # Nike CBF Jersey Jacket: 2nd style
 }
+# Style photo swapped for one uploaded by hand to <CDN>/styles/<image_id>/<new n>.webp (not on
+# theqcbook; its key is in scripts/styles_bunny.json): {item_id: {style number: new number}}
+STYLE_SWAPS = {
+    '7844468138': {1: 9},   # Nike CBF Jersey Jacket: style 2 = the black jacket (the item photo); 1 stays the cover
+}
 
 # Partner categories that are duplicates / watch brands → one clean name
 WATCH_BRANDS = {
@@ -89,6 +94,8 @@ def main():
             m = STYLE_RE.match(u.strip())
             if m and m.group(1) == image.group(1):
                 styles.append(int(m.group(2)))
+        swaps = STYLE_SWAPS.get(link.group(1), {})
+        styles = [swaps.get(n, n) for n in styles]
         item = [
             r['titre'].strip(),
             r['brand'].strip(),
