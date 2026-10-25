@@ -29,6 +29,7 @@ STYLE_RE  = re.compile(r'^https://img\.theqcbook\.com/products/(\d+)/(\d+)\.webp
 # Card photo replaced by one of the item's styles (picked by hand): {item_id: style number}
 COVERS = {
     '7844468138': 1,   # Nike CBF Jersey Jacket: 2nd style
+    '7805985067': 900, # Louis Vuitton Hat: clean photo uploaded by hand (900+ = never a partner style number)
 }
 # Style photo swapped for one uploaded by hand to <CDN>/styles/<image_id>/<new n>.webp (not on
 # theqcbook; its key is in scripts/styles_bunny.json): {item_id: {style number: new number}}
