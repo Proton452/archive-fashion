@@ -17,6 +17,9 @@
 (function () {
   const LINK_TPL  = 'https://www.lovegobuy.com/product?id={id}&shop_type=weidian&invite_code=500EUROSOFFERED';
   const IMAGE_TPL = 'https://archivefashion.b-cdn.net/products/{id}.webp?width=400&quality=75&format=auto';   // = the card's (js/main.js)
+  // Card photo replaced by a style (COVERS in build_catalog.py): same address as the card's
+  const COVER_TPL = 'https://archivefashion.b-cdn.net/styles/{id}/{n}.webp?v=2&width=400&quality=75&format=auto';
+  const cardImage = it => it.cv != null ? COVER_TPL.replace('{id}', it.i).replace('{n}', it.cv) : IMAGE_TPL.replace('{id}', it.i);
   const SOURCE_TPL = 'https://img.theqcbook.com/products/{id}.webp?v5';
   const STYLE_TPL = 'https://archivefashion.b-cdn.net/styles/{id}/{n}.webp';   // scripts/styles_to_bunny.py
   const STYLE_SOURCE_TPL = 'https://img.theqcbook.com/products/{id}/{n}.webp?v5';
@@ -176,7 +179,7 @@
   }
 
   function buildSlides() {
-    const placeholder = IMAGE_TPL.replace('{id}', item.i);   // already cached by the catalog
+    const placeholder = cardImage(item);   // already cached by the catalog
     track.replaceChildren(...photos.map((url, i) => {
       const slide = el('div', 'photos-slide is-loading');
       const bg = el('img', 'photos-slide__bg');
@@ -317,7 +320,7 @@
     modal.querySelectorAll('.photos-style').forEach((b, i) => b.setAttribute('aria-label', t('Style') + ' ' + (i + 1)));
     const productImg = q('.photos-product__img');
     productImg.onerror = () => { productImg.onerror = null; productImg.src = SOURCE_TPL.replace('{id}', item.i); };   // not on Bunny yet
-    productImg.src = IMAGE_TPL.replace('{id}', item.i);
+    productImg.src = cardImage(item);
     q('.photos-product__name').textContent = niceName(item.n);
     q('.photos-product__meta').textContent = [item.b, catLabel(item.c)].filter(Boolean).join(' · ');
     q('.photos-product__price').textContent = Prices.format(item.p);

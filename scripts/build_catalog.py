@@ -10,7 +10,7 @@ Output format (compact, ~8k items):
   thumbnails on the catalog cards (js/card-styles.js).
 Real (QC) photos and styles (official photos of each colour / design, model_images in the CSV)
 go to data/qc/<last 2 digits of item_id>.json, loaded only when a visitor opens them:
-{ item_id: { g, n, b, c, p, i, q: [urls], m: [n, ...] } }. Style photos are always
+{ item_id: { g, n, b, c, p, i, q: [urls], m: [n, ...], cv: cover style (COVERS only) } }. Style photos are always
 https://img.theqcbook.com/products/<image_id>/<n>.webp?v5, so only the numbers n are kept.
 """
 import csv, json, random, re, shutil, subprocess, sys
@@ -106,6 +106,7 @@ def main():
             qc_shards.setdefault(link.group(1)[-2:], {})[link.group(1)] = {
                 'g': gender, 'n': item[0], 'b': item[1], 'c': item[2], 'p': item[3], 'i': item[5], 'q': qc,
                 **({'m': styles} if styles else {}),
+                **({'cv': COVERS[link.group(1)]} if link.group(1) in COVERS else {}),   # cover style (js/photos.js)
             }
 
     (ROOT / 'data').mkdir(exist_ok=True)
