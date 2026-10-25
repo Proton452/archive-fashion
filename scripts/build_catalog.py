@@ -33,7 +33,7 @@ COVERS = {
 # Style photo swapped for one uploaded by hand to <CDN>/styles/<image_id>/<new n>.webp (not on
 # theqcbook; its key is in scripts/styles_bunny.json): {item_id: {style number: new number}}
 STYLE_SWAPS = {
-    '7844468138': {1: 9},   # Nike CBF Jersey Jacket: style 2 = the black jacket (the item photo); 1 stays the cover
+    '7844468138': {1: 2, 2: 9},   # Nike CBF Jersey Jacket: 2nd = black Brazil, 3rd = the black item photo; 1 stays the cover
 }
 
 # Partner categories that are duplicates / watch brands → one clean name
