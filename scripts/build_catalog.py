@@ -31,6 +31,7 @@ COVERS = {
     '7844468138': 1,   # Nike CBF Jersey Jacket: 2nd style
     '7805985067': 900, # Louis Vuitton Hat: clean photo uploaded by hand (900+ = never a partner style number)
     '7805963105': 900, # Acne Studios Hoodie: black Stockholm 1996 photo uploaded by hand
+    '7809055984': 900, # Stone Island Hoodie: grey sweater photo uploaded by hand
 }
 # Style photo swapped for one uploaded by hand to <CDN>/styles/<image_id>/<new n>.webp (not on
 # theqcbook; its key is in scripts/styles_bunny.json): {item_id: {style number: new number}}
@@ -40,6 +41,7 @@ STYLE_SWAPS = {
 # Whole style list set by hand (styles removed, reordered, or uploaded as 900+): {item_id: [style numbers]}
 STYLE_LISTS = {
     '7805963105': [1, 2, 3, 4, 5, 6, 7, 8, 901, 9],   # Acne Studios Hoodie: 1st style removed, old item photo (901) second-to-last
+    '7809055984': [901, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],   # Stone Island Hoodie: old item photo (black) first
 }
 
 # Partner categories that are duplicates / watch brands → one clean name
