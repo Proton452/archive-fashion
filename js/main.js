@@ -78,9 +78,9 @@ window.addEventListener('scroll', () => {
 
 // ─── Highlight active nav page ───────────────────
 (function () {
-  const page = location.pathname.split('/').pop() || 'index.html';
+  const page = '/' + (location.pathname.split('/')[1] || '').replace(/\.html$/, '').replace(/^index$/, '');
   document.querySelectorAll('.nav__link').forEach(link => {
-    if ((link.getAttribute('href') || '') === page) link.classList.add('is-active-page');
+    if ((link.dataset.page || link.getAttribute('href') || '') === page) link.classList.add('is-active-page');
   });
 })();
 

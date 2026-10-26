@@ -35,12 +35,12 @@
   function applyRewrites(slug, inviteCode) {
     var c = slug ? '/' + slug : '';
     var map = {
-      'index.html': c || '/',
-      'women.html': '/women' + c,
-      'reviews.html': '/reviews' + c,
-      'how-to-order.html': '/how-to-order' + c,
-      'faq.html': '/faq' + c,
-      'legal.html': '/legal' + c
+      '/': c || '/',
+      '/women': '/women' + c,
+      '/reviews': '/reviews' + c,
+      '/how-to-order': '/how-to-order' + c,
+      '/faq': '/faq' + c,
+      '/legal': '/legal' + c
     };
 
     // data-page keeps the original target so links can be rewritten again once the slug is known
@@ -73,8 +73,8 @@
     else fn();
   }
 
-  // Rewrite nav links right away (clean URLs + cached partner slug) instead of waiting for the sheet,
-  // so a quick click never lands on a raw "page.html" URL
+  // Add the cached partner slug to nav links right away instead of waiting for the sheet,
+  // so a quick click keeps the partner
   onReady(function () {
     var fastSlug = (activeSlug && cachedSlug === activeSlug && cachedCode) ? activeSlug : null;
     applyRewrites(fastSlug, fastSlug ? cachedCode : null);
